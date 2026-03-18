@@ -1,19 +1,91 @@
 @import "tailwindcss";
 
+@theme {
+  --font-mono: "JetBrains Mono", monospace;
+  --font-display: "Space Grotesk", sans-serif;
+}
+
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  /* Backgrounds */
+  --bg-main: #0C0C0C;
+  --bg-sidebar: #080808;
+  --bg-card: #0A0A0A;
+  --bg-input: #080808;
+  --bg-hover: #1a1a1a;
+
+  /* Borders */
+  --border: #2f2f2f;
+  --border-secondary: #3f3f3f;
+  --border-accent: #38B3DC40;
+
+  /* Text */
+  --text-primary: #FFFFFF;
+  --text-secondary: #8a8a8a;
+  --text-tertiary: #5a5a5a;
+  --text-quaternary: #3f3f3f;
+
+  /* Accent */
+  --accent: #38B3DC;
+  --accent-10: #38B3DC10;
+  --accent-30: #38B3DC30;
+  --accent-40: #38B3DC40;
+  --accent-60: #38B3DC60;
+
+  /* Warning */
+  --warning: #FF8800;
+  --warning-20: #FF880020;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html, body {
+  height: 100%;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::selection {
+  background: var(--accent-30);
+  color: var(--text-primary);
+}
+
+/* Pulse animation for live indicators */
+@keyframes pulse-accent {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.pulse-accent {
+  animation: pulse-accent 2s ease-in-out infinite;
+}
+
+/* Gradient border effect */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--accent-40), transparent 50%, var(--accent-40));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }

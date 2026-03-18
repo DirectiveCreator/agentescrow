@@ -23,3 +23,8 @@ contracts/cache/
 
 # Foundry
 contracts/lib/
+contracts/broadcast/
+
+# Telegram (auth state - sensitive)
+telegram/
+agents/telegram/

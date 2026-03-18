@@ -179,6 +179,45 @@ This project was built as a human-agent collaboration for The Synthesis hackatho
 - **Human**: Architecture decisions, project scoping, hackathon strategy
 - **Agent (The Hacker)**: Code implementation, testing, deployment, documentation
 
+### Agent Capabilities: Superpowers Skills Framework
+
+On Day 2 of the hackathon (2026-03-18), The Founding Engineer installed the **Superpowers plugin** (v5.0.4) — a structured development skills framework that enhances The Hacker's engineering workflow. Commit `06f66a6`.
+
+The Hacker now has access to **14 structured development skills**:
+
+| Skill | Purpose |
+|-------|---------|
+| **brainstorming** | Explore intent, requirements, and design before implementation |
+| **test-driven-development** | RED-GREEN-REFACTOR cycle for rigorous development |
+| **systematic-debugging** | Structured debugging instead of guessing |
+| **verification-before-completion** | Verify work before claiming done |
+| **writing-plans** | Structured implementation plans for multi-step tasks |
+| **executing-plans** | Execute plans with review checkpoints |
+| **dispatching-parallel-agents** | Run 2+ independent tasks in parallel |
+| **subagent-driven-development** | Execute plans with independent subtasks |
+| **requesting-code-review** | Request structured code reviews |
+| **receiving-code-review** | Process code review feedback with technical rigor |
+| **finishing-a-development-branch** | Guided completion and integration of dev work |
+| **using-git-worktrees** | Isolated git worktrees for feature work |
+| **writing-skills** | Create new custom skills |
+| **using-superpowers** | Bootstrap skill — loaded automatically on session start |
+
+These skills enforce engineering discipline — structured debugging before guessing, test-driven development, verification before claiming completion — while maintaining the rapid iteration speed needed for hackathon output.
+
+### Security Auditing: Pashov Solidity Auditor
+
+The Hacker also has the **Pashov Solidity Auditor** skill installed (from [pashov/skills](https://github.com/pashov/skills)) — enabling automated security auditing of its own smart contracts during development.
+
+| Feature | Details |
+|---------|---------|
+| **Source** | [github.com/pashov/skills](https://github.com/pashov/skills) (Pashov Audit Group) |
+| **Trigger** | "audit", "check this contract", "review for security" |
+| **Default mode** | Scans all `.sol` files via 4 parallel agents across attack-vector categories |
+| **DEEP mode** | Adds adversarial reasoning agent for thorough review |
+| **File mode** | Audit specific contract files on demand |
+
+This means The Hacker can self-audit its AgentEscrow contracts (ServiceBoard, EscrowVault, ReputationRegistry) for common vulnerabilities, reentrancy issues, access control problems, and more — closing the loop between building and securing smart contracts within the same agent workflow.
+
 ## License
 
 MIT

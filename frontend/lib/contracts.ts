@@ -1,16 +1,17 @@
 import { createPublicClient, http } from 'viem';
 import { baseSepolia, foundry } from 'viem/chains';
 
-// Contract addresses - update after deployment
+// Contract addresses — Base Sepolia deployment (2026-03-18)
+// Deployed via Foundry script: contracts/script/Deploy.s.sol
 const CONTRACTS = {
-  serviceBoard: process.env.NEXT_PUBLIC_SERVICE_BOARD_ADDRESS || '0xa513e6e4b8f2a923d98304ec87f64353c4d5c853',
-  escrowVault: process.env.NEXT_PUBLIC_ESCROW_VAULT_ADDRESS || '0x5fc8d32690cc91d4c39d9d3abcbd16989f875707',
-  reputationRegistry: process.env.NEXT_PUBLIC_REPUTATION_REGISTRY_ADDRESS || '0x0165878a594ca255338adfa4d48449f69242eb8f',
+  serviceBoard: process.env.NEXT_PUBLIC_SERVICE_BOARD_ADDRESS || '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C',
+  escrowVault: process.env.NEXT_PUBLIC_ESCROW_VAULT_ADDRESS || '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E',
+  reputationRegistry: process.env.NEXT_PUBLIC_REPUTATION_REGISTRY_ADDRESS || '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c',
 };
 
 const isLocal = process.env.NEXT_PUBLIC_CHAIN === 'local';
 const chain = isLocal ? foundry : baseSepolia;
-const rpcUrl = isLocal ? 'http://127.0.0.1:8545' : (process.env.NEXT_PUBLIC_RPC_URL || 'http://127.0.0.1:8545');
+const rpcUrl = isLocal ? 'http://127.0.0.1:8545' : (process.env.NEXT_PUBLIC_RPC_URL || 'https://sepolia.base.org');
 
 export const publicClient = createPublicClient({
   chain,

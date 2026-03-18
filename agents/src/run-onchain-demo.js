@@ -102,6 +102,7 @@ async function main() {
     value: fundAmount,
   });
   await publicClient.waitForTransactionReceipt({ hash: fundTx });
+  await new Promise(r => setTimeout(r, 5000)); // Wait for RPC nonce sync
   const sellerBalance = await publicClient.getBalance({ address: sellerAddress });
   console.log(`   ✅ Seller funded! Balance: ${formatEther(sellerBalance)} ETH`);
   console.log(`   Tx: ${fundTx}\n`);
@@ -125,19 +126,17 @@ async function main() {
       value: parseEther(template.reward),
     });
     const postReceipt = await publicClient.waitForTransactionReceipt({ hash: postHash });
-    // Read task count after receipt confirmed (includes the newly posted task)
-    await new Promise(r => setTimeout(r, 1000)); // Wait for RPC state sync
-    const taskCount = await publicClient.readContract({
-      ...CONTRACTS.serviceBoard,
-      functionName: 'nextTaskId',
-    });
-    const taskId = Number(taskCount) - 1;
-    if (taskId < 0) throw new Error(`Unexpected taskId ${taskId} from nextTaskId=${taskCount}`);
+    // Extract taskId from TaskPosted event log (indexed param in topics[1])
+    const taskPostedLog = postReceipt.logs.find(
+      log => log.address.toLowerCase() === CONTRACTS.serviceBoard.address.toLowerCase()
+    );
+    if (!taskPostedLog) throw new Error('TaskPosted event not found in receipt');
+    const taskId = Number(BigInt(taskPostedLog.topics[1]));
     console.log(`   ✅ Task #${taskId} posted! Gas: ${postReceipt.gasUsed}`);
     console.log(`   Tx: ${postHash}`);
 
     // Small delay for chain
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 5000));
 
     // 2. SELLER claims task
     console.log(`\n🔧 [SELLER] Claiming task #${taskId}...`);
@@ -150,7 +149,7 @@ async function main() {
     console.log(`   ✅ Claimed! Gas: ${claimReceipt.gasUsed}`);
     console.log(`   Tx: ${claimHash}`);
 
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 5000));
 
     // 3. SELLER executes work and delivers
     console.log(`\n🔧 [SELLER] Executing ${template.taskType} work...`);
@@ -167,7 +166,7 @@ async function main() {
     console.log(`   ✅ Delivered! Gas: ${deliverReceipt.gasUsed}`);
     console.log(`   Tx: ${deliverHash}`);
 
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 5000));
 
     // 4. BUYER verifies and confirms delivery
     console.log(`\n🛒 [BUYER] Verifying delivery...`);

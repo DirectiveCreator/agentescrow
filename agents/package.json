@@ -7,13 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "x402:server": "node src/x402/server.js",
     "x402:client": "node src/x402/client.js",
-    "x402:demo": "node src/x402/demo.js"
+    "x402:demo": "node src/x402/demo.js",
+    "openserv": "node src/openserv/agent.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@openserv-labs/sdk": "^2.4.1",
     "@x402/core": "^2.7.0",
     "@x402/evm": "^2.7.0",
     "@x402/express": "^2.7.0",

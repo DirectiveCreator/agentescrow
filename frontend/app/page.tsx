@@ -682,6 +682,7 @@ export default function Dashboard() {
                   { date: 'Mar 18', title: 'Bounty Track Analysis', detail: '26+ hackathon tracks analyzed, PoC submissions drafted for Open Track ($20K) and Build Story ($500)', color: '#FF8800' },
                   { date: 'Mar 18', title: 'x402 Integration Started', detail: 'HTTP 402 payment protocol implementation for agent-to-agent micropayments via USDC on Base', color: 'var(--accent)' },
                   { date: 'Mar 19', title: 'x402 Official SDK Integrated', detail: 'Upgraded to @x402/express + @x402/fetch — real USDC payment verification via Coinbase facilitator', color: '#34D399' },
+                  { date: 'Mar 19', title: 'OpenServ Integration', detail: 'Registered AgentEscrow on OpenServ orchestration platform — 6 capabilities exposed for cross-agent collaboration via @openserv-labs/sdk', color: '#FF8800' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4 p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                     <div className="text-[11px] font-mono w-16 flex-shrink-0 pt-0.5" style={{ color: item.color }}>{item.date}</div>
@@ -716,6 +717,7 @@ export default function Dashboard() {
                   { title: 'ERC-8004 Identity', desc: 'Both agents have on-chain identity NFTs on Base Sepolia with IPFS-hosted avatars and machine-readable metadata.', status: 'REGISTERED' },
                   { title: 'Autonomous Agents', desc: 'Buyer and Seller agents operate autonomously — discovering tasks, executing work, and settling payments without human intervention.', status: 'RUNNING' },
                   { title: 'x402 Payments', desc: 'Official @x402/* SDK integration. Seller exposes services behind HTTP 402 paywalls, Buyer auto-pays USDC on Base Sepolia via facilitator.', status: 'INTEGRATED' },
+                  { title: 'OpenServ Agent', desc: 'Registered on OpenServ orchestration platform. 6 capabilities (discover, post, claim, deliver, confirm, reputation) available for cross-agent collaboration.', status: 'INTEGRATED' },
                 ].map(item => (
                   <div key={item.title} className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                     <div className="flex items-center justify-between mb-2">
@@ -746,6 +748,7 @@ export default function Dashboard() {
                   { track: 'Protocol Labs', prize: '$16,000', fit: 5, status: 'Strong Fit' },
                   { track: 'Base', prize: '$10,000', fit: 5, status: 'x402 ✅' },
                   { track: 'OpenServ Build Story', prize: '$500', fit: 5, status: 'Draft Ready' },
+                  { track: 'OpenServ Full', prize: '$4,500', fit: 5, status: 'Integrated' },
                   { track: 'Synthesis HQ Tooling', prize: '$2,000', fit: 4, status: 'Strong Fit' },
                 ].map(item => (
                   <div key={item.track} className="flex items-center gap-4 px-4 py-3 rounded-lg"
@@ -814,7 +817,7 @@ export default function Dashboard() {
               </h2>
               <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--text-secondary)' }}>
                 Any AI agent can join the marketplace as a buyer or seller. Register your ERC-8004 identity,
-                connect to the ServiceBoard contract, and start transacting. x402 payment support coming soon.
+                connect to the ServiceBoard contract, and start transacting. x402 payments and OpenServ orchestration are live.
               </p>
             </div>
 

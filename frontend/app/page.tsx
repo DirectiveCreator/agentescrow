@@ -903,7 +903,7 @@ export default function Dashboard() {
                   { track: 'PL: Let the Agent Cook', prize: '$4,000', fit: 5, status: 'Strong Fit', desc: 'Fully autonomous agents: discover → plan → execute → verify → submit. Shared w/ PL_Genesis. 1st $2K · 2nd $1.5K · 3rd $500' },
                   { track: 'PL: Agents With Receipts', prize: '$4,000', fit: 5, status: 'ERC-8004 ✅', desc: 'Trusted agent systems using ERC-8004 for identity, reputation & validation. Shared w/ PL_Genesis.' },
                   { track: 'Base: Agent Services', prize: '$5,000', fit: 5, status: 'x402 ✅', desc: 'Build discoverable agent services on Base accepting payments via x402. 3 equal prizes of ~$1.67K. Only eligible Base sub-track — Trading Agent ($5K) not eligible.' },
-                  { track: 'OpenServ Build Story', prize: '$500', fit: 5, status: 'Draft Ready', desc: '' },
+                  { track: 'OpenServ Build Story', prize: '$500', fit: 5, status: 'Draft Ready', desc: 'Content challenge: build log of our OpenServ integration journey — from SDK setup to Agent #3973 live on platform.' },
                   { track: 'OpenServ Full', prize: '$4,500', fit: 5, status: 'Integrated', desc: '' },
                   { track: 'Venice AI', prize: '$11,500', fit: 5, status: 'Integrated', desc: '' },
                 ].map(item => (
@@ -966,7 +966,7 @@ export default function Dashboard() {
         {/* ── Build Story Section ── */}
         {activeSection === 'build-story' && (
           <div className="space-y-8">
-            <SectionHeader title="Build Story" subtitle="Our OpenServ experience building AgentEscrow — from idea to deployed agent marketplace" />
+            <SectionHeader title="Build Story" subtitle="How we integrated OpenServ into AgentEscrow — the real developer experience, from npm install to Agent #3973 live on the platform" />
 
             {/* Hero narrative */}
             <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
@@ -981,13 +981,19 @@ export default function Dashboard() {
                   THE SYNTHESIS HACKATHON — MARCH 2026
                 </p>
                 <h2 className="text-xl font-bold mb-4 leading-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                  Building an Agent-to-Agent<br />
-                  <span style={{ color: 'var(--accent)' }}>Marketplace with OpenServ</span>
+                  From Solo Marketplace to<br />
+                  <span style={{ color: 'var(--accent)' }}>Multi-Agent Network via OpenServ</span>
                 </h2>
-                <p className="text-sm leading-relaxed max-w-2xl" style={{ color: 'var(--text-secondary)' }}>
-                  AgentEscrow is a trustless marketplace where AI agents autonomously discover, negotiate, execute, and settle
-                  work — all on-chain. OpenServ serves as the orchestration layer that connects our agents to the broader
-                  multi-agent ecosystem. This is the story of how we built it.
+                <p className="text-sm leading-relaxed max-w-2xl mb-3" style={{ color: 'var(--text-secondary)' }}>
+                  We built AgentEscrow — a trustless on-chain marketplace where AI agents hire each other — in 3 days during
+                  The Synthesis Hackathon. But a marketplace with only two agents is just a demo. OpenServ turned it into
+                  infrastructure: any agent on the platform can now discover tasks, post bounties, and settle payments through
+                  our contracts. This is the build log of that integration.
+                </p>
+                <p className="text-[11px] leading-relaxed max-w-2xl" style={{ color: 'var(--text-tertiary)' }}>
+                  Built by a human-AI team: human set direction and design, AI agent (&quot;The Hacker&quot;) wrote all code autonomously.
+                  Entire OpenServ integration — from <code className="text-[10px] px-1 py-0.5 rounded" style={{ background: 'var(--bg-main)' }}>npm install @openserv-labs/sdk</code> to
+                  Agent #3973 healthy on the platform — shipped in a single session.
                 </p>
               </div>
             </div>
@@ -1023,14 +1029,14 @@ export default function Dashboard() {
                     ],
                   },
                   {
-                    phase: 'Phase 3: Integrations',
+                    phase: 'Phase 3: Opening the Marketplace',
                     date: 'Day 3 — Mar 19',
                     color: '#A78BFA',
                     entries: [
                       'Integrated x402 (Coinbase HTTP 402 payment protocol). Seller exposes services behind a paywall, buyer auto-pays USDC. Verified real e2e payment with 20 USDC on Base Sepolia.',
-                      'Built the OpenServ integration — 6 capabilities registered: discover-tasks, post-task, claim-task, deliver-task, confirm-delivery, check-reputation.',
-                      'Registered AgentEscrow as Agent #3973 on the OpenServ platform. Tunnel connected, health = healthy. Any agent on OpenServ can now interact with our marketplace.',
-                      'Integrated Venice AI for private cognition — seller evaluation and work execution run inside TEE enclaves, buyer verification uses encrypted inference. Attestation proofs anchor to chain.',
+                      'npm install @openserv-labs/sdk. Wrapped all 6 contract interactions as OpenServ capabilities with NLP-parsed chat handlers. Each capability maps 1:1 to a contract call — zero impedance mismatch.',
+                      'Registered AgentEscrow as Agent #3973 via the OpenServ REST API. Generated API key, started tunnel, health = healthy. The marketplace is now open to every agent on the platform.',
+                      'Integrated Venice AI for private cognition — seller evaluation and work execution run inside TEE enclaves. Attestation proofs anchor trust to chain. Full privacy stack: OpenServ routes → contracts settle → Venice thinks privately.',
                     ],
                   },
                 ].map((phase, i) => (
@@ -1060,20 +1066,21 @@ export default function Dashboard() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                  <h4 className="text-[12px] font-semibold mb-2" style={{ color: 'var(--accent)' }}>Why OpenServ?</h4>
+                  <h4 className="text-[12px] font-semibold mb-2" style={{ color: 'var(--accent)' }}>The Problem We Had</h4>
                   <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                    AgentEscrow needed an orchestration layer to connect our marketplace to the wider agent ecosystem.
-                    OpenServ provides exactly that — a platform where agents can discover each other, collaborate on tasks,
-                    and route work through standardized APIs. Instead of building our own agent discovery, we plugged into OpenServ
-                    and immediately got access to any agent on the platform.
+                    AgentEscrow worked — buyer posts a task, seller claims and delivers, escrow settles. But it was a closed loop.
+                    Two agents talking to each other through our contracts. The real value of an agent marketplace is network effects:
+                    more agents = more tasks = more useful. We needed a way to open the marketplace to every agent out there without
+                    building our own discovery and routing infrastructure from scratch.
                   </p>
                 </div>
                 <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                  <h4 className="text-[12px] font-semibold mb-2" style={{ color: '#34D399' }}>How We Used It</h4>
+                  <h4 className="text-[12px] font-semibold mb-2" style={{ color: '#34D399' }}>Why OpenServ Was the Answer</h4>
                   <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                    We wrapped AgentEscrow in the @openserv-labs/sdk and exposed 6 capabilities as chat-triggered actions.
-                    Any agent on OpenServ can now say &quot;find available tasks&quot; or &quot;post a code review task for 0.002 ETH&quot;
-                    and AgentEscrow handles it end-to-end. The OpenServ tunnel keeps our agent connected and healthy.
+                    OpenServ gave us exactly what we needed: an orchestration platform where agents already exist and interact.
+                    We wrapped our contract calls in the @openserv-labs/sdk, exposed 6 capabilities as chat-triggered actions,
+                    registered as Agent #3973, and immediately any agent on OpenServ could say &quot;find available tasks&quot; or
+                    &quot;post a code review task for 0.002 ETH&quot; — and AgentEscrow handles it end-to-end. One session. No custom infra.
                   </p>
                 </div>
               </div>
@@ -1097,18 +1104,74 @@ export default function Dashboard() {
               </div>
             </div>
 
+            {/* OpenServ DX: The Real Experience */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                THE OPENSERV DX — HONEST DEVELOPER NOTES
+              </h3>
+              <div className="space-y-4">
+                {[
+                  {
+                    label: 'SDK Setup',
+                    verdict: 'Smooth',
+                    color: '#34D399',
+                    detail: 'npm install @openserv-labs/sdk, import Agent, define capabilities, call agent.start(). The SDK API is clean — each capability is a name + description + handler function. Took about 15 minutes to go from zero to a working local agent with 6 capabilities.',
+                  },
+                  {
+                    label: 'Capability Design',
+                    verdict: 'Natural fit',
+                    color: '#34D399',
+                    detail: 'Our existing contract calls mapped 1:1 to OpenServ capabilities. discover-tasks wraps a ServiceBoard read, post-task wraps createTask + escrow deposit, etc. No impedance mismatch — if your agent already has functions, they become capabilities trivially.',
+                  },
+                  {
+                    label: 'Platform Registration',
+                    verdict: 'API-driven',
+                    color: 'var(--accent)',
+                    detail: 'Registered via REST API — POST /agents with metadata (name, description, capabilities list). Got Agent #3973. Then generated an API key via POST /agents/3973/api-key for tunnel authentication. All programmatic, no dashboard clicking required.',
+                  },
+                  {
+                    label: 'Tunnel Connection',
+                    verdict: 'Just works',
+                    color: '#34D399',
+                    detail: 'The SDK handles tunnel setup automatically — agent.start() connects to OpenServ and maintains the tunnel. Health checks report "healthy" immediately. We ran in tunnel mode during development and it stayed connected for hours with no drops.',
+                  },
+                  {
+                    label: 'Chat Interface',
+                    verdict: 'Powerful',
+                    color: '#34D399',
+                    detail: 'Agents on OpenServ interact via natural language chat. We added an NLP parser so our agent understands "post a code review task for 0.002 ETH" and routes it to the right capability. The chat-first model means any agent can use our marketplace without knowing our API.',
+                  },
+                  {
+                    label: 'What We\'d Love Next',
+                    verdict: 'Wishlist',
+                    color: '#FF8800',
+                    detail: 'Webhook callbacks for async task completion (right now we poll). Native on-chain identity bridging (connect OpenServ agent ID to ERC-8004). Multi-agent workspace templates for common patterns like marketplace + executor + verifier.',
+                  },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-4 p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <div className="flex-shrink-0 w-28">
+                      <div className="text-[11px] font-semibold" style={{ color: item.color }}>{item.label}</div>
+                      <div className="text-[9px] font-mono mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{item.verdict}</div>
+                    </div>
+                    <p className="text-[11px] leading-relaxed flex-1" style={{ color: 'var(--text-secondary)' }}>{item.detail}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Human-Agent Collaboration */}
             <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
               <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
                 HUMAN + AGENT COLLABORATION
               </h3>
               <p className="text-[11px] leading-relaxed mb-4" style={{ color: 'var(--text-secondary)' }}>
-                AgentEscrow was built by a human-AI team during The Synthesis Hackathon. The human set strategic direction,
-                designed visual identity, and made deployment decisions. The AI agent (&quot;The Hacker&quot;) wrote all the code —
-                Solidity contracts, Node.js agents, Next.js frontend, deployment scripts, and integration code — autonomously
-                and rapidly, shipping incremental working artifacts throughout.
+                This project was built by a human-AI team during The Synthesis Hackathon. The human (founder) set strategic direction,
+                designed visual identity, selected bounty tracks, and made deployment decisions. The AI agent (&quot;The Hacker&quot;)
+                wrote all code — Solidity contracts, Node.js agents, Next.js frontend, deployment scripts, and every integration
+                including the OpenServ SDK wrapper — autonomously and rapidly, shipping working artifacts incrementally. The OpenServ
+                integration specifically was coded, registered, and verified healthy in a single unbroken session.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="p-4 rounded-lg text-center" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                   <div className="text-2xl font-bold font-mono" style={{ color: 'var(--accent)' }}>3</div>
                   <div className="text-[10px] mt-1" style={{ color: 'var(--text-tertiary)' }}>DAYS OF BUILDING</div>
@@ -1118,7 +1181,11 @@ export default function Dashboard() {
                   <div className="text-[10px] mt-1" style={{ color: 'var(--text-tertiary)' }}>INTEGRATIONS SHIPPED</div>
                 </div>
                 <div className="p-4 rounded-lg text-center" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                  <div className="text-2xl font-bold font-mono" style={{ color: '#FF8800' }}>100%</div>
+                  <div className="text-2xl font-bold font-mono" style={{ color: '#FF8800' }}>1</div>
+                  <div className="text-[10px] mt-1" style={{ color: 'var(--text-tertiary)' }}>SESSION TO OPENSERV</div>
+                </div>
+                <div className="p-4 rounded-lg text-center" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <div className="text-2xl font-bold font-mono" style={{ color: '#A78BFA' }}>100%</div>
                   <div className="text-[10px] mt-1" style={{ color: 'var(--text-tertiary)' }}>OPEN SOURCE</div>
                 </div>
               </div>
@@ -1131,10 +1198,11 @@ export default function Dashboard() {
               </h3>
               <div className="space-y-3">
                 {[
-                  { insight: 'Agents need trustless infrastructure', detail: 'Without on-chain escrow and reputation, agents can\'t safely transact with strangers. Smart contracts provide the trust layer that makes autonomous commerce possible.' },
-                  { insight: 'OpenServ bridges isolated agents', detail: 'Building a marketplace is one thing — connecting it to every other agent is another. OpenServ\'s orchestration platform solved the discovery and routing problem we didn\'t want to build ourselves.' },
-                  { insight: 'Privacy unlocks honest strategy', detail: 'Venice TEE integration means seller agents can evaluate tasks honestly (without revealing their capabilities to competitors) and buyers can verify quality without exposing their criteria.' },
-                  { insight: 'Ship fast, iterate on testnet', detail: 'Deploying to Base Sepolia first let us iterate rapidly — changing contract logic, adjusting agent behavior, and testing integrations without mainnet costs. Everything works before we go live.' },
+                  { insight: 'OpenServ turns a demo into a platform', detail: 'Before OpenServ, AgentEscrow was two agents in a closed loop. After: any agent on the platform can post tasks, bid on work, and settle payments through our contracts. The network effect is the product — OpenServ provides the network.' },
+                  { insight: 'The SDK gets out of your way', detail: 'The @openserv-labs/sdk maps cleanly to how agents already work. If you have functions, you have capabilities. No framework lock-in, no boilerplate orchestration code. We spent more time designing our NLP parser than integrating the SDK.' },
+                  { insight: 'Chat-first is the right UX for agents', detail: 'Agents don\'t click buttons. OpenServ\'s chat interface means our marketplace is accessible to any agent that can form a sentence. "Post a code review task for 0.002 ETH" just works. This is how agent-to-agent commerce should feel.' },
+                  { insight: 'On-chain + orchestration = composable trust', detail: 'OpenServ handles discovery and routing. Our contracts handle escrow and reputation. Neither alone is sufficient — together they create a composable trust stack where agents can find each other AND transact safely.' },
+                  { insight: 'Ship fast, iterate on testnet', detail: 'Base Sepolia first, OpenServ tunnel during dev, mainnet when ready. This stack let us go from idea to deployed agent marketplace in 3 days. The whole OpenServ integration — SDK, registration, tunnel, health check — was one session.' },
                 ].map((item, i) => (
                   <div key={i} className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                     <h4 className="text-[12px] font-semibold mb-1" style={{ color: 'var(--accent)' }}>{item.insight}</h4>

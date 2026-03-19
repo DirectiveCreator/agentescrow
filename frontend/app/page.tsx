@@ -681,6 +681,7 @@ export default function Dashboard() {
                   { date: 'Mar 18', title: 'Frontend Deployed', detail: 'Live dashboard at agentescrow.onrender.com — accessible for demo and judging', color: '#34D399' },
                   { date: 'Mar 18', title: 'Bounty Track Analysis', detail: '26+ hackathon tracks analyzed, PoC submissions drafted for Open Track ($20K) and Build Story ($500)', color: '#FF8800' },
                   { date: 'Mar 18', title: 'x402 Integration Started', detail: 'HTTP 402 payment protocol implementation for agent-to-agent micropayments via USDC on Base', color: 'var(--accent)' },
+                  { date: 'Mar 19', title: 'x402 Official SDK Integrated', detail: 'Upgraded to @x402/express + @x402/fetch — real USDC payment verification via Coinbase facilitator', color: '#34D399' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4 p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                     <div className="text-[11px] font-mono w-16 flex-shrink-0 pt-0.5" style={{ color: item.color }}>{item.date}</div>
@@ -714,16 +715,16 @@ export default function Dashboard() {
                   { title: 'Reputation System', desc: 'On-chain trust scores computed from task history. Agents build verifiable reputation that persists across interactions.', status: 'DEPLOYED' },
                   { title: 'ERC-8004 Identity', desc: 'Both agents have on-chain identity NFTs on Base Sepolia with IPFS-hosted avatars and machine-readable metadata.', status: 'REGISTERED' },
                   { title: 'Autonomous Agents', desc: 'Buyer and Seller agents operate autonomously — discovering tasks, executing work, and settling payments without human intervention.', status: 'RUNNING' },
-                  { title: 'x402 Payments', desc: 'HTTP 402 payment protocol enabling agent-to-agent micropayments via USDC. Sellers expose services behind x402 paywalls.', status: 'IN PROGRESS' },
+                  { title: 'x402 Payments', desc: 'Official @x402/* SDK integration. Seller exposes services behind HTTP 402 paywalls, Buyer auto-pays USDC on Base Sepolia via facilitator.', status: 'INTEGRATED' },
                 ].map(item => (
                   <div key={item.title} className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="text-[12px] font-semibold" style={{ color: 'var(--accent)' }}>{item.title}</h4>
                       <span className="text-[9px] px-1.5 py-0.5 rounded font-semibold tracking-wider"
                             style={{
-                              background: item.status === 'IN PROGRESS' ? '#FF880015' : '#34D39915',
-                              color: item.status === 'IN PROGRESS' ? '#FF8800' : '#34D399',
-                              border: `1px solid ${item.status === 'IN PROGRESS' ? '#FF880040' : '#34D39940'}`,
+                              background: item.status === 'IN PROGRESS' ? '#FF880015' : item.status === 'INTEGRATED' ? '#818CF815' : '#34D39915',
+                              color: item.status === 'IN PROGRESS' ? '#FF8800' : item.status === 'INTEGRATED' ? '#818CF8' : '#34D399',
+                              border: `1px solid ${item.status === 'IN PROGRESS' ? '#FF880040' : item.status === 'INTEGRATED' ? '#818CF840' : '#34D39940'}`,
                             }}>
                         {item.status}
                       </span>
@@ -743,7 +744,7 @@ export default function Dashboard() {
                 {[
                   { track: 'Open Track', prize: '$20,000', fit: 5, status: 'Draft Ready' },
                   { track: 'Protocol Labs', prize: '$16,000', fit: 5, status: 'Strong Fit' },
-                  { track: 'Base', prize: '$10,000', fit: 4, status: 'x402 Needed' },
+                  { track: 'Base', prize: '$10,000', fit: 5, status: 'x402 ✅' },
                   { track: 'OpenServ Build Story', prize: '$500', fit: 5, status: 'Draft Ready' },
                   { track: 'Synthesis HQ Tooling', prize: '$2,000', fit: 4, status: 'Strong Fit' },
                 ].map(item => (

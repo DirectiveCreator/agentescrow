@@ -1,210 +1,113 @@
 /**
  * x402 Payment Server for AgentEscrow Seller Agent
  *
- * Exposes seller agent services behind HTTP 402 paywalls.
- * Buyers pay per-request in USDC on Base via the x402 protocol.
+ * Uses the official Coinbase @x402/* SDK to expose seller services
+ * behind real HTTP 402 paywalls with on-chain USDC payment verification.
  *
  * Flow:
  * 1. Buyer sends GET /services/:type
- * 2. Server responds 402 with payment requirements
- * 3. Buyer signs USDC payment and retries with X-PAYMENT header
- * 4. Server verifies payment and executes the task
+ * 2. Middleware responds 402 with payment requirements
+ * 3. Buyer signs USDC transfer and retries with PAYMENT-SIGNATURE header
+ * 4. Facilitator verifies payment on-chain, server executes task
  *
  * @see https://www.x402.org/
  * @see https://docs.cdp.coinbase.com/x402/welcome
  */
 
-import http from 'http';
-import { createHash } from 'crypto';
+import express from 'express';
+import { paymentMiddleware, x402ResourceServer } from '@x402/express';
+import { ExactEvmScheme } from '@x402/evm/exact/server';
+import { HTTPFacilitatorClient } from '@x402/core/server';
 import { executeTask } from '../tasks.js';
 
 // ─── Configuration ──────────────────────────────────────────────────────────
 
 const PORT = process.env.X402_PORT || 4020;
-
-// USDC on Base Sepolia
-const USDC_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e'; // Base Sepolia USDC
 const SELLER_ADDRESS = process.env.SELLER_ADDRESS || '0xC07b695eC19DE38f1e62e825585B2818077B96cC';
 
-// Service pricing in USDC (6 decimals)
-const SERVICE_PRICES = {
-  text_summary: '10000',     // $0.01 USDC
-  code_review: '50000',      // $0.05 USDC
-  name_generation: '5000',   // $0.005 USDC
-  translation: '20000',      // $0.02 USDC
-};
-
-// x402 facilitator endpoint (Coinbase hosted)
+// x402 facilitator (testnet = no signup required)
 const FACILITATOR_URL = 'https://x402.org/facilitator';
 
-// ─── Payment Verification ───────────────────────────────────────────────────
+// Base Sepolia network (CAIP-2 format)
+const NETWORK = 'eip155:84532';
 
-/**
- * Verify x402 payment from request headers.
- * In production, this calls the facilitator's /verify endpoint.
- * For the hackathon demo, we accept payments with valid structure.
- */
-function verifyPayment(paymentHeader, requiredAmount, taskType) {
-  if (!paymentHeader) return { valid: false, reason: 'No payment header' };
+// Service pricing in USD (x402 SDK handles USDC conversion)
+const SERVICE_PRICES = {
+  text_summary:    '$0.01',
+  code_review:     '$0.05',
+  name_generation: '$0.005',
+  translation:     '$0.02',
+};
 
-  try {
-    // Decode the payment payload
-    const payment = JSON.parse(Buffer.from(paymentHeader, 'base64').toString());
+// ─── x402 Resource Server Setup ─────────────────────────────────────────────
 
-    // Validate payment structure
-    if (!payment.signature || !payment.amount || !payment.token) {
-      return { valid: false, reason: 'Invalid payment structure' };
-    }
+const facilitatorClient = new HTTPFacilitatorClient({ url: FACILITATOR_URL });
+const resourceServer = new x402ResourceServer(facilitatorClient)
+  .register(NETWORK, new ExactEvmScheme());
 
-    // Check amount meets minimum
-    if (BigInt(payment.amount) < BigInt(requiredAmount)) {
-      return { valid: false, reason: `Insufficient payment: ${payment.amount} < ${requiredAmount}` };
-    }
+// ─── Express App ────────────────────────────────────────────────────────────
 
-    // Check token is USDC
-    if (payment.token.toLowerCase() !== USDC_ADDRESS.toLowerCase()) {
-      return { valid: false, reason: 'Wrong payment token — USDC required' };
-    }
+const app = express();
 
-    // In production: call facilitator to verify on-chain
-    // For hackathon demo: accept structurally valid payments
-    console.log(`  ✅ Payment verified: ${payment.amount} USDC for ${taskType}`);
-    return { valid: true, payment };
-  } catch (err) {
-    return { valid: false, reason: `Payment decode error: ${err.message}` };
-  }
-}
+// CORS for browser/agent access
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'PAYMENT-SIGNATURE, Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
 
-/**
- * Generate the 402 payment requirement response.
- * This tells the buyer exactly what to pay and how.
- */
-function getPaymentRequired(taskType) {
-  const price = SERVICE_PRICES[taskType] || SERVICE_PRICES.text_summary;
-
-  return {
-    'x402Version': 1,
-    'accepts': [{
+// Build payment route config from SERVICE_PRICES
+const paymentRoutes = {};
+for (const [taskType, price] of Object.entries(SERVICE_PRICES)) {
+  paymentRoutes[`GET /services/${taskType}`] = {
+    accepts: [{
       scheme: 'exact',
-      network: 'base-sepolia',
-      maxAmountRequired: price,
-      resource: `agentescrow:${taskType}`,
-      description: `AgentEscrow ${taskType.replace('_', ' ')} service`,
-      mimeType: 'application/json',
+      price,
+      network: NETWORK,
       payTo: SELLER_ADDRESS,
-      extra: {
-        name: 'AgentEscrow Seller',
-        erc8004AgentId: 2195,
-        reputationScore: 100,
-        facilitatorUrl: FACILITATOR_URL,
-      }
     }],
-    'token': {
-      address: USDC_ADDRESS,
-      symbol: 'USDC',
-      decimals: 6,
-      network: 'base-sepolia',
-    }
+    description: `AgentEscrow ${taskType.replace(/_/g, ' ')} service`,
+    mimeType: 'application/json',
   };
 }
 
-// ─── HTTP Server ────────────────────────────────────────────────────────────
+// x402 payment middleware — handles 402 responses + payment verification
+app.use(paymentMiddleware(paymentRoutes, resourceServer));
 
-const server = http.createServer(async (req, res) => {
-  // CORS headers for browser/agent access
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'X-PAYMENT, Content-Type');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+// ─── Service Discovery (free endpoint) ─────────────────────────────────────
 
-  if (req.method === 'OPTIONS') {
-    res.writeHead(204);
-    res.end();
-    return;
-  }
+app.get('/services', (req, res) => {
+  const services = Object.entries(SERVICE_PRICES).map(([type, price]) => ({
+    type,
+    price,
+    endpoint: `/services/${type}`,
+    paymentProtocol: 'x402',
+    network: 'base-sepolia',
+    seller: SELLER_ADDRESS,
+    erc8004AgentId: 2195,
+  }));
 
-  const url = new URL(req.url, `http://localhost:${PORT}`);
+  res.json({
+    services,
+    protocol: 'x402',
+    version: 1,
+    facilitator: FACILITATOR_URL,
+    network: NETWORK,
+  });
+});
 
-  // ── Service Discovery ──
-  // GET /services → list available services with x402 pricing
-  if (url.pathname === '/services' && req.method === 'GET') {
-    const services = Object.entries(SERVICE_PRICES).map(([type, price]) => ({
-      type,
-      price: `${(Number(price) / 1e6).toFixed(4)} USDC`,
-      priceRaw: price,
-      endpoint: `/services/${type}`,
-      paymentProtocol: 'x402',
-      network: 'base-sepolia',
-      seller: SELLER_ADDRESS,
-      erc8004AgentId: 2195,
-    }));
+// ─── Paid Service Endpoints ─────────────────────────────────────────────────
 
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ services, protocol: 'x402', version: 1 }));
-    return;
-  }
+for (const taskType of Object.keys(SERVICE_PRICES)) {
+  app.get(`/services/${taskType}`, (req, res) => {
+    const description = req.query.description || `x402 ${taskType} request`;
+    console.log(`\n✅ x402: Executing ${taskType} (payment verified by facilitator)`);
 
-  // ── Service Execution with x402 Payment ──
-  // GET /services/:taskType → 402 or execute with payment
-  const serviceMatch = url.pathname.match(/^\/services\/(\w+)$/);
-  if (serviceMatch && req.method === 'GET') {
-    const taskType = serviceMatch[1];
-
-    if (!SERVICE_PRICES[taskType]) {
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Unknown service type', available: Object.keys(SERVICE_PRICES) }));
-      return;
-    }
-
-    const paymentHeader = req.headers['x-payment'];
-
-    // No payment → respond with 402
-    if (!paymentHeader) {
-      const paymentRequired = getPaymentRequired(taskType);
-      console.log(`\n💰 x402: 402 Payment Required for ${taskType}`);
-
-      res.writeHead(402, {
-        'Content-Type': 'application/json',
-        'X-PAYMENT-REQUIRED': Buffer.from(JSON.stringify(paymentRequired)).toString('base64'),
-      });
-      res.end(JSON.stringify({
-        status: 402,
-        message: 'Payment Required',
-        ...paymentRequired,
-      }));
-      return;
-    }
-
-    // Payment present → verify and execute
-    const verification = verifyPayment(paymentHeader, SERVICE_PRICES[taskType], taskType);
-
-    if (!verification.valid) {
-      console.log(`\n❌ x402: Payment rejected for ${taskType}: ${verification.reason}`);
-      res.writeHead(402, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        status: 402,
-        error: verification.reason,
-        ...getPaymentRequired(taskType),
-      }));
-      return;
-    }
-
-    // Payment verified → execute task
-    console.log(`\n✅ x402: Executing ${taskType} (paid ${SERVICE_PRICES[taskType]} USDC)`);
-
-    const description = url.searchParams.get('description') || `x402 ${taskType} request`;
     const { result, hash } = executeTask(taskType, description);
 
-    res.writeHead(200, {
-      'Content-Type': 'application/json',
-      'X-PAYMENT-RECEIPT': JSON.stringify({
-        amount: SERVICE_PRICES[taskType],
-        token: USDC_ADDRESS,
-        taskType,
-        deliveryHash: hash,
-        timestamp: Date.now(),
-      }),
-    });
-    res.end(JSON.stringify({
+    res.json({
       status: 200,
       taskType,
       result,
@@ -212,50 +115,55 @@ const server = http.createServer(async (req, res) => {
       paidAmount: SERVICE_PRICES[taskType],
       seller: SELLER_ADDRESS,
       erc8004AgentId: 2195,
-    }));
-    return;
-  }
+    });
+  });
+}
 
-  // ── Health / Info ──
-  if (url.pathname === '/' || url.pathname === '/health') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      name: 'AgentEscrow Seller — x402 Payment Server',
-      version: '0.1.0',
-      protocol: 'x402',
-      network: 'base-sepolia',
-      seller: SELLER_ADDRESS,
-      erc8004AgentId: 2195,
-      endpoints: {
-        services: '/services',
-        health: '/health',
-      },
-      docs: 'https://github.com/DirectiveCreator/agentescrow',
-    }));
-    return;
-  }
+// ─── Health / Info ──────────────────────────────────────────────────────────
 
-  // ── 404 ──
-  res.writeHead(404, { 'Content-Type': 'application/json' });
-  res.end(JSON.stringify({ error: 'Not found', endpoints: ['/services', '/services/:type', '/health'] }));
+app.get(['/', '/health'], (req, res) => {
+  res.json({
+    name: 'AgentEscrow Seller — x402 Payment Server',
+    version: '0.2.0',
+    protocol: 'x402',
+    sdk: '@x402/express',
+    network: NETWORK,
+    facilitator: FACILITATOR_URL,
+    seller: SELLER_ADDRESS,
+    erc8004AgentId: 2195,
+    endpoints: {
+      services: '/services',
+      health: '/health',
+    },
+    docs: 'https://github.com/DirectiveCreator/agentescrow',
+  });
+});
+
+// ─── 404 ────────────────────────────────────────────────────────────────────
+
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Not found',
+    endpoints: ['/services', '/services/:type', '/health'],
+  });
 });
 
 // ─── Start Server ───────────────────────────────────────────────────────────
 
-server.listen(PORT, () => {
-  console.log(`\n🔐 x402 Payment Server started on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`\n🔐 x402 Payment Server v0.2.0 (Official SDK)`);
   console.log(`   Seller: ${SELLER_ADDRESS}`);
   console.log(`   ERC-8004: Agent #2195`);
-  console.log(`   Network: Base Sepolia`);
-  console.log(`   Token: USDC (${USDC_ADDRESS})`);
+  console.log(`   Network: ${NETWORK} (Base Sepolia)`);
+  console.log(`   Facilitator: ${FACILITATOR_URL}`);
   console.log(`\n   Endpoints:`);
-  console.log(`     GET /services          → List services + pricing`);
-  console.log(`     GET /services/:type    → 402 → pay → execute`);
+  console.log(`     GET /services          → List services + pricing (free)`);
+  console.log(`     GET /services/:type    → 402 → pay USDC → execute`);
   console.log(`     GET /health            → Server info`);
   console.log(`\n   Prices:`);
   Object.entries(SERVICE_PRICES).forEach(([type, price]) => {
-    console.log(`     ${type}: $${(Number(price) / 1e6).toFixed(4)} USDC`);
+    console.log(`     ${type}: ${price} USDC`);
   });
 });
 
-export { server, verifyPayment, getPaymentRequired, SERVICE_PRICES };
+export { app, SERVICE_PRICES };

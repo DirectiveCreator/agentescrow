@@ -4,14 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "x402:server": "node src/x402/server.js",
+    "x402:client": "node src/x402/client.js",
+    "x402:demo": "node src/x402/demo.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@x402/core": "^2.7.0",
+    "@x402/evm": "^2.7.0",
+    "@x402/express": "^2.7.0",
+    "@x402/fetch": "^2.7.0",
     "dotenv": "^17.3.1",
+    "ethers": "^5.8.0",
+    "express": "^5.2.1",
     "input": "^1.0.1",
     "telegram": "^2.26.22",
     "viem": "^2.47.4"

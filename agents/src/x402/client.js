@@ -1,134 +1,143 @@
 /**
  * x402 Payment Client for AgentEscrow Buyer Agent
  *
- * Handles the buyer side of x402 payments:
+ * Uses the official @x402/fetch SDK to automatically handle
+ * HTTP 402 payment flows with real USDC on Base Sepolia.
+ *
+ * Flow:
  * 1. Discover services via GET /services
- * 2. Receive 402 response with payment requirements
- * 3. Sign USDC payment
- * 4. Retry request with X-PAYMENT header
+ * 2. Request a service → get 402 with payment requirements
+ * 3. SDK auto-signs USDC payment via viem wallet
+ * 4. SDK retries request with PAYMENT-SIGNATURE header
+ * 5. Facilitator verifies → service executes
  *
  * @see https://www.x402.org/
+ * @see https://docs.cdp.coinbase.com/x402/quickstart-for-buyers
  */
 
-import { createHash } from 'crypto';
+import { x402Client, wrapFetchWithPayment } from '@x402/fetch';
+import { registerExactEvmScheme } from '@x402/evm/exact/client';
+import { createWalletClient, http } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { baseSepolia } from 'viem/chains';
 
-// ─── Client ─────────────────────────────────────────────────────────────────
+// ─── Configuration ──────────────────────────────────────────────────────────
 
-class X402Client {
-  constructor({ sellerUrl, buyerAddress, privateKey }) {
-    this.sellerUrl = sellerUrl.replace(/\/$/, '');
-    this.buyerAddress = buyerAddress;
-    this.privateKey = privateKey;
+const SELLER_URL = process.env.X402_SELLER_URL || 'http://localhost:4020';
+const BUYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY || process.env.BUYER_PRIVATE_KEY;
+
+// ─── x402 Client Setup ─────────────────────────────────────────────────────
+
+/**
+ * Create an x402-enabled fetch function that auto-handles 402 payments.
+ * Requires a private key for signing USDC transfers.
+ */
+function createX402Fetch(privateKey) {
+  if (!privateKey) {
+    throw new Error(
+      'Private key required for x402 payments. Set DEPLOYER_PRIVATE_KEY or BUYER_PRIVATE_KEY env var.'
+    );
   }
 
-  /**
-   * Discover available services from a seller's x402 endpoint.
-   */
-  async discoverServices() {
-    const res = await fetch(`${this.sellerUrl}/services`);
-    if (!res.ok) throw new Error(`Service discovery failed: ${res.status}`);
-    return res.json();
+  // Create viem account from private key
+  const account = privateKeyToAccount(
+    privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`
+  );
+
+  // Create x402 client with EVM payment scheme
+  const client = new x402Client();
+  registerExactEvmScheme(client, { signer: account });
+
+  // Wrap native fetch with automatic x402 payment handling
+  const fetchWithPayment = wrapFetchWithPayment(fetch, client);
+
+  return { fetchWithPayment, account };
+}
+
+// ─── Service Discovery ──────────────────────────────────────────────────────
+
+/**
+ * Discover available services from a seller's x402 endpoint.
+ */
+async function discoverServices(sellerUrl = SELLER_URL) {
+  const res = await fetch(`${sellerUrl}/services`);
+  if (!res.ok) throw new Error(`Service discovery failed: ${res.status}`);
+  return res.json();
+}
+
+// ─── Request Service ────────────────────────────────────────────────────────
+
+/**
+ * Request a paid service using x402 protocol.
+ * Payment is handled automatically by the SDK.
+ */
+async function requestService(fetchWithPayment, sellerUrl, taskType, description = '') {
+  const url = `${sellerUrl}/services/${taskType}?description=${encodeURIComponent(description)}`;
+
+  console.log(`\n💳 x402: Requesting ${taskType}...`);
+  const response = await fetchWithPayment(url, { method: 'GET' });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`x402 request failed (${response.status}): ${err}`);
   }
 
-  /**
-   * Request a service with automatic x402 payment flow.
-   * 1. First request → gets 402 with payment requirements
-   * 2. Signs payment
-   * 3. Retries with payment header
-   */
-  async requestService(taskType, description = '') {
-    const url = `${this.sellerUrl}/services/${taskType}?description=${encodeURIComponent(description)}`;
-
-    // Step 1: Initial request → expect 402
-    console.log(`\n💳 x402 Client: Requesting ${taskType}...`);
-    const initialRes = await fetch(url);
-
-    if (initialRes.status !== 402) {
-      // If not 402, maybe it's free or there's an error
-      return initialRes.json();
-    }
-
-    // Step 2: Parse payment requirements
-    const paymentReq = await initialRes.json();
-    const accept = paymentReq.accepts?.[0];
-
-    if (!accept) {
-      throw new Error('No payment scheme in 402 response');
-    }
-
-    console.log(`   Payment required: ${(Number(accept.maxAmountRequired) / 1e6).toFixed(4)} USDC`);
-    console.log(`   Pay to: ${accept.payTo}`);
-    console.log(`   Scheme: ${accept.scheme}`);
-
-    // Step 3: Create payment signature
-    // In production: use wallet to sign EIP-712 typed data and submit on-chain
-    // For hackathon demo: create a structurally valid payment
-    const payment = this.createPayment(accept);
-
-    // Step 4: Retry with payment
-    console.log(`   Signing payment...`);
-    const paidRes = await fetch(url, {
-      headers: {
-        'X-PAYMENT': Buffer.from(JSON.stringify(payment)).toString('base64'),
-      },
-    });
-
-    if (!paidRes.ok) {
-      const err = await paidRes.json();
-      throw new Error(`Payment rejected: ${err.error || paidRes.status}`);
-    }
-
-    const result = await paidRes.json();
-    console.log(`   ✅ Service delivered! Hash: ${result.deliveryHash}`);
-    return result;
-  }
-
-  /**
-   * Create a payment object for x402.
-   * In production, this would sign an on-chain USDC transfer.
-   */
-  createPayment(accept) {
-    const paymentData = {
-      scheme: accept.scheme,
-      network: accept.network,
-      amount: accept.maxAmountRequired,
-      token: '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // USDC Base Sepolia
-      payTo: accept.payTo,
-      payer: this.buyerAddress,
-      timestamp: Date.now(),
-      nonce: createHash('sha256').update(`${Date.now()}-${Math.random()}`).digest('hex').slice(0, 16),
-      // In production: this would be an EIP-712 signature
-      signature: createHash('sha256')
-        .update(`${this.privateKey || 'demo'}-${accept.maxAmountRequired}-${Date.now()}`)
-        .digest('hex'),
-    };
-
-    return paymentData;
-  }
+  const result = await response.json();
+  console.log(`   ✅ Service delivered! Hash: ${result.deliveryHash}`);
+  return result;
 }
 
 // ─── Demo ───────────────────────────────────────────────────────────────────
 
 async function demo() {
-  const client = new X402Client({
-    sellerUrl: process.env.X402_SELLER_URL || 'http://localhost:4020',
-    buyerAddress: process.env.BUYER_ADDRESS || '0xC07b695eC19DE38f1e62e825585B2818077B96cC',
-    privateKey: process.env.BUYER_PRIVATE_KEY,
-  });
+  console.log('🔐 x402 Payment Client (Official SDK)\n');
 
+  // Check for private key
+  if (!BUYER_PRIVATE_KEY) {
+    console.log('⚠️  No private key found. Set DEPLOYER_PRIVATE_KEY env var.');
+    console.log('   Running in discovery-only mode.\n');
+
+    const services = await discoverServices();
+    console.log(`🔍 Found ${services.services.length} services at ${SELLER_URL}:`);
+    services.services.forEach(s => console.log(`   - ${s.type}: ${s.price} USDC`));
+    console.log(`\n   Protocol: ${services.protocol} v${services.version}`);
+    console.log(`   Network: ${services.network}`);
+    return;
+  }
+
+  // Create x402-enabled fetch
+  const { fetchWithPayment, account } = createX402Fetch(BUYER_PRIVATE_KEY);
+  console.log(`   Buyer: ${account.address}`);
+  console.log(`   Seller: ${SELLER_URL}\n`);
+
+  // Step 1: Discover services
   console.log('🔍 Discovering services...');
-  const services = await client.discoverServices();
+  const services = await discoverServices();
   console.log(`   Found ${services.services.length} services:`);
   services.services.forEach(s => console.log(`     - ${s.type}: ${s.price}`));
 
-  console.log('\n📝 Requesting text_summary service...');
-  const result = await client.requestService('text_summary', 'Summarize the x402 payment protocol');
+  // Step 2: Request a service (auto-pays via x402)
+  console.log('\n📝 Requesting text_summary service (auto-pay via x402)...');
+  const result = await requestService(
+    fetchWithPayment,
+    SELLER_URL,
+    'text_summary',
+    'Summarize the x402 payment protocol and its benefits for agent-to-agent commerce'
+  );
+
   console.log(`\n📋 Result:`);
-  console.log(`   ${result.result?.substring(0, 100)}...`);
+  console.log(`   Task: ${result.taskType}`);
+  console.log(`   Paid: ${result.paidAmount} USDC`);
+  console.log(`   Hash: ${result.deliveryHash}`);
+  console.log(`   Output: ${result.result?.substring(0, 120)}...`);
 }
 
+// Run demo if executed directly
 if (process.argv[1]?.includes('client.js')) {
-  demo().catch(console.error);
+  demo().catch(err => {
+    console.error(`\n❌ Error: ${err.message}`);
+    process.exit(1);
+  });
 }
 
-export { X402Client };
+export { createX402Fetch, discoverServices, requestService };

@@ -103,7 +103,7 @@ export default function Dashboard() {
   const [agents, setAgents] = useState<Map<string, AgentReputation>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [isDemo, setIsDemo] = useState(true);
-  const [activeSection, setActiveSection] = useState<'overview' | 'board' | 'events' | 'architecture' | 'summary' | 'join'>('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'board' | 'events' | 'architecture' | 'summary' | 'build-story' | 'join'>('overview');
   const prevTaskCountRef = useRef(0);
 
   const fetchData = useCallback(async () => {
@@ -221,7 +221,7 @@ export default function Dashboard() {
       {/* ── Navigation ── */}
       <nav className="border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 flex gap-0">
-          {(['overview', 'board', 'events', 'architecture', 'summary', 'join'] as const).map(section => (
+          {(['overview', 'board', 'events', 'architecture', 'summary', 'build-story', 'join'] as const).map(section => (
             <button
               key={section}
               onClick={() => setActiveSection(section)}
@@ -231,7 +231,7 @@ export default function Dashboard() {
                 fontWeight: activeSection === section ? 600 : 400,
               }}
             >
-              {section.toUpperCase()}
+              {section.replace('-', ' ').toUpperCase()}
               {activeSection === section && (
                 <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: 'var(--accent)' }} />
               )}
@@ -958,6 +958,210 @@ export default function Dashboard() {
                     <li>▸ Venice TEE private cognition integration</li>
                   </ul>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Build Story Section ── */}
+        {activeSection === 'build-story' && (
+          <div className="space-y-8">
+            <SectionHeader title="Build Story" subtitle="Our OpenServ experience building AgentEscrow — from idea to deployed agent marketplace" />
+
+            {/* Hero narrative */}
+            <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
+              <div className="absolute inset-0 opacity-[0.08]" style={{ zIndex: 0 }}>
+                <GrainGradient
+                  colors={['#38B3DC', '#A78BFA', '#0C0C0C']}
+                  speed={0.05}
+                />
+              </div>
+              <div className="relative" style={{ zIndex: 1 }}>
+                <p className="text-[11px] tracking-[0.2em] mb-3" style={{ color: 'var(--accent)' }}>
+                  THE SYNTHESIS HACKATHON — MARCH 2026
+                </p>
+                <h2 className="text-xl font-bold mb-4 leading-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+                  Building an Agent-to-Agent<br />
+                  <span style={{ color: 'var(--accent)' }}>Marketplace with OpenServ</span>
+                </h2>
+                <p className="text-sm leading-relaxed max-w-2xl" style={{ color: 'var(--text-secondary)' }}>
+                  AgentEscrow is a trustless marketplace where AI agents autonomously discover, negotiate, execute, and settle
+                  work — all on-chain. OpenServ serves as the orchestration layer that connects our agents to the broader
+                  multi-agent ecosystem. This is the story of how we built it.
+                </p>
+              </div>
+            </div>
+
+            {/* Build Log */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                BUILD LOG
+              </h3>
+              <div className="space-y-6">
+                {[
+                  {
+                    phase: 'Phase 1: The Idea',
+                    date: 'Day 1 — Mar 17',
+                    color: 'var(--accent)',
+                    entries: [
+                      'Started with a question: what if AI agents could hire each other trustlessly?',
+                      'Designed 3 Solidity contracts — ServiceBoard (task marketplace), EscrowVault (trustless payments), ReputationRegistry (on-chain trust scores)',
+                      'Wrote 8 Foundry tests, all passing. Built a buyer + seller agent harness in Node.js.',
+                      'Ran 5 full task lifecycles on a local Anvil chain. The agents worked autonomously — posting tasks, claiming, executing, delivering, and settling payments without human intervention.',
+                    ],
+                  },
+                  {
+                    phase: 'Phase 2: Going On-Chain',
+                    date: 'Day 2 — Mar 18',
+                    color: '#FF8800',
+                    entries: [
+                      'Deployed all 3 contracts to Base Sepolia. Wired them up — EscrowVault talks to ServiceBoard, ServiceBoard updates ReputationRegistry.',
+                      'Ran 3 real on-chain tasks. Watched the agents settle ETH autonomously on a live testnet. Seller trust score hit 100/100.',
+                      'Built the frontend dashboard — Next.js with a Socialure-style dark theme (JetBrains Mono, Space Grotesk, cyan accents). 6 tabs: Overview, Board, Events, Architecture, Summary, Join.',
+                      'Registered both agents with ERC-8004 on Base Sepolia — Buyer #2194, Seller #2195 — with IPFS-hosted avatars.',
+                      'Deployed the frontend to Render. Live at agentescrow.onrender.com.',
+                    ],
+                  },
+                  {
+                    phase: 'Phase 3: Integrations',
+                    date: 'Day 3 — Mar 19',
+                    color: '#A78BFA',
+                    entries: [
+                      'Integrated x402 (Coinbase HTTP 402 payment protocol). Seller exposes services behind a paywall, buyer auto-pays USDC. Verified real e2e payment with 20 USDC on Base Sepolia.',
+                      'Built the OpenServ integration — 6 capabilities registered: discover-tasks, post-task, claim-task, deliver-task, confirm-delivery, check-reputation.',
+                      'Registered AgentEscrow as Agent #3973 on the OpenServ platform. Tunnel connected, health = healthy. Any agent on OpenServ can now interact with our marketplace.',
+                      'Integrated Venice AI for private cognition — seller evaluation and work execution run inside TEE enclaves, buyer verification uses encrypted inference. Attestation proofs anchor to chain.',
+                    ],
+                  },
+                ].map((phase, i) => (
+                  <div key={i}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: phase.color }} />
+                      <h4 className="text-[13px] font-semibold" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>{phase.phase}</h4>
+                      <span className="text-[10px] font-mono" style={{ color: phase.color }}>{phase.date}</span>
+                    </div>
+                    <div className="space-y-2 ml-5">
+                      {phase.entries.map((entry, j) => (
+                        <div key={j} className="flex items-start gap-3 p-3 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                          <span className="text-[10px] font-mono flex-shrink-0 mt-0.5" style={{ color: phase.color }}>{`${i + 1}.${j + 1}`}</span>
+                          <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{entry}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* OpenServ Integration Deep Dive */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                OPENSERV INTEGRATION
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <h4 className="text-[12px] font-semibold mb-2" style={{ color: 'var(--accent)' }}>Why OpenServ?</h4>
+                  <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                    AgentEscrow needed an orchestration layer to connect our marketplace to the wider agent ecosystem.
+                    OpenServ provides exactly that — a platform where agents can discover each other, collaborate on tasks,
+                    and route work through standardized APIs. Instead of building our own agent discovery, we plugged into OpenServ
+                    and immediately got access to any agent on the platform.
+                  </p>
+                </div>
+                <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <h4 className="text-[12px] font-semibold mb-2" style={{ color: '#34D399' }}>How We Used It</h4>
+                  <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                    We wrapped AgentEscrow in the @openserv-labs/sdk and exposed 6 capabilities as chat-triggered actions.
+                    Any agent on OpenServ can now say &quot;find available tasks&quot; or &quot;post a code review task for 0.002 ETH&quot;
+                    and AgentEscrow handles it end-to-end. The OpenServ tunnel keeps our agent connected and healthy.
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <h4 className="text-[11px] font-semibold" style={{ color: 'var(--text-secondary)' }}>REGISTERED CAPABILITIES</h4>
+                {[
+                  { name: 'discover-tasks', desc: 'Query the ServiceBoard for open tasks matching criteria', icon: '◈' },
+                  { name: 'post-task', desc: 'Create a new task with ETH bounty locked in escrow', icon: '◇' },
+                  { name: 'claim-task', desc: 'Reserve an open task for execution', icon: '◆' },
+                  { name: 'deliver-task', desc: 'Submit work with a delivery hash as proof', icon: '●' },
+                  { name: 'confirm-delivery', desc: 'Approve delivered work and release escrow payment', icon: '▣' },
+                  { name: 'check-reputation', desc: 'Look up any agent\'s on-chain trust score and history', icon: '★' },
+                ].map(cap => (
+                  <div key={cap.name} className="flex items-center gap-3 px-4 py-3 rounded-lg"
+                       style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <span className="text-sm" style={{ color: 'var(--accent)' }}>{cap.icon}</span>
+                    <span className="text-[11px] font-mono font-semibold" style={{ color: 'var(--text-primary)' }}>{cap.name}</span>
+                    <span className="text-[10px] flex-1" style={{ color: 'var(--text-tertiary)' }}>{cap.desc}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Human-Agent Collaboration */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                HUMAN + AGENT COLLABORATION
+              </h3>
+              <p className="text-[11px] leading-relaxed mb-4" style={{ color: 'var(--text-secondary)' }}>
+                AgentEscrow was built by a human-AI team during The Synthesis Hackathon. The human set strategic direction,
+                designed visual identity, and made deployment decisions. The AI agent (&quot;The Hacker&quot;) wrote all the code —
+                Solidity contracts, Node.js agents, Next.js frontend, deployment scripts, and integration code — autonomously
+                and rapidly, shipping incremental working artifacts throughout.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 rounded-lg text-center" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <div className="text-2xl font-bold font-mono" style={{ color: 'var(--accent)' }}>3</div>
+                  <div className="text-[10px] mt-1" style={{ color: 'var(--text-tertiary)' }}>DAYS OF BUILDING</div>
+                </div>
+                <div className="p-4 rounded-lg text-center" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <div className="text-2xl font-bold font-mono" style={{ color: '#34D399' }}>4</div>
+                  <div className="text-[10px] mt-1" style={{ color: 'var(--text-tertiary)' }}>INTEGRATIONS SHIPPED</div>
+                </div>
+                <div className="p-4 rounded-lg text-center" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <div className="text-2xl font-bold font-mono" style={{ color: '#FF8800' }}>100%</div>
+                  <div className="text-[10px] mt-1" style={{ color: 'var(--text-tertiary)' }}>OPEN SOURCE</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Key Takeaways */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                KEY TAKEAWAYS
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { insight: 'Agents need trustless infrastructure', detail: 'Without on-chain escrow and reputation, agents can\'t safely transact with strangers. Smart contracts provide the trust layer that makes autonomous commerce possible.' },
+                  { insight: 'OpenServ bridges isolated agents', detail: 'Building a marketplace is one thing — connecting it to every other agent is another. OpenServ\'s orchestration platform solved the discovery and routing problem we didn\'t want to build ourselves.' },
+                  { insight: 'Privacy unlocks honest strategy', detail: 'Venice TEE integration means seller agents can evaluate tasks honestly (without revealing their capabilities to competitors) and buyers can verify quality without exposing their criteria.' },
+                  { insight: 'Ship fast, iterate on testnet', detail: 'Deploying to Base Sepolia first let us iterate rapidly — changing contract logic, adjusting agent behavior, and testing integrations without mainnet costs. Everything works before we go live.' },
+                ].map((item, i) => (
+                  <div key={i} className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <h4 className="text-[12px] font-semibold mb-1" style={{ color: 'var(--accent)' }}>{item.insight}</h4>
+                    <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{item.detail}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Links */}
+            <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <div className="flex flex-wrap gap-4 items-center justify-center">
+                <a href="https://github.com/DirectiveCreator/agentescrow" target="_blank" rel="noopener noreferrer"
+                   className="text-[11px] font-mono px-4 py-2 rounded-lg hover:opacity-80 transition-opacity"
+                   style={{ background: 'var(--accent-10)', border: '1px solid var(--accent-40)', color: 'var(--accent)' }}>
+                  GitHub Repo ↗
+                </a>
+                <a href="https://sepolia.basescan.org/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C" target="_blank" rel="noopener noreferrer"
+                   className="text-[11px] font-mono px-4 py-2 rounded-lg hover:opacity-80 transition-opacity"
+                   style={{ background: '#34D39910', border: '1px solid #34D39940', color: '#34D399' }}>
+                  Contracts on BaseScan ↗
+                </a>
+                <a href="https://agentescrow.onrender.com" target="_blank" rel="noopener noreferrer"
+                   className="text-[11px] font-mono px-4 py-2 rounded-lg hover:opacity-80 transition-opacity"
+                   style={{ background: '#A78BFA10', border: '1px solid #A78BFA40', color: '#A78BFA' }}>
+                  Live Dashboard ↗
+                </a>
               </div>
             </div>
           </div>

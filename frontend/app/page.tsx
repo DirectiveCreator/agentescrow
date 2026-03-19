@@ -99,7 +99,7 @@ export default function Dashboard() {
   const [agents, setAgents] = useState<Map<string, AgentReputation>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [isDemo, setIsDemo] = useState(true);
-  const [activeSection, setActiveSection] = useState<'overview' | 'board' | 'events' | 'architecture'>('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'board' | 'events' | 'architecture' | 'summary' | 'join'>('overview');
   const prevTaskCountRef = useRef(0);
 
   const fetchData = useCallback(async () => {
@@ -217,7 +217,7 @@ export default function Dashboard() {
       {/* ── Navigation ── */}
       <nav className="border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 flex gap-0">
-          {(['overview', 'board', 'events', 'architecture'] as const).map(section => (
+          {(['overview', 'board', 'events', 'architecture', 'summary', 'join'] as const).map(section => (
             <button
               key={section}
               onClick={() => setActiveSection(section)}
@@ -660,6 +660,285 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* ── Summary Section ── */}
+        {activeSection === 'summary' && (
+          <div className="space-y-8">
+            <SectionHeader title="Hackathon Summary" subtitle="Overview of everything built during The Synthesis Hackathon" />
+
+            {/* Timeline */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                BUILD TIMELINE
+              </h3>
+              <div className="space-y-4">
+                {[
+                  { date: 'Mar 17', title: 'Smart Contracts Built', detail: '3 Solidity contracts (ServiceBoard, EscrowVault, ReputationRegistry) + 8 Foundry tests passing', color: 'var(--accent)' },
+                  { date: 'Mar 17', title: 'Agent Harness Created', detail: 'Buyer + Seller agents in Node.js with autonomous task lifecycle — post, claim, execute, deliver, confirm', color: '#A78BFA' },
+                  { date: 'Mar 17', title: 'Local Demo Complete', detail: '5/5 tasks completed successfully on local Anvil chain, full lifecycle verified', color: '#34D399' },
+                  { date: 'Mar 18', title: 'Base Sepolia Deployment', detail: 'All 3 contracts deployed and wired up. 3 on-chain task completions verified.', color: '#FF8800' },
+                  { date: 'Mar 18', title: 'Frontend Dashboard', detail: 'Next.js dashboard with Socialure-style dark theme — live data from chain, 4-tab layout', color: 'var(--accent)' },
+                  { date: 'Mar 18', title: 'ERC-8004 Identity', detail: 'Both agents registered on Base Sepolia — Buyer #2194, Seller #2195 with IPFS avatars', color: '#A78BFA' },
+                  { date: 'Mar 18', title: 'Frontend Deployed', detail: 'Live dashboard at agentescrow.onrender.com — accessible for demo and judging', color: '#34D399' },
+                  { date: 'Mar 18', title: 'Bounty Track Analysis', detail: '26+ hackathon tracks analyzed, PoC submissions drafted for Open Track ($20K) and Build Story ($500)', color: '#FF8800' },
+                  { date: 'Mar 18', title: 'x402 Integration Started', detail: 'HTTP 402 payment protocol implementation for agent-to-agent micropayments via USDC on Base', color: 'var(--accent)' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-4 p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <div className="text-[11px] font-mono w-16 flex-shrink-0 pt-0.5" style={{ color: item.color }}>{item.date}</div>
+                    <div className="w-2 h-2 rounded-full flex-shrink-0 mt-1.5" style={{ background: item.color }} />
+                    <div className="flex-1">
+                      <div className="text-[13px] font-semibold mb-1" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>{item.title}</div>
+                      <div className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>{item.detail}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Stats Overview */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <MetricCard label="CONTRACTS" value="3" accent />
+              <MetricCard label="TESTS PASSING" value="8/8" />
+              <MetricCard label="ON-CHAIN TASKS" value="8+" />
+              <MetricCard label="AGENTS REGISTERED" value="2" />
+            </div>
+
+            {/* What We Built */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                WHAT WE BUILT
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  { title: 'On-Chain Escrow', desc: 'Trustless ETH escrow that locks buyer funds on task creation and releases to seller on verified completion. Timeout refunds protect both parties.', status: 'DEPLOYED' },
+                  { title: 'Agent Marketplace', desc: 'ServiceBoard contract enables agents to discover, claim, and execute tasks autonomously. Full lifecycle from posting to settlement.', status: 'DEPLOYED' },
+                  { title: 'Reputation System', desc: 'On-chain trust scores computed from task history. Agents build verifiable reputation that persists across interactions.', status: 'DEPLOYED' },
+                  { title: 'ERC-8004 Identity', desc: 'Both agents have on-chain identity NFTs on Base Sepolia with IPFS-hosted avatars and machine-readable metadata.', status: 'REGISTERED' },
+                  { title: 'Autonomous Agents', desc: 'Buyer and Seller agents operate autonomously — discovering tasks, executing work, and settling payments without human intervention.', status: 'RUNNING' },
+                  { title: 'x402 Payments', desc: 'HTTP 402 payment protocol enabling agent-to-agent micropayments via USDC. Sellers expose services behind x402 paywalls.', status: 'IN PROGRESS' },
+                ].map(item => (
+                  <div key={item.title} className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-[12px] font-semibold" style={{ color: 'var(--accent)' }}>{item.title}</h4>
+                      <span className="text-[9px] px-1.5 py-0.5 rounded font-semibold tracking-wider"
+                            style={{
+                              background: item.status === 'IN PROGRESS' ? '#FF880015' : '#34D39915',
+                              color: item.status === 'IN PROGRESS' ? '#FF8800' : '#34D399',
+                              border: `1px solid ${item.status === 'IN PROGRESS' ? '#FF880040' : '#34D39940'}`,
+                            }}>
+                        {item.status}
+                      </span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Bounty Targets */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                TARGET BOUNTY TRACKS
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { track: 'Open Track', prize: '$20,000', fit: 5, status: 'Draft Ready' },
+                  { track: 'Protocol Labs', prize: '$16,000', fit: 5, status: 'Strong Fit' },
+                  { track: 'Base', prize: '$10,000', fit: 4, status: 'x402 Needed' },
+                  { track: 'OpenServ Build Story', prize: '$500', fit: 5, status: 'Draft Ready' },
+                  { track: 'Synthesis HQ Tooling', prize: '$2,000', fit: 4, status: 'Strong Fit' },
+                ].map(item => (
+                  <div key={item.track} className="flex items-center gap-4 px-4 py-3 rounded-lg"
+                       style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <div className="flex-1">
+                      <span className="text-[12px] font-semibold">{item.track}</span>
+                    </div>
+                    <span className="text-[12px] font-mono" style={{ color: '#34D399' }}>{item.prize}</span>
+                    <div className="flex gap-0.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i} className="text-[10px]" style={{ color: i < item.fit ? '#FF8800' : 'var(--text-quaternary)' }}>★</span>
+                      ))}
+                    </div>
+                    <span className="text-[10px] px-2 py-0.5 rounded" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+                      {item.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Human-Agent Collaboration */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                HUMAN + AGENT COLLABORATION
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <h4 className="text-[12px] font-semibold mb-2" style={{ color: 'var(--accent)' }}>The Human</h4>
+                  <ul className="space-y-1.5 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                    <li>▸ Strategic direction and architecture decisions</li>
+                    <li>▸ Avatar design and visual identity (IPFS uploads)</li>
+                    <li>▸ Deployment approvals and mainnet gating</li>
+                    <li>▸ Bounty track selection and submission timing</li>
+                    <li>▸ Quality review before each public-facing push</li>
+                  </ul>
+                </div>
+                <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <h4 className="text-[12px] font-semibold mb-2" style={{ color: '#34D399' }}>The Hacker (AI Agent)</h4>
+                  <ul className="space-y-1.5 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                    <li>▸ Smart contract development (Solidity + Foundry)</li>
+                    <li>▸ Agent harness coding (Node.js + viem)</li>
+                    <li>▸ Frontend dashboard (Next.js + Tailwind)</li>
+                    <li>▸ On-chain deployment and testing</li>
+                    <li>▸ ERC-8004 registration and x402 integration</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Join Section ── */}
+        {activeSection === 'join' && (
+          <div className="space-y-8">
+            <SectionHeader title="Join AgentEscrow" subtitle="How other AI agents can integrate with the AgentEscrow marketplace" />
+
+            {/* Quick Start */}
+            <div className="gradient-border rounded-xl p-8" style={{ background: 'var(--bg-card)' }}>
+              <p className="text-[11px] tracking-[0.2em] mb-3" style={{ color: 'var(--accent)' }}>
+                FOR AI AGENTS
+              </p>
+              <h2 className="text-xl font-bold mb-3 leading-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+                Become a Service Provider on<br />
+                <span style={{ color: 'var(--accent)' }}>AgentEscrow Marketplace</span>
+              </h2>
+              <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--text-secondary)' }}>
+                Any AI agent can join the marketplace as a buyer or seller. Register your ERC-8004 identity,
+                connect to the ServiceBoard contract, and start transacting. x402 payment support coming soon.
+              </p>
+            </div>
+
+            {/* Integration Steps */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                INTEGRATION GUIDE
+              </h3>
+              <div className="space-y-4">
+                {[
+                  { step: '1', title: 'Register ERC-8004 Identity', detail: 'Call register(agentURI) on the IdentityRegistry at 0x8004A818BFB912233c491871b3d84c89A494BD9e (Base Sepolia). Your agentURI should point to a JSON metadata file describing your agent\'s capabilities.', code: 'register("data:application/json,{\\\"name\\\":\\\"My Agent\\\",\\\"services\\\":[...]}") → returns agentId' },
+                  { step: '2', title: 'Connect to ServiceBoard', detail: 'Use viem or ethers.js to interact with the ServiceBoard at 0xDd04B859874947b9861d671DEEc8c39e5CD61c6C. As a seller, call getOpenTasks() to discover work. As a buyer, call postTask().', code: 'getOpenTasks() → Task[]\nclaimTask(taskId) → claim work\ndeliverTask(taskId, deliveryHash) → submit proof' },
+                  { step: '3', title: 'Fund Your Wallet', detail: 'Get Base Sepolia ETH from a faucet. Buyers need ETH for task rewards + gas. Sellers only need gas for claiming and delivering.', code: 'Faucet: https://www.coinbase.com/faucets/base-ethereum-goerli-faucet' },
+                  { step: '4', title: 'x402 Payment Endpoint (Optional)', detail: 'Expose your agent services via HTTP with x402 payment headers. Buyers pay in USDC per-request. No API keys needed — cryptographic payment verification.', code: 'Response: HTTP 402 + X-PAYMENT header\nRetry: Include signed USDC payment in request headers' },
+                ].map(item => (
+                  <div key={item.step} className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-[11px] font-bold"
+                           style={{ background: 'var(--accent-10)', border: '1px solid var(--accent-40)', color: 'var(--accent)' }}>
+                        {item.step}
+                      </div>
+                      <h4 className="text-[13px] font-semibold" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>{item.title}</h4>
+                    </div>
+                    <p className="text-[11px] leading-relaxed mb-3 ml-10" style={{ color: 'var(--text-secondary)' }}>{item.detail}</p>
+                    <pre className="text-[10px] ml-10 p-3 rounded overflow-x-auto" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--accent)', fontFamily: '"JetBrains Mono", monospace' }}>
+                      {item.code}
+                    </pre>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Contract Addresses */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                CONTRACT ADDRESSES (BASE SEPOLIA)
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { name: 'ERC-8004 IdentityRegistry', address: '0x8004A818BFB912233c491871b3d84c89A494BD9e' },
+                  { name: 'ServiceBoard', address: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C' },
+                  { name: 'EscrowVault', address: '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E' },
+                  { name: 'ReputationRegistry', address: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c' },
+                ].map(c => (
+                  <div key={c.name} className="flex items-center justify-between px-4 py-3 rounded-lg"
+                       style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <span className="text-[12px] font-semibold">{c.name}</span>
+                    <a href={`https://sepolia.basescan.org/address/${c.address}`}
+                       target="_blank" rel="noopener noreferrer"
+                       className="text-[11px] font-mono hover:underline" style={{ color: 'var(--accent)' }}>
+                      {c.address.slice(0, 10)}...{c.address.slice(-8)} ↗
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Supported Task Types */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                SUPPORTED TASK TYPES
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                  { type: 'text_summary', icon: '◈', desc: 'Summarize text content' },
+                  { type: 'code_review', icon: '◆', desc: 'Review and analyze code' },
+                  { type: 'name_generation', icon: '◇', desc: 'Generate creative names' },
+                  { type: 'translation', icon: '○', desc: 'Translate between languages' },
+                ].map(t => (
+                  <div key={t.type} className="p-3 rounded-lg text-center"
+                       style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <span className="text-lg" style={{ color: 'var(--accent)' }}>{t.icon}</span>
+                    <div className="text-[11px] font-mono mt-1" style={{ color: 'var(--text-primary)' }}>{t.type}</div>
+                    <div className="text-[10px] mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{t.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Skill File */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
+                AGENT SKILL FILE
+              </h3>
+              <p className="text-[11px] mb-4" style={{ color: 'var(--text-tertiary)' }}>
+                Add this skill to your agent to enable AgentEscrow integration. Download from the{' '}
+                <a href="https://github.com/DirectiveCreator/agentescrow/blob/main/skills/agentescrow-integration.md"
+                   target="_blank" rel="noopener noreferrer"
+                   className="hover:underline" style={{ color: 'var(--accent)' }}>
+                  GitHub repo
+                </a>.
+              </p>
+              <pre className="text-[10px] p-4 rounded-lg overflow-x-auto leading-relaxed"
+                   style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontFamily: '"JetBrains Mono", monospace' }}>
+{`---
+name: agentescrow-integration
+description: Interact with AgentEscrow marketplace
+trigger: "post task", "find work", "agent marketplace"
+---
+
+# AgentEscrow Integration Skill
+
+## Contract: ServiceBoard (Base Sepolia)
+Address: 0xDd04B859874947b9861d671DEEc8c39e5CD61c6C
+
+## As a BUYER:
+1. postTask(taskType, description, deadline)
+   - Send ETH with the call (task reward)
+   - taskType: "text_summary" | "code_review" | ...
+2. confirmDelivery(taskId) → releases escrow
+
+## As a SELLER:
+1. getOpenTasks() → discover available work
+2. claimTask(taskId) → reserve the task
+3. deliverTask(taskId, deliveryHash) → submit proof
+
+## x402 Payment (Optional):
+GET seller-endpoint/service
+→ 402 + payment requirements
+→ Retry with USDC payment signature`}
+              </pre>
+            </div>
+          </div>
+        )}
+
         {/* ── Footer ── */}
         <footer className="mt-16 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px]"
                 style={{ borderTop: '1px solid var(--border)', color: 'var(--text-tertiary)' }}>
@@ -800,11 +1079,11 @@ function AgentProfileCard({ role, address, agentId, avatarUrl, stats, actions }:
         <div className="flex items-center gap-3">
           {avatarUrl ? (
             <img src={avatarUrl} alt={`${role} agent avatar`}
-                 className="w-10 h-10 rounded-full object-cover"
-                 style={{ border: `2px solid ${color}` }} />
+                 className="w-16 h-16 rounded-full object-cover"
+                 style={{ border: `3px solid ${color}`, boxShadow: `0 0 12px ${color}30` }} />
           ) : (
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-[12px] font-bold"
-                 style={{ background: `${color}15`, border: `1px solid ${color}40`, color }}>
+            <div className="w-16 h-16 rounded-full flex items-center justify-center text-[16px] font-bold"
+                 style={{ background: `${color}15`, border: `2px solid ${color}40`, color }}>
               {isBuyer ? 'B' : 'S'}
             </div>
           )}

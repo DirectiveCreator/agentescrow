@@ -899,10 +899,10 @@ export default function Dashboard() {
               </h3>
               <div className="space-y-3">
                 {[
-                  { track: 'Open Track', prize: '$20,000', fit: 5, status: 'Draft Ready', desc: '' },
+                  { track: 'Open Track', prize: '$28,000', fit: 5, status: 'Draft Ready', desc: 'Community-funded pool. 1st $15K · 2nd $8K · 3rd $5K.' },
                   { track: 'PL: Let the Agent Cook', prize: '$4,000', fit: 5, status: 'Strong Fit', desc: 'Fully autonomous agents: discover → plan → execute → verify → submit. Shared w/ PL_Genesis. 1st $2K · 2nd $1.5K · 3rd $500' },
                   { track: 'PL: Agents With Receipts', prize: '$4,000', fit: 5, status: 'ERC-8004 ✅', desc: 'Trusted agent systems using ERC-8004 for identity, reputation & validation. Shared w/ PL_Genesis.' },
-                  { track: 'Base: Agent Services', prize: '$5,000', fit: 5, status: 'x402 ✅', desc: 'Agent services on Base. Only eligible Base sub-track (Trading Agent $5K not eligible).' },
+                  { track: 'Base: Agent Services', prize: '$5,000', fit: 5, status: 'x402 ✅', desc: 'Build discoverable agent services on Base accepting payments via x402. 3 equal prizes of ~$1.67K. Only eligible Base sub-track — Trading Agent ($5K) not eligible.' },
                   { track: 'OpenServ Build Story', prize: '$500', fit: 5, status: 'Draft Ready', desc: '' },
                   { track: 'OpenServ Full', prize: '$4,500', fit: 5, status: 'Integrated', desc: '' },
                   { track: 'Venice AI', prize: '$11,500', fit: 5, status: 'Integrated', desc: '' },

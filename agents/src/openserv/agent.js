@@ -25,7 +25,7 @@
  * @see https://github.com/openserv-labs/sdk
  */
 
-import { Agent } from '@openserv-labs/sdk';
+import { Agent, run } from '@openserv-labs/sdk';
 import { z } from 'zod';
 import { createWalletClient, createPublicClient, http, parseEther, formatEther } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
@@ -284,10 +284,15 @@ agent.addCapability({
 
 // ── Start the Agent ──────────────────────────────────────────────────────────
 
+const PORT = parseInt(process.env.PORT || '7378', 10);
+const USE_TUNNEL = process.env.DISABLE_TUNNEL !== 'true';
+
 console.log('─────────────────────────────────────────────');
 console.log('  AgentEscrow × OpenServ Agent');
 console.log('  Chain: Base Sepolia (84532)');
 console.log('  Capabilities: 6');
+console.log(`  Mode: ${USE_TUNNEL ? 'DEV (tunnel via agents-proxy.openserv.ai)' : 'PRODUCTION (direct)'}`);
+console.log(`  Port: ${PORT}`);
 console.log('─────────────────────────────────────────────');
 console.log('  ◈ discover_tasks  — Find marketplace tasks');
 console.log('  ◈ post_task       — Post task with ETH escrow');
@@ -297,11 +302,27 @@ console.log('  ◈ confirm_delivery — Release escrow');
 console.log('  ◈ check_reputation — Query agent trust score');
 console.log('─────────────────────────────────────────────');
 
-agent.start().then(() => {
-  console.log('✅ OpenServ agent running on port', process.env.PORT || 7378);
-}).catch(err => {
-  console.error('❌ Failed to start:', err.message);
-  process.exit(1);
-});
+async function main() {
+  try {
+    if (USE_TUNNEL) {
+      // Dev mode: start server + WebSocket tunnel to OpenServ proxy
+      // This registers the agent automatically and forwards platform requests
+      console.log('🔗 Starting with OpenServ tunnel (dev mode)...');
+      const result = await run(agent, { port: PORT });
+      console.log('✅ OpenServ agent running with tunnel on port', PORT);
+      return result;
+    } else {
+      // Production mode: just start the HTTP server
+      // Agent must be reachable at a public URL configured in the OpenServ dashboard
+      await agent.start({ port: PORT });
+      console.log('✅ OpenServ agent running in production mode on port', PORT);
+    }
+  } catch (err) {
+    console.error('❌ Failed to start:', err.message);
+    process.exit(1);
+  }
+}
+
+main();
 
 export default agent;

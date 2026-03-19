@@ -447,6 +447,7 @@ export default function Dashboard() {
                     { name: 'Solidity', cat: 'contract' },
                     { name: 'Foundry', cat: 'contract' },
                     { name: 'ERC-8004', cat: 'standard' },
+                    { name: 'Venice TEE', cat: 'standard' },
                     { name: 'Base Chain', cat: 'chain' },
                     { name: 'viem', cat: 'lib' },
                     { name: 'Node.js', cat: 'runtime' },
@@ -606,8 +607,22 @@ export default function Dashboard() {
 │ • Posts tasks   │                      │ • Polls for work │
 │ • Funds escrow  │                      │ • Claims tasks   │
 │ • Confirms work │                      │ • Executes work  │
-│                 │                      │ • Submits proof  │
-└─────────────────┘                      └──────────────────┘`}
+│ • 🔒 Private   │                      │ • 🔒 Private    │
+│   verification  │                      │   eval+execute   │
+└────────┬────────┘                      └─────────┬────────┘
+         │                                         │
+         └──────────┐              ┌───────────────┘
+                    ▼              ▼
+         ┌──────────────────────────────────┐
+         │   VENICE PRIVATE COGNITION LAYER  │
+         │                                   │
+         │  🔒 TEE Inference (Intel TDX)     │
+         │  🔐 Attestation Proofs            │
+         │  📋 Signature Verification        │
+         │                                   │
+         │  Agent reasoning never leaves     │
+         │  the hardware enclave.            │
+         └──────────────────────────────────┘`}
               </pre>
             </div>
 
@@ -658,12 +673,99 @@ export default function Dashboard() {
                   { title: 'Timeout Refunds', desc: 'If a task exceeds its deadline, the buyer can reclaim their locked ETH. Prevents indefinite fund lockup from abandoned tasks.' },
                   { title: 'On-Chain Reputation', desc: 'Every completion and failure is recorded immutably. Agents build trust scores that other agents can verify before transacting.' },
                   { title: 'TaskReceipt Events', desc: 'ERC-8004 compatible receipt events provide a permanent, verifiable record of every agent-to-agent transaction on-chain.' },
+                  { title: 'Venice TEE Privacy', desc: 'Agent reasoning (evaluation, execution, verification) runs inside hardware enclaves via Venice AI. Cryptographic attestation proves computation integrity without exposing logic.' },
+                  { title: 'Attestation-Backed Delivery', desc: 'Every delivery includes a TEE attestation hash. The attestation proves the work was computed honestly inside a secure enclave — verifiable by anyone via Venice API.' },
                 ].map(item => (
                   <div key={item.title} className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                     <h4 className="text-[12px] font-semibold mb-2" style={{ color: 'var(--accent)' }}>{item.title}</h4>
                     <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{item.desc}</p>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Venice Private Cognition */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
+                VENICE PRIVATE COGNITION LAYER
+              </h3>
+              <p className="text-[11px] mb-6" style={{ color: 'var(--text-tertiary)' }}>
+                Privacy-preserving AI inference via TEE (Trusted Execution Environments) — agent reasoning never leaves the hardware enclave
+              </p>
+
+              {/* Trust Stack */}
+              <div className="mb-6">
+                <div className="text-[10px] tracking-[0.15em] mb-3" style={{ color: 'var(--text-tertiary)' }}>TRUST STACK — WHAT EACH LAYER PROTECTS</div>
+                <div className="space-y-2">
+                  {[
+                    { icon: '▣', layer: 'EscrowVault', protects: 'Funds', mechanism: 'Smart contract escrow', color: 'var(--accent)' },
+                    { icon: '★', layer: 'ReputationRegistry', protects: 'Track Record', mechanism: 'On-chain scoring', color: '#FBBF24' },
+                    { icon: '🔒', layer: 'Venice TEE', protects: 'Agent Reasoning', mechanism: 'Hardware enclave (Intel TDX / NVIDIA H100)', color: '#A78BFA' },
+                    { icon: '🔐', layer: 'Venice E2EE', protects: 'Task Content', mechanism: 'Client-side encryption + TEE decryption', color: '#818CF8' },
+                  ].map(item => (
+                    <div key={item.layer} className="flex items-center gap-4 px-4 py-3 rounded-lg"
+                         style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                      <span className="text-base w-6 text-center">{item.icon}</span>
+                      <div className="flex-1">
+                        <span className="text-[12px] font-semibold" style={{ color: item.color }}>{item.layer}</span>
+                        <span className="text-[11px] ml-2" style={{ color: 'var(--text-tertiary)' }}>— protects {item.protects.toLowerCase()}</span>
+                      </div>
+                      <span className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>{item.mechanism}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Privacy Pipeline */}
+              <div className="mb-6">
+                <div className="text-[10px] tracking-[0.15em] mb-3" style={{ color: 'var(--text-tertiary)' }}>PRIVACY PIPELINE — EVERY STEP IS ENCLAVE-PROTECTED</div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {[
+                    { phase: 'EVALUATE', actor: 'Seller', desc: 'Task evaluation runs inside TEE. Seller strategy, capability assessment, and claim decisions are never visible to anyone.', color: '#FF8800' },
+                    { phase: 'EXECUTE', actor: 'Seller', desc: 'Work is performed inside TEE. All reasoning, intermediate steps, and analysis happen in a hardware enclave with attestation proof.', color: '#A78BFA' },
+                    { phase: 'VERIFY', actor: 'Buyer', desc: 'Quality verification runs inside TEE. Buyer scoring criteria and acceptance logic are hidden from the seller.', color: '#34D399' },
+                  ].map(item => (
+                    <div key={item.phase} className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                              style={{ background: `${item.color}15`, color: item.color, border: `1px solid ${item.color}40` }}>
+                          {item.phase}
+                        </span>
+                        <span className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>{item.actor}</span>
+                      </div>
+                      <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Attestation Flow */}
+              <div>
+                <div className="text-[10px] tracking-[0.15em] mb-3" style={{ color: 'var(--text-tertiary)' }}>ATTESTATION FLOW</div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { num: 1, label: 'INFER', desc: 'Agent sends prompt to Venice TEE model', color: 'var(--accent)' },
+                    { num: 2, label: 'ATTEST', desc: 'TEE produces cryptographic attestation proof', color: '#A78BFA' },
+                    { num: 3, label: 'HASH', desc: 'Attestation hash combined with delivery hash', color: '#FF8800' },
+                    { num: 4, label: 'VERIFY', desc: 'Anyone can verify via Venice attestation API', color: '#34D399' },
+                  ].map((step, i) => (
+                    <div key={step.num} className="relative">
+                      <div className="rounded-lg p-4 text-center" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                        <div className="w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center text-[12px] font-bold"
+                             style={{ background: `${step.color}15`, border: `1px solid ${step.color}40`, color: step.color }}>
+                          {step.num}
+                        </div>
+                        <div className="text-[12px] font-semibold mb-1">{step.label}</div>
+                        <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>{step.desc}</div>
+                      </div>
+                      {i < 3 && (
+                        <div className="hidden md:block absolute top-1/2 -right-2 transform -translate-y-1/2 text-[10px]" style={{ color: 'var(--text-quaternary)' }}>
+                          →
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -691,7 +793,13 @@ export default function Dashboard() {
 │       ├── tasks.js                # Task execution handlers
 │       ├── config.js               # Chain & contract config
 │       ├── deploy-local.js         # Local Anvil deployment
-│       └── run-demo.js             # Full demo orchestration
+│       ├── run-demo.js             # Full demo orchestration
+│       └── venice/                 # 🔒 Venice Private Cognition
+│           ├── client.js           # Venice TEE/E2EE API client
+│           ├── attestation.js      # Attestation proof utilities
+│           ├── enhanced-seller.js  # Seller + private eval/execute
+│           ├── enhanced-buyer.js   # Buyer + private verification
+│           └── demo.js             # End-to-end privacy demo
 │
 └── frontend/                   # Dashboard & overview (Next.js)
     ├── app/
@@ -728,6 +836,7 @@ export default function Dashboard() {
                   { date: 'Mar 18', title: 'x402 Integration Started', detail: 'HTTP 402 payment protocol implementation for agent-to-agent micropayments via USDC on Base', color: 'var(--accent)' },
                   { date: 'Mar 19', title: 'x402 Official SDK Integrated', detail: 'Upgraded to @x402/express + @x402/fetch — real USDC payment verification via Coinbase facilitator', color: '#34D399' },
                   { date: 'Mar 19', title: 'OpenServ Integration', detail: 'Registered AgentEscrow on OpenServ orchestration platform — 6 capabilities exposed for cross-agent collaboration via @openserv-labs/sdk', color: '#FF8800' },
+                  { date: 'Mar 19', title: 'Venice Private Cognition', detail: 'Full TEE integration — private task evaluation (seller strategy hidden), private work execution (enclave-protected), private delivery verification (buyer criteria hidden), attestation-backed deliveries with cryptographic proofs', color: '#A78BFA' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4 p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                     <div className="text-[11px] font-mono w-16 flex-shrink-0 pt-0.5" style={{ color: item.color }}>{item.date}</div>
@@ -746,7 +855,7 @@ export default function Dashboard() {
               <MetricCard label="CONTRACTS" value="3" accent />
               <MetricCard label="TESTS PASSING" value="8/8" />
               <MetricCard label="ON-CHAIN TASKS" value="8+" />
-              <MetricCard label="AGENTS REGISTERED" value="2" />
+              <MetricCard label="INTEGRATIONS" value="4" />
             </div>
 
             {/* What We Built */}
@@ -763,6 +872,7 @@ export default function Dashboard() {
                   { title: 'Autonomous Agents', desc: 'Buyer and Seller agents operate autonomously — discovering tasks, executing work, and settling payments without human intervention.', status: 'RUNNING' },
                   { title: 'x402 Payments', desc: 'Official @x402/* SDK integration. Seller exposes services behind HTTP 402 paywalls, Buyer auto-pays USDC on Base Sepolia via facilitator.', status: 'INTEGRATED' },
                   { title: 'OpenServ Agent', desc: 'Registered on OpenServ orchestration platform. 6 capabilities (discover, post, claim, deliver, confirm, reputation) available for cross-agent collaboration.', status: 'INTEGRATED' },
+                  { title: 'Venice Private Cognition', desc: 'TEE-protected agent reasoning via Venice AI. Seller strategy evaluation, work execution, and buyer quality verification all run inside hardware enclaves with cryptographic attestation proofs.', status: 'INTEGRATED' },
                 ].map(item => (
                   <div key={item.title} className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                     <div className="flex items-center justify-between mb-2">
@@ -794,7 +904,7 @@ export default function Dashboard() {
                   { track: 'Base', prize: '$10,000', fit: 5, status: 'x402 ✅' },
                   { track: 'OpenServ Build Story', prize: '$500', fit: 5, status: 'Draft Ready' },
                   { track: 'OpenServ Full', prize: '$4,500', fit: 5, status: 'Integrated' },
-                  { track: 'Synthesis HQ Tooling', prize: '$2,000', fit: 4, status: 'Strong Fit' },
+                  { track: 'Venice AI', prize: '$11,500', fit: 5, status: 'Integrated' },
                 ].map(item => (
                   <div key={item.track} className="flex items-center gap-4 px-4 py-3 rounded-lg"
                        style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
@@ -839,6 +949,7 @@ export default function Dashboard() {
                     <li>▸ Frontend dashboard (Next.js + Tailwind)</li>
                     <li>▸ On-chain deployment and testing</li>
                     <li>▸ ERC-8004 registration and x402 integration</li>
+                    <li>▸ Venice TEE private cognition integration</li>
                   </ul>
                 </div>
               </div>

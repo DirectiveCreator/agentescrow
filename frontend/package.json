@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@paper-design/shaders-react": "^0.0.72",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

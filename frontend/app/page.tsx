@@ -3,6 +3,10 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { formatEther } from 'viem';
 import { publicClient, ServiceBoardABI, ReputationRegistryABI, EscrowVaultABI, CONTRACTS } from '@/lib/contracts';
+import { MeshGradient } from '@paper-design/shaders-react';
+import { NeuroNoise } from '@paper-design/shaders-react';
+import { GrainGradient } from '@paper-design/shaders-react';
+import { DotGrid } from '@paper-design/shaders-react';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -241,8 +245,18 @@ export default function Dashboard() {
         {activeSection === 'overview' && (
           <div className="space-y-8">
             {/* Hero */}
-            <div className="gradient-border rounded-xl p-8" style={{ background: 'var(--bg-card)' }}>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
+              {/* Shader: MeshGradient hero background */}
+              <div className="absolute inset-0 opacity-[0.15]" style={{ zIndex: 0 }}>
+                <MeshGradient
+                  colors={['#38B3DC', '#A78BFA', '#0C0C0C', '#34D399']}
+                  speed={0.12}
+                  distortion={0.4}
+                  swirl={0.6}
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative" style={{ zIndex: 1 }}>
                 <div>
                   <p className="text-[11px] tracking-[0.2em] mb-3" style={{ color: 'var(--accent)' }}>
                     SYNTHESIS HACKATHON — BASE CHAIN
@@ -283,7 +297,21 @@ export default function Dashboard() {
             </div>
 
             {/* What It Does — 3 columns */}
-            <div>
+            <div className="relative">
+              {/* Shader: NeuroNoise texture behind feature cards */}
+              <div className="absolute inset-0 -m-4 rounded-2xl overflow-hidden opacity-[0.08]" style={{ zIndex: 0 }}>
+                <NeuroNoise
+                  colorFront="#38B3DC"
+                  colorMid="#1a1a2e"
+                  colorBack="#0C0C0C"
+                  speed={0.08}
+                  scale={1.2}
+                  brightness={0.5}
+                  contrast={0.7}
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </div>
+              <div className="relative" style={{ zIndex: 1 }}>
               <SectionHeader title="How AgentEscrow Works" />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <FeatureCard
@@ -304,6 +332,7 @@ export default function Dashboard() {
                   description="The buyer verifies delivery, triggering escrow release. ETH flows to the seller, both agents' reputation scores update, and a TaskReceipt is emitted."
                   icon="●"
                 />
+              </div>
               </div>
             </div>
 
@@ -369,7 +398,22 @@ export default function Dashboard() {
             </div>
 
             {/* Agent Profiles — ERC-8004 Registered */}
-            <div>
+            <div className="relative">
+              {/* Shader: GrainGradient behind agent profiles */}
+              <div className="absolute inset-0 -m-4 rounded-2xl overflow-hidden opacity-[0.10]" style={{ zIndex: 0 }}>
+                <GrainGradient
+                  colors={['#38B3DC', '#A78BFA', '#34D399']}
+                  colorBack="#0C0C0C"
+                  speed={0.06}
+                  scale={0.8}
+                  softness={0.7}
+                  intensity={0.5}
+                  noise={0.6}
+                  shape="wave"
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </div>
+              <div className="relative" style={{ zIndex: 1 }}>
               <SectionHeader title="Registered Agents" subtitle="ERC-8004 identity on Base Sepolia — IPFS-hosted avatars — on-chain reputation" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <AgentProfileCard
@@ -388,6 +432,7 @@ export default function Dashboard() {
                   stats={{ tasks: 7, spent: '0', earned: '0.0035', score: 100 }}
                   actions={['Discovers open tasks on ServiceBoard', 'Claims and executes work autonomously', 'Submits delivery proof on-chain']}
                 />
+              </div>
               </div>
             </div>
 
@@ -944,12 +989,28 @@ GET seller-endpoint/service
         )}
 
         {/* ── Footer ── */}
-        <footer className="mt-16 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px]"
+        <footer className="mt-16 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] relative overflow-hidden"
                 style={{ borderTop: '1px solid var(--border)', color: 'var(--text-tertiary)' }}>
-          <span>
+          {/* Shader: DotGrid footer accent */}
+          <div className="absolute inset-0 opacity-[0.06]" style={{ zIndex: 0 }}>
+            <DotGrid
+              colorFill="#38B3DC"
+              colorStroke="#A78BFA"
+              colorBack="#0C0C0C"
+              size={3}
+              gapX={24}
+              gapY={24}
+              strokeWidth={0.5}
+              sizeRange={0.3}
+              opacityRange={0.5}
+              shape="circle"
+              style={{ width: '100%', height: '100%' }}
+            />
+          </div>
+          <span className="relative" style={{ zIndex: 1 }}>
             Built for <span style={{ color: 'var(--accent)' }}>The Synthesis Hackathon</span> — Human + AI Agent collaboration
           </span>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 relative" style={{ zIndex: 1 }}>
             <span>Powered by ERC-8004 Agent Identity</span>
             <span style={{ color: 'var(--text-quaternary)' }}>|</span>
             <a href="https://github.com/DirectiveCreator/agentescrow" target="_blank" rel="noopener noreferrer"

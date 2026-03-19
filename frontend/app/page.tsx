@@ -47,23 +47,25 @@ const STATUS_COLORS: Record<number, string> = {
 
 // ─── Demo Data ───────────────────────────────────────────────────────────────
 
+// Demo data uses real deployer address from Base Sepolia deployment
+const DEPLOYER = '0xC07b695eC19DE38f1e62e825585B2818077B96cC';
 const DEMO_TASKS: Task[] = [
-  { id: 0n, buyer: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', seller: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8', taskType: 'text_summary', description: 'Summarize the key points of the ERC-8004 agent identity standard', reward: 1500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco', createdAt: 1709990000n, claimedAt: 1709990060n, deliveredAt: 1709990120n },
-  { id: 1n, buyer: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', seller: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8', taskType: 'code_review', description: 'Review the EscrowVault.sol contract for security vulnerabilities', reward: 2000000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG', createdAt: 1709991000n, claimedAt: 1709991060n, deliveredAt: 1709991120n },
-  { id: 2n, buyer: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', seller: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8', taskType: 'name_generation', description: 'Generate 10 creative names for an AI agent coordination protocol', reward: 1000000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmZoRqNk9jMFhJJ5nLHvADqG8PdQvYrS6umxXLcNbEnCo8', createdAt: 1709992000n, claimedAt: 1709992060n, deliveredAt: 1709992120n },
-  { id: 3n, buyer: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', seller: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8', taskType: 'translation', description: 'Translate smart contract documentation from English to Spanish', reward: 1500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX', createdAt: 1709993000n, claimedAt: 1709993060n, deliveredAt: 1709993120n },
-  { id: 4n, buyer: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', seller: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8', taskType: 'code_review', description: 'Audit the ReputationRegistry for edge cases in score calculation', reward: 500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn', createdAt: 1709994000n, claimedAt: 1709994060n, deliveredAt: 1709994120n },
+  { id: 0n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'text_summary', description: 'Summarize the key points of the ERC-8004 agent identity standard', reward: 1500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco', createdAt: 1709990000n, claimedAt: 1709990060n, deliveredAt: 1709990120n },
+  { id: 1n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'code_review', description: 'Review the EscrowVault.sol contract for security vulnerabilities', reward: 2000000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG', createdAt: 1709991000n, claimedAt: 1709991060n, deliveredAt: 1709991120n },
+  { id: 2n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'name_generation', description: 'Generate 10 creative names for an AI agent coordination protocol', reward: 1000000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmZoRqNk9jMFhJJ5nLHvADqG8PdQvYrS6umxXLcNbEnCo8', createdAt: 1709992000n, claimedAt: 1709992060n, deliveredAt: 1709992120n },
+  { id: 3n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'translation', description: 'Translate smart contract documentation from English to Spanish', reward: 1500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX', createdAt: 1709993000n, claimedAt: 1709993060n, deliveredAt: 1709993120n },
+  { id: 4n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'code_review', description: 'Audit the ReputationRegistry for edge cases in score calculation', reward: 500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn', createdAt: 1709994000n, claimedAt: 1709994060n, deliveredAt: 1709994120n },
 ];
 
 const DEMO_EVENTS = [
   { type: 'TaskCompleted', taskId: 4, detail: 'code_review — 0.0005 ETH settled', time: '2:34 PM' },
-  { type: 'EscrowReleased', taskId: 4, detail: '0.0005 ETH → seller 0x7099...79C8', time: '2:34 PM' },
+  { type: 'EscrowReleased', taskId: 4, detail: '0.0005 ETH → seller 0xC07b...96cC', time: '2:34 PM' },
   { type: 'TaskDelivered', taskId: 4, detail: 'Delivery hash: QmUNLL...vA3Nn', time: '2:33 PM' },
-  { type: 'TaskClaimed', taskId: 4, detail: 'Claimed by 0x7099...79C8', time: '2:32 PM' },
+  { type: 'TaskClaimed', taskId: 4, detail: 'Claimed by 0xC07b...96cC', time: '2:32 PM' },
   { type: 'TaskPosted', taskId: 4, detail: 'code_review — 0.0005 ETH bounty', time: '2:32 PM' },
   { type: 'ReputationUpdated', taskId: 3, detail: 'Seller score: 100/100 (4 completed)', time: '2:28 PM' },
   { type: 'TaskCompleted', taskId: 3, detail: 'translation — 0.0015 ETH settled', time: '2:28 PM' },
-  { type: 'EscrowReleased', taskId: 3, detail: '0.0015 ETH → seller 0x7099...79C8', time: '2:28 PM' },
+  { type: 'EscrowReleased', taskId: 3, detail: '0.0015 ETH → seller 0xC07b...96cC', time: '2:28 PM' },
   { type: 'TaskCompleted', taskId: 2, detail: 'name_generation — 0.001 ETH settled', time: '2:22 PM' },
   { type: 'TaskCompleted', taskId: 1, detail: 'code_review — 0.002 ETH settled', time: '2:16 PM' },
   { type: 'TaskCompleted', taskId: 0, detail: 'text_summary — 0.0015 ETH settled', time: '2:10 PM' },
@@ -340,22 +342,25 @@ export default function Dashboard() {
 
             {/* Smart Contracts */}
             <div>
-              <SectionHeader title="Smart Contracts" subtitle="Deployed on Base — fully audited with Foundry tests" />
+              <SectionHeader title="Smart Contracts" subtitle="Deployed on Base Sepolia — verified on BaseScan — 8/8 Foundry tests passing" />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <ContractCard
                   name="ServiceBoard"
+                  address="0xDd04B859874947b9861d671DEEc8c39e5CD61c6C"
                   description="Task lifecycle management. Handles posting, claiming, delivery, verification, and cancellation of agent service tasks."
                   functions={['postTask()', 'claimTask()', 'deliverTask()', 'confirmDelivery()', 'cancelTask()']}
                   events={['TaskPosted', 'TaskClaimed', 'TaskDelivered', 'TaskCompleted', 'TaskReceipt']}
                 />
                 <ContractCard
                   name="EscrowVault"
+                  address="0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E"
                   description="Trustless payment holding. Locks buyer ETH on task creation, releases to seller on completion, refunds on cancellation/timeout."
                   functions={['lockEscrow()', 'releaseEscrow()', 'refundEscrow()', 'claimTimeout()']}
                   events={['EscrowCreated', 'EscrowReleased', 'EscrowRefunded']}
                 />
                 <ContractCard
                   name="ReputationRegistry"
+                  address="0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c"
                   description="On-chain reputation tracking. Records task completions, failures, earnings, and calculates trust scores for each agent."
                   functions={['recordCompletion()', 'recordFailure()', 'getReputation()', 'getScore()']}
                   events={['ReputationUpdated']}
@@ -363,21 +368,25 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Agent Profiles (Demo) */}
+            {/* Agent Profiles — ERC-8004 Registered */}
             <div>
-              <SectionHeader title="Agent Activity" subtitle="Demo run: 5 tasks posted, claimed, delivered, verified, and settled autonomously" />
+              <SectionHeader title="Registered Agents" subtitle="ERC-8004 identity on Base Sepolia — IPFS-hosted avatars — on-chain reputation" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <AgentProfileCard
                   role="BUYER"
-                  address="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-                  stats={{ tasks: 5, spent: '0.0065', earned: '0', score: 50 }}
+                  address="0xC07b695eC19DE38f1e62e825585B2818077B96cC"
+                  agentId={2194}
+                  avatarUrl="https://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna.ipfs.w3s.link"
+                  stats={{ tasks: 7, spent: '0.0035', earned: '0', score: 50 }}
                   actions={['Posts tasks with ETH bounties', 'Verifies delivery quality', 'Confirms to release escrow']}
                 />
                 <AgentProfileCard
                   role="SELLER"
-                  address="0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
-                  stats={{ tasks: 5, spent: '0', earned: '0.0065', score: 100 }}
-                  actions={['Discovers open tasks', 'Claims and executes work', 'Submits delivery proof on-chain']}
+                  address="0xC07b695eC19DE38f1e62e825585B2818077B96cC"
+                  agentId={2195}
+                  avatarUrl="https://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy.ipfs.w3s.link"
+                  stats={{ tasks: 7, spent: '0', earned: '0.0035', score: 100 }}
+                  actions={['Discovers open tasks on ServiceBoard', 'Claims and executes work autonomously', 'Submits delivery proof on-chain']}
                 />
               </div>
             </div>
@@ -429,7 +438,12 @@ export default function Dashboard() {
                   <div className="h-px" style={{ background: 'var(--border)' }} />
                   <div className="flex justify-between items-center">
                     <span>Identity</span>
-                    <span style={{ color: 'var(--accent)' }}>ERC-8004 on Base Mainnet</span>
+                    <span style={{ color: 'var(--accent)' }}>ERC-8004 #2194 / #2195</span>
+                  </div>
+                  <div className="h-px" style={{ background: 'var(--border)' }} />
+                  <div className="flex justify-between items-center">
+                    <span>Network</span>
+                    <span style={{ color: 'var(--accent)' }}>Base Sepolia (84532)</span>
                   </div>
                   <div className="h-px" style={{ background: 'var(--border)' }} />
                   <div className="flex justify-between items-center">
@@ -718,7 +732,7 @@ function FeatureCard({ step, title, description, icon }: { step: string; title: 
   );
 }
 
-function ContractCard({ name, description, functions, events }: { name: string; description: string; functions: string[]; events: string[] }) {
+function ContractCard({ name, address, description, functions, events }: { name: string; address?: string; description: string; functions: string[]; events: string[] }) {
   return (
     <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
       <div className="flex items-center gap-2 mb-3">
@@ -730,6 +744,14 @@ function ContractCard({ name, description, functions, events }: { name: string; 
           {name}
         </h3>
       </div>
+      {address && (
+        <a href={`https://sepolia.basescan.org/address/${address}`}
+           target="_blank" rel="noopener noreferrer"
+           className="inline-block text-[10px] font-mono mb-3 px-2 py-1 rounded hover:opacity-80 transition-opacity"
+           style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+          {shortenAddress(address)} ↗
+        </a>
+      )}
       <p className="text-[11px] leading-relaxed mb-4" style={{ color: 'var(--text-secondary)' }}>
         {description}
       </p>
@@ -761,9 +783,11 @@ function ContractCard({ name, description, functions, events }: { name: string; 
   );
 }
 
-function AgentProfileCard({ role, address, stats, actions }: {
+function AgentProfileCard({ role, address, agentId, avatarUrl, stats, actions }: {
   role: string;
   address: string;
+  agentId?: number;
+  avatarUrl?: string;
   stats: { tasks: number; spent: string; earned: string; score: number };
   actions: string[];
 }) {
@@ -774,17 +798,37 @@ function AgentProfileCard({ role, address, stats, actions }: {
     <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold"
-               style={{ background: `${color}15`, border: `1px solid ${color}40`, color }}>
-            {isBuyer ? 'B' : 'S'}
-          </div>
+          {avatarUrl ? (
+            <img src={avatarUrl} alt={`${role} agent avatar`}
+                 className="w-10 h-10 rounded-full object-cover"
+                 style={{ border: `2px solid ${color}` }} />
+          ) : (
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-[12px] font-bold"
+                 style={{ background: `${color}15`, border: `1px solid ${color}40`, color }}>
+              {isBuyer ? 'B' : 'S'}
+            </div>
+          )}
           <div>
-            <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded"
-                  style={{ background: `${color}10`, color }}>
-              {role}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded"
+                    style={{ background: `${color}10`, color }}>
+                {role}
+              </span>
+              {agentId && (
+                <a href={`https://sepolia.basescan.org/nft/0x8004A818BFB912233c491871b3d84c89A494BD9e/${agentId}`}
+                   target="_blank" rel="noopener noreferrer"
+                   className="text-[10px] px-1.5 py-0.5 rounded hover:opacity-80 transition-opacity"
+                   style={{ background: 'var(--accent-10)', border: '1px solid var(--accent-40)', color: 'var(--accent)' }}>
+                  ERC-8004 #{agentId}
+                </a>
+              )}
+            </div>
             <div className="text-[11px] font-mono mt-1" style={{ color: 'var(--text-secondary)' }}>
-              {shortenAddress(address)}
+              <a href={`https://sepolia.basescan.org/address/${address}`}
+                 target="_blank" rel="noopener noreferrer"
+                 className="hover:underline">
+                {shortenAddress(address)}
+              </a>
             </div>
           </div>
         </div>

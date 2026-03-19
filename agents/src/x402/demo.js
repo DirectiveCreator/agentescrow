@@ -53,11 +53,20 @@ setTimeout(async () => {
     console.log(`   Status: ${payRes.status} ${payRes.status === 402 ? '✅ (Payment Required)' : '❌'}`);
 
     if (payRes.status === 402) {
-      const body = await payRes.json();
-      console.log(`   Scheme: ${body.accepts?.[0]?.scheme || 'N/A'}`);
-      console.log(`   Price: ${body.accepts?.[0]?.price || 'N/A'}`);
-      console.log(`   Network: ${body.accepts?.[0]?.network || 'N/A'}`);
-      console.log(`   Pay to: ${body.accepts?.[0]?.payTo || 'N/A'}`);
+      // x402 sends payment requirements in PAYMENT-REQUIRED header (base64 JSON)
+      const paymentHeader = payRes.headers.get('PAYMENT-REQUIRED');
+      if (paymentHeader) {
+        const decoded = JSON.parse(Buffer.from(paymentHeader, 'base64').toString());
+        const accept = decoded.accepts?.[0];
+        console.log(`   x402 Version: ${decoded.x402Version}`);
+        console.log(`   Scheme: ${accept?.scheme || 'N/A'}`);
+        console.log(`   Amount: ${accept?.amount ? (Number(accept.amount) / 1e6).toFixed(4) : 'N/A'} USDC`);
+        console.log(`   Asset: ${accept?.asset || 'N/A'} (${accept?.extra?.name || 'USDC'})`);
+        console.log(`   Network: ${accept?.network || 'N/A'}`);
+        console.log(`   Pay to: ${accept?.payTo || 'N/A'}`);
+      } else {
+        console.log(`   (Payment requirements in headers)`);
+      }
     }
 
     // If private key available, try real payment

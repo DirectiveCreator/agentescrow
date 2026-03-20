@@ -100,7 +100,7 @@ export default function Dashboard() {
   const [agents, setAgents] = useState<Map<string, AgentReputation>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [isDemo, setIsDemo] = useState(true);
-  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'events' | 'architecture' | 'ens' | 'summary' | 'build-story' | 'join'>('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'events' | 'architecture' | 'delegation' | 'ens' | 'summary' | 'build-story' | 'join'>('overview');
   // Human→Agent hire form state
   const [hireForm, setHireForm] = useState({ taskType: 'text_summary', description: '', reward: '0.001', deadline: '24' });
   const [walletConnected, setWalletConnected] = useState(false);
@@ -224,7 +224,7 @@ export default function Dashboard() {
       {/* ── Navigation ── */}
       <nav className="border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 flex gap-0">
-          {(['overview', 'hire', 'board', 'events', 'architecture', 'ens', 'summary', 'build-story', 'join'] as const).map(section => (
+          {(['overview', 'hire', 'board', 'events', 'architecture', 'delegation', 'ens', 'summary', 'build-story', 'join'] as const).map(section => (
             <button
               key={section}
               onClick={() => setActiveSection(section)}
@@ -1422,6 +1422,176 @@ export default function Dashboard() {
     └── lib/
         └── contracts.ts            # ABIs + viem client config`}
               </pre>
+            </div>
+          </div>
+        )}
+
+        {/* ── Delegation Section ── */}
+        {activeSection === 'delegation' && (
+          <div className="space-y-8">
+            <SectionHeader title="MetaMask Delegation Framework" subtitle="Scoped, time-limited, chainable permissions for autonomous agent operations" />
+
+            {/* Delegation Hero */}
+            <div className="relative overflow-hidden rounded-lg border" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
+              <div className="absolute inset-0 opacity-20">
+                <Metaballs
+                  speed={0.3}
+                  scale={1.2}
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </div>
+              <div className="relative p-8 md:p-12">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-3xl">🔐</span>
+                  <h3 className="text-2xl font-semibold" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-heading)' }}>Delegated Agent Autonomy</h3>
+                </div>
+                <p className="text-lg mb-6" style={{ color: 'var(--text-secondary)' }}>
+                  Humans set policy. Agents execute autonomously. All within cryptographically enforced guardrails.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {[
+                    { icon: '👤', label: 'Human Sets Policy', desc: 'Define spending limits, allowed functions, time windows, and call counts' },
+                    { icon: '🤖', label: 'Agent Operates Freely', desc: 'Redeem delegations to post tasks, confirm deliveries — no human approval per-action' },
+                    { icon: '⛓️', label: 'Chain of Trust', desc: 'Buyer can re-delegate to mediator — authority narrows, never widens' },
+                  ].map((item, i) => (
+                    <div key={i} className="rounded-lg border p-4" style={{ borderColor: 'var(--border)', background: 'var(--bg-primary)' }}>
+                      <div className="text-2xl mb-2">{item.icon}</div>
+                      <div className="text-sm font-semibold mb-1" style={{ color: 'var(--accent)' }}>{item.label}</div>
+                      <div className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{item.desc}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Delegation Types */}
+            <div className="space-y-6">
+              <h4 className="text-sm font-semibold tracking-wide" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>DELEGATION TYPES</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  {
+                    title: 'Spending Delegation',
+                    chain: 'Human → Buyer Agent',
+                    color: '#06B6D4',
+                    desc: 'postTask() with ETH budget',
+                    caveats: ['AllowedTargets: ServiceBoard only', 'AllowedMethods: postTask()', 'ValueLte: 0.005 ETH per task', 'NativeTokenTransfer: 0.02 ETH total', 'LimitedCalls: 10 max', 'Timestamp: 24h expiry'],
+                  },
+                  {
+                    title: 'Confirmation Delegation',
+                    chain: 'Human → Buyer Agent',
+                    color: '#8B5CF6',
+                    desc: 'confirmDelivery() authorization',
+                    caveats: ['AllowedTargets: ServiceBoard only', 'AllowedMethods: confirmDelivery()', 'LimitedCalls: 10 max', 'Timestamp: 24h expiry'],
+                  },
+                  {
+                    title: 'Mediator Re-Delegation',
+                    chain: 'Human → Buyer → Mediator',
+                    color: '#F59E0B',
+                    desc: 'Chainable confirmation authority',
+                    caveats: ['Inherits ALL parent restrictions', 'AllowedMethods: confirmDelivery()', 'LimitedCalls: 5 max (narrowed)', 'Timestamp: 12h expiry (narrowed)'],
+                  },
+                ].map((del, i) => (
+                  <div key={i} className="rounded-lg border p-5" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full" style={{ background: del.color }} />
+                      <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{del.title}</span>
+                    </div>
+                    <div className="text-xs mb-3 px-2 py-1 rounded inline-block" style={{ background: `${del.color}15`, color: del.color, fontFamily: 'var(--font-mono)' }}>
+                      {del.chain}
+                    </div>
+                    <p className="text-xs mb-3" style={{ color: 'var(--text-tertiary)' }}>{del.desc}</p>
+                    <div className="space-y-1">
+                      {del.caveats.map((caveat, j) => (
+                        <div key={j} className="text-[10px] flex items-center gap-1.5" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
+                          <span style={{ color: del.color }}>▸</span> {caveat}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* How It Works Flow */}
+            <div className="rounded-lg border p-6" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
+              <h4 className="text-sm font-semibold tracking-wide mb-4" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>DELEGATION LIFECYCLE</h4>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {[
+                  { step: '01', title: 'Create Smart Accounts', desc: 'HybridDeleGator accounts for human + all agents. Counterfactual — deployed only on first use.', icon: '🔑' },
+                  { step: '02', title: 'Sign Delegations', desc: 'Human signs EIP-712 typed data off-chain. Zero gas cost. Creates spending + confirmation policies.', icon: '✍️' },
+                  { step: '03', title: 'Agents Redeem', desc: 'Agents submit delegations to DelegationManager. All caveats validated on-chain before execution.', icon: '⚡' },
+                  { step: '04', title: 'Transparent Execution', desc: 'Call executes FROM human\'s smart account. msg.sender = human. ServiceBoard sees no difference.', icon: '🎯' },
+                ].map((item, i) => (
+                  <div key={i} className="text-center">
+                    <div className="text-2xl mb-2">{item.icon}</div>
+                    <div className="text-xs font-mono mb-1" style={{ color: 'var(--accent)' }}>STEP {item.step}</div>
+                    <div className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>{item.title}</div>
+                    <div className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{item.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Technical Details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="rounded-lg border p-5" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
+                <h4 className="text-sm font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>On-Chain Infrastructure</h4>
+                <div className="space-y-2">
+                  {[
+                    { label: 'DelegationManager', value: '0xdb9B...7dB3', desc: 'Validates & redeems delegations' },
+                    { label: 'EntryPoint (ERC-4337)', value: '0x0000...0032', desc: 'UserOperation execution' },
+                    { label: 'Enforcers', value: '31 deployed', desc: 'Caveat enforcement contracts' },
+                    { label: 'Chain', value: 'Base Sepolia (84532)', desc: 'Native MetaMask support' },
+                  ].map((item, i) => (
+                    <div key={i} className="flex justify-between items-start">
+                      <div>
+                        <div className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>{item.label}</div>
+                        <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>{item.desc}</div>
+                      </div>
+                      <span className="text-xs font-mono" style={{ color: 'var(--accent)' }}>{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-lg border p-5" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
+                <h4 className="text-sm font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Key Insight: Zero Contract Changes</h4>
+                <p className="text-xs mb-3" style={{ color: 'var(--text-tertiary)' }}>
+                  When a delegation is redeemed, the call executes from the delegator&apos;s smart account.
+                  This means <code style={{ color: 'var(--accent)' }}>msg.sender == buyer</code> still passes at the ServiceBoard level.
+                </p>
+                <div className="rounded border p-3" style={{ borderColor: 'var(--border)', background: 'var(--bg-primary)' }}>
+                  <div className="text-[10px] font-mono space-y-1" style={{ color: 'var(--text-tertiary)' }}>
+                    <div><span style={{ color: '#8B5CF6' }}>// Before: Human approves every tx</span></div>
+                    <div>Human EOA → ServiceBoard.postTask()</div>
+                    <div className="mt-2"><span style={{ color: '#06B6D4' }}>// After: Agent redeems delegation</span></div>
+                    <div>Agent → DelegationManager → Human Smart Account → ServiceBoard.postTask()</div>
+                    <div className="mt-1"><span style={{ color: '#34D399' }}>// Result: msg.sender = Human Smart Account ✓</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bounty Target */}
+            <div className="rounded-lg border p-4 flex items-center justify-between" style={{ borderColor: '#8B5CF620', background: '#8B5CF608' }}>
+              <div className="flex items-center gap-3">
+                <span className="text-xl">🏆</span>
+                <div>
+                  <div className="text-sm font-semibold" style={{ color: '#8B5CF6' }}>MetaMask: Best Use of Delegations</div>
+                  <div className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Creative, novel use of the MetaMask Delegation Framework</div>
+                </div>
+              </div>
+              <div className="text-lg font-bold" style={{ color: '#8B5CF6', fontFamily: 'var(--font-mono)' }}>$5,000</div>
+            </div>
+
+            {/* SDK Info */}
+            <div className="rounded-lg border p-4" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-sm" style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>npm</span>
+                <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>@metamask/delegation-toolkit@0.13.0</span>
+              </div>
+              <div className="text-[10px] font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                Demo: <code style={{ color: 'var(--accent)' }}>node agents/src/delegation/demo.js</code> — runs full 4-phase lifecycle in simulation mode
+              </div>
             </div>
           </div>
         )}

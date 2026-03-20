@@ -11,13 +11,15 @@
     "openserv": "node src/openserv/agent.js",
     "openserv:prod": "DISABLE_TUNNEL=true node src/openserv/agent.js",
     "openserv:test": "node src/openserv/test-local.js",
-    "delegation:demo": "node src/delegation/demo.js"
+    "delegation:demo": "node src/delegation/demo.js",
+    "ampersend:demo": "node src/ampersend/demo.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@ampersend_ai/ampersend-sdk": "^0.0.12",
     "@filoz/synapse-sdk": "^0.40.0",
     "@metamask/delegation-toolkit": "^0.13.0",
     "@openserv-labs/client": "^2.5.3",

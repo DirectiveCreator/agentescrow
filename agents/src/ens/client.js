@@ -43,7 +43,7 @@ const ENS_CONTRACTS = {
   publicResolver: '0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5',
   nameWrapper: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
   universalResolver: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
-  ethRegistrarController: '0xfb3cE5D01e0f33f41DbB39835dB9745962F1f968',
+  ethRegistrarController: '0xfb3cE5D01e0f33f41DbB39035dB9745962F1f968',
   reverseRegistrar: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
 };
 

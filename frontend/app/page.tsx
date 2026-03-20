@@ -100,7 +100,13 @@ export default function Dashboard() {
   const [agents, setAgents] = useState<Map<string, AgentReputation>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [isDemo, setIsDemo] = useState(true);
-  const [activeSection, setActiveSection] = useState<'overview' | 'board' | 'events' | 'architecture' | 'summary' | 'build-story' | 'join'>('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'events' | 'architecture' | 'summary' | 'build-story' | 'join'>('overview');
+  // Human→Agent hire form state
+  const [hireForm, setHireForm] = useState({ taskType: 'text_summary', description: '', reward: '0.001', deadline: '24' });
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState('');
+  const [hireStep, setHireStep] = useState<'connect' | 'form' | 'confirm' | 'submitted'>('connect');
+  const [selectedAgent, setSelectedAgent] = useState<number | null>(null);
   const prevTaskCountRef = useRef(0);
 
   const fetchData = useCallback(async () => {
@@ -218,7 +224,7 @@ export default function Dashboard() {
       {/* ── Navigation ── */}
       <nav className="border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 flex gap-0">
-          {(['overview', 'board', 'events', 'architecture', 'summary', 'build-story', 'join'] as const).map(section => (
+          {(['overview', 'hire', 'board', 'events', 'architecture', 'summary', 'build-story', 'join'] as const).map(section => (
             <button
               key={section}
               onClick={() => setActiveSection(section)}
@@ -705,6 +711,412 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ── Hire Agent Section (Human → Agent Interface) ── */}
+        {activeSection === 'hire' && (
+          <div className="space-y-6">
+            <SectionHeader title="Hire an Agent" subtitle="Post a task, fund escrow, and let AI agents compete to deliver results" />
+
+            {/* Wallet Connection */}
+            {!walletConnected ? (
+              <div className="rounded-xl p-8 text-center relative overflow-hidden" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+                <div className="absolute inset-0 opacity-[0.08]" style={{ zIndex: 0 }}>
+                  <MeshGradient
+                    colors={['#38B3DC', '#A78BFA', '#0C0C0C', '#34D399']}
+                    speed={0.08}
+                    distortion={0.3}
+                    swirl={0.4}
+                    style={{ width: '100%', height: '100%' }}
+                  />
+                </div>
+                <div className="relative" style={{ zIndex: 1 }}>
+                  <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center text-3xl"
+                       style={{ background: 'var(--accent-10)', border: '2px solid var(--accent-40)', color: 'var(--accent)' }}>
+                    H
+                  </div>
+                  <h3 className="text-xl font-bold mb-2" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+                    Connect Your Wallet
+                  </h3>
+                  <p className="text-[13px] mb-6 max-w-md mx-auto" style={{ color: 'var(--text-secondary)' }}>
+                    Connect a wallet to post tasks and fund escrow. Your ETH is locked in a smart contract until you approve the agent&apos;s work.
+                  </p>
+                  <button
+                    onClick={() => {
+                      // Simulate wallet connection (real version would use wagmi/viem)
+                      const demoAddr = '0x' + Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+                      setWalletAddress(demoAddr);
+                      setWalletConnected(true);
+                      setHireStep('form');
+                    }}
+                    className="px-8 py-3 rounded-lg text-[13px] font-semibold transition-all hover:shadow-[0_0_20px_rgba(56,179,220,0.3)]"
+                    style={{ background: 'var(--accent)', color: '#0C0C0C' }}>
+                    Connect Wallet
+                  </button>
+                  <p className="text-[10px] mt-4" style={{ color: 'var(--text-quaternary)' }}>
+                    Supports MetaMask, WalletConnect, Coinbase Wallet &bull; Base Sepolia Network
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Connected wallet bar */}
+                <div className="flex items-center justify-between px-4 py-3 rounded-lg"
+                     style={{ background: 'var(--bg-card)', border: '1px solid #34D39940' }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full pulse-accent" style={{ background: '#34D399' }} />
+                    <span className="text-[12px] font-mono" style={{ color: '#34D399' }}>
+                      {shortenAddress(walletAddress)}
+                    </span>
+                    <span className="text-[11px] px-2 py-0.5 rounded"
+                          style={{ background: '#34D39910', color: '#34D399', border: '1px solid #34D39940' }}>
+                      CONNECTED
+                    </span>
+                  </div>
+                  <button onClick={() => { setWalletConnected(false); setWalletAddress(''); setHireStep('connect'); setSelectedAgent(null); }}
+                          className="text-[11px] px-3 py-1 rounded hover:opacity-80 transition-opacity"
+                          style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-tertiary)' }}>
+                    Disconnect
+                  </button>
+                </div>
+
+                {/* Step indicator */}
+                <div className="flex items-center gap-2 justify-center">
+                  {(['form', 'confirm', 'submitted'] as const).map((step, i) => (
+                    <div key={step} className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold"
+                           style={{
+                             background: hireStep === step ? 'var(--accent)' : ((['form','confirm','submitted'].indexOf(hireStep) > i) ? '#34D39920' : 'var(--bg-main)'),
+                             color: hireStep === step ? '#0C0C0C' : ((['form','confirm','submitted'].indexOf(hireStep) > i) ? '#34D399' : 'var(--text-quaternary)'),
+                             border: `1px solid ${hireStep === step ? 'var(--accent)' : 'var(--border)'}`,
+                           }}>
+                        {['form','confirm','submitted'].indexOf(hireStep) > i ? '\u2713' : i + 1}
+                      </div>
+                      <span className="text-[10px] tracking-wider" style={{ color: hireStep === step ? 'var(--accent)' : 'var(--text-quaternary)' }}>
+                        {step === 'form' ? 'CREATE TASK' : step === 'confirm' ? 'REVIEW & PAY' : 'LIVE'}
+                      </span>
+                      {i < 2 && <div className="w-12 h-px" style={{ background: 'var(--border)' }} />}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Step 1: Task Creation Form */}
+                {hireStep === 'form' && (
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Left: Form */}
+                    <div className="lg:col-span-2 space-y-4">
+                      <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+                        <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-5" style={{ color: 'var(--text-secondary)' }}>
+                          DESCRIBE YOUR TASK
+                        </h3>
+
+                        {/* Task Type */}
+                        <div className="mb-4">
+                          <label className="text-[11px] tracking-wider mb-2 block" style={{ color: 'var(--text-tertiary)' }}>TASK TYPE</label>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                            {[
+                              { value: 'text_summary', label: 'Text Summary', icon: '◈', desc: 'Summarize documents' },
+                              { value: 'code_review', label: 'Code Review', icon: '◆', desc: 'Audit & review code' },
+                              { value: 'translation', label: 'Translation', icon: '◇', desc: 'Translate content' },
+                              { value: 'data_analysis', label: 'Data Analysis', icon: '●', desc: 'Analyze datasets' },
+                            ].map(type => (
+                              <button key={type.value}
+                                      onClick={() => setHireForm(f => ({ ...f, taskType: type.value }))}
+                                      className="p-3 rounded-lg text-left transition-all"
+                                      style={{
+                                        background: hireForm.taskType === type.value ? 'var(--accent-10)' : 'var(--bg-main)',
+                                        border: `1px solid ${hireForm.taskType === type.value ? 'var(--accent-40)' : 'var(--border)'}`,
+                                      }}>
+                                <div className="text-lg mb-1" style={{ color: hireForm.taskType === type.value ? 'var(--accent)' : 'var(--text-tertiary)' }}>{type.icon}</div>
+                                <div className="text-[11px] font-semibold" style={{ color: hireForm.taskType === type.value ? 'var(--accent)' : 'var(--text-primary)' }}>{type.label}</div>
+                                <div className="text-[10px]" style={{ color: 'var(--text-quaternary)' }}>{type.desc}</div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Description */}
+                        <div className="mb-4">
+                          <label className="text-[11px] tracking-wider mb-2 block" style={{ color: 'var(--text-tertiary)' }}>TASK DESCRIPTION</label>
+                          <textarea
+                            value={hireForm.description}
+                            onChange={e => setHireForm(f => ({ ...f, description: e.target.value }))}
+                            placeholder="Describe what you need the agent to do. Be specific about inputs, outputs, and quality requirements..."
+                            rows={4}
+                            className="w-full rounded-lg p-4 text-[13px] resize-none focus:outline-none transition-colors"
+                            style={{
+                              background: 'var(--bg-main)',
+                              border: '1px solid var(--border)',
+                              color: 'var(--text-primary)',
+                              fontFamily: '"JetBrains Mono", monospace',
+                            }}
+                          />
+                        </div>
+
+                        {/* Reward & Deadline */}
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="text-[11px] tracking-wider mb-2 block" style={{ color: 'var(--text-tertiary)' }}>BOUNTY (ETH)</label>
+                            <div className="relative">
+                              <input
+                                type="text"
+                                value={hireForm.reward}
+                                onChange={e => setHireForm(f => ({ ...f, reward: e.target.value }))}
+                                className="w-full rounded-lg p-3 pr-14 text-[14px] font-mono focus:outline-none transition-colors"
+                                style={{
+                                  background: 'var(--bg-main)',
+                                  border: '1px solid var(--border)',
+                                  color: 'var(--text-primary)',
+                                }}
+                              />
+                              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px]" style={{ color: 'var(--text-quaternary)' }}>ETH</span>
+                            </div>
+                            <div className="flex gap-2 mt-2">
+                              {['0.001', '0.005', '0.01', '0.05'].map(v => (
+                                <button key={v} onClick={() => setHireForm(f => ({ ...f, reward: v }))}
+                                        className="text-[10px] px-2 py-1 rounded transition-colors hover:border-[var(--accent-40)]"
+                                        style={{ background: hireForm.reward === v ? 'var(--accent-10)' : 'var(--bg-main)', border: `1px solid ${hireForm.reward === v ? 'var(--accent-40)' : 'var(--border)'}`, color: hireForm.reward === v ? 'var(--accent)' : 'var(--text-tertiary)' }}>
+                                  {v}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-[11px] tracking-wider mb-2 block" style={{ color: 'var(--text-tertiary)' }}>DEADLINE (HOURS)</label>
+                            <div className="relative">
+                              <input
+                                type="text"
+                                value={hireForm.deadline}
+                                onChange={e => setHireForm(f => ({ ...f, deadline: e.target.value }))}
+                                className="w-full rounded-lg p-3 pr-14 text-[14px] font-mono focus:outline-none transition-colors"
+                                style={{
+                                  background: 'var(--bg-main)',
+                                  border: '1px solid var(--border)',
+                                  color: 'var(--text-primary)',
+                                }}
+                              />
+                              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px]" style={{ color: 'var(--text-quaternary)' }}>HRS</span>
+                            </div>
+                            <div className="flex gap-2 mt-2">
+                              {['1', '6', '24', '72'].map(v => (
+                                <button key={v} onClick={() => setHireForm(f => ({ ...f, deadline: v }))}
+                                        className="text-[10px] px-2 py-1 rounded transition-colors hover:border-[var(--accent-40)]"
+                                        style={{ background: hireForm.deadline === v ? 'var(--accent-10)' : 'var(--bg-main)', border: `1px solid ${hireForm.deadline === v ? 'var(--accent-40)' : 'var(--border)'}`, color: hireForm.deadline === v ? 'var(--accent)' : 'var(--text-tertiary)' }}>
+                                  {v}h
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right: Agent Selection */}
+                    <div className="space-y-4">
+                      <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+                        <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>
+                          AVAILABLE AGENTS
+                        </h3>
+                        {[
+                          { id: 2195, name: 'Seller Agent', score: 100, tasks: 7, types: ['text_summary', 'code_review', 'translation'], avatar: 'https://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy.ipfs.w3s.link' },
+                          { id: 2194, name: 'Buyer Agent', score: 50, tasks: 7, types: ['data_analysis', 'text_summary'], avatar: 'https://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna.ipfs.w3s.link' },
+                        ].map(agent => (
+                          <button key={agent.id}
+                                  onClick={() => setSelectedAgent(agent.id === selectedAgent ? null : agent.id)}
+                                  className="w-full mb-3 p-4 rounded-lg text-left transition-all"
+                                  style={{
+                                    background: selectedAgent === agent.id ? 'var(--accent-10)' : 'var(--bg-main)',
+                                    border: `1px solid ${selectedAgent === agent.id ? 'var(--accent-40)' : 'var(--border)'}`,
+                                  }}>
+                            <div className="flex items-center gap-3 mb-2">
+                              <img src={agent.avatar} alt={agent.name} className="w-10 h-10 rounded-full object-cover"
+                                   style={{ border: `2px solid ${selectedAgent === agent.id ? 'var(--accent)' : 'var(--border)'}` }} />
+                              <div>
+                                <div className="text-[12px] font-semibold">{agent.name}</div>
+                                <div className="text-[10px] font-mono" style={{ color: 'var(--text-tertiary)' }}>ERC-8004 #{agent.id}</div>
+                              </div>
+                              <div className="ml-auto text-right">
+                                <div className="text-[14px] font-bold" style={{ color: agent.score >= 80 ? '#34D399' : 'var(--accent)' }}>{agent.score}</div>
+                                <div className="text-[9px]" style={{ color: 'var(--text-quaternary)' }}>TRUST</div>
+                              </div>
+                            </div>
+                            <div className="flex gap-1 flex-wrap">
+                              {agent.types.map(t => (
+                                <span key={t} className="text-[9px] px-1.5 py-0.5 rounded"
+                                      style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-tertiary)' }}>
+                                  {t.replace('_', ' ')}
+                                </span>
+                              ))}
+                            </div>
+                            <div className="text-[10px] mt-2" style={{ color: 'var(--text-quaternary)' }}>
+                              {agent.tasks} tasks completed
+                            </div>
+                          </button>
+                        ))}
+                        <p className="text-[10px] mt-2" style={{ color: 'var(--text-quaternary)' }}>
+                          Or leave unselected — agents auto-discover &amp; claim open tasks on the ServiceBoard
+                        </p>
+                      </div>
+
+                      {/* Submit */}
+                      <button
+                        onClick={() => {
+                          if (hireForm.description.trim()) setHireStep('confirm');
+                        }}
+                        disabled={!hireForm.description.trim()}
+                        className="w-full py-3 rounded-lg text-[13px] font-semibold transition-all"
+                        style={{
+                          background: hireForm.description.trim() ? 'var(--accent)' : 'var(--bg-hover)',
+                          color: hireForm.description.trim() ? '#0C0C0C' : 'var(--text-quaternary)',
+                          cursor: hireForm.description.trim() ? 'pointer' : 'not-allowed',
+                        }}>
+                        Review &amp; Fund Escrow →
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 2: Confirm & Pay */}
+                {hireStep === 'confirm' && (
+                  <div className="max-w-xl mx-auto space-y-4">
+                    <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+                      <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-5" style={{ color: 'var(--text-secondary)' }}>
+                        CONFIRM TASK DETAILS
+                      </h3>
+                      <div className="space-y-3">
+                        {[
+                          { label: 'Task Type', value: hireForm.taskType.replace('_', ' ') },
+                          { label: 'Description', value: hireForm.description },
+                          { label: 'Bounty', value: `${hireForm.reward} ETH`, accent: true },
+                          { label: 'Deadline', value: `${hireForm.deadline} hours` },
+                          { label: 'Agent', value: selectedAgent ? `ERC-8004 #${selectedAgent}` : 'Open (any agent)' },
+                          { label: 'Escrow Contract', value: shortenAddress(CONTRACTS.escrowVault) },
+                          { label: 'Your Wallet', value: shortenAddress(walletAddress) },
+                        ].map(row => (
+                          <div key={row.label} className="flex justify-between items-start py-2" style={{ borderBottom: '1px solid var(--border)' }}>
+                            <span className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>{row.label}</span>
+                            <span className={`text-[12px] font-mono text-right max-w-[60%] ${row.label === 'Description' ? 'text-[11px]' : ''}`}
+                                  style={{ color: row.accent ? 'var(--accent)' : 'var(--text-primary)' }}>
+                              {row.value}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="mt-6 p-4 rounded-lg" style={{ background: '#FF880010', border: '1px solid #FF880040' }}>
+                        <div className="flex items-start gap-3">
+                          <span className="text-lg">⚠</span>
+                          <div>
+                            <p className="text-[12px] font-semibold mb-1" style={{ color: '#FF8800' }}>Escrow Protection</p>
+                            <p className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                              Your {hireForm.reward} ETH will be locked in the EscrowVault smart contract. Funds are only released when you
+                              confirm satisfactory delivery. If the deadline passes without delivery, you can reclaim your ETH.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3 mt-6">
+                        <button onClick={() => setHireStep('form')}
+                                className="flex-1 py-3 rounded-lg text-[12px] font-medium transition-colors"
+                                style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+                          ← Back
+                        </button>
+                        <button onClick={() => setHireStep('submitted')}
+                                className="flex-1 py-3 rounded-lg text-[13px] font-semibold transition-all hover:shadow-[0_0_20px_rgba(56,179,220,0.3)]"
+                                style={{ background: 'var(--accent)', color: '#0C0C0C' }}>
+                          Sign &amp; Fund Escrow
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 3: Submitted / Monitoring */}
+                {hireStep === 'submitted' && (
+                  <div className="max-w-xl mx-auto space-y-4">
+                    <div className="rounded-xl p-8 text-center relative overflow-hidden" style={{ background: 'var(--bg-card)', border: '1px solid #34D39940' }}>
+                      <div className="absolute inset-0 opacity-[0.06]" style={{ zIndex: 0 }}>
+                        <SmokeRing
+                          colors={['#34D399', '#38B3DC']}
+                          colorBack="#0C0C0C"
+                          speed={0.12}
+                          noiseScale={1.2}
+                          thickness={0.4}
+                          style={{ width: '100%', height: '100%' }}
+                        />
+                      </div>
+                      <div className="relative" style={{ zIndex: 1 }}>
+                        <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl"
+                             style={{ background: '#34D39920', border: '2px solid #34D39940', color: '#34D399' }}>
+                          ✓
+                        </div>
+                        <h3 className="text-xl font-bold mb-2" style={{ fontFamily: '"Space Grotesk", sans-serif', color: '#34D399' }}>
+                          Task Posted Successfully
+                        </h3>
+                        <p className="text-[13px] mb-6" style={{ color: 'var(--text-secondary)' }}>
+                          Your {hireForm.reward} ETH is locked in escrow. AI agents can now discover and claim your task.
+                        </p>
+
+                        {/* Live task status simulation */}
+                        <div className="rounded-lg p-4 mb-6 text-left" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                          <div className="text-[10px] tracking-wider mb-3" style={{ color: 'var(--text-tertiary)' }}>TASK STATUS</div>
+                          <div className="space-y-3">
+                            {[
+                              { status: 'POSTED', time: 'Just now', icon: '◈', color: 'var(--accent)', done: true },
+                              { status: 'ESCROW LOCKED', time: 'Just now', icon: '▣', color: 'var(--accent)', done: true },
+                              { status: 'WAITING FOR AGENT', time: 'Pending...', icon: '◇', color: '#FF8800', done: false },
+                              { status: 'IN PROGRESS', time: '—', icon: '◆', color: '#A78BFA', done: false },
+                              { status: 'DELIVERY REVIEW', time: '—', icon: '●', color: '#34D399', done: false },
+                            ].map((s, i) => (
+                              <div key={i} className="flex items-center gap-3">
+                                <span className={`text-sm ${s.done ? '' : 'opacity-30'}`} style={{ color: s.color }}>{s.icon}</span>
+                                <span className={`text-[11px] font-medium flex-1 ${s.done ? '' : 'opacity-40'}`}>{s.status}</span>
+                                <span className="text-[10px] font-mono" style={{ color: 'var(--text-quaternary)' }}>{s.time}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="flex gap-3 justify-center">
+                          <button onClick={() => setActiveSection('board')}
+                                  className="px-6 py-2.5 rounded-lg text-[12px] font-medium transition-colors"
+                                  style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+                            View Board
+                          </button>
+                          <button onClick={() => { setHireStep('form'); setHireForm({ taskType: 'text_summary', description: '', reward: '0.001', deadline: '24' }); setSelectedAgent(null); }}
+                                  className="px-6 py-2.5 rounded-lg text-[12px] font-semibold transition-all hover:shadow-[0_0_20px_rgba(56,179,220,0.3)]"
+                                  style={{ background: 'var(--accent)', color: '#0C0C0C' }}>
+                            Post Another Task
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Transaction receipt */}
+                    <div className="rounded-xl p-5" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+                      <div className="text-[10px] tracking-wider mb-3" style={{ color: 'var(--text-tertiary)' }}>TRANSACTION RECEIPT (SIMULATED)</div>
+                      <div className="space-y-2 font-mono text-[11px]">
+                        {[
+                          { k: 'tx_hash', v: '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('') },
+                          { k: 'block', v: (17000000 + Math.floor(Math.random() * 100000)).toString() },
+                          { k: 'method', v: 'ServiceBoard.postTask()' },
+                          { k: 'escrow', v: `${hireForm.reward} ETH → EscrowVault` },
+                          { k: 'gas', v: '~0.00001 ETH' },
+                          { k: 'network', v: 'Base Sepolia (84532)' },
+                        ].map(row => (
+                          <div key={row.k} className="flex justify-between">
+                            <span style={{ color: 'var(--text-quaternary)' }}>{row.k}</span>
+                            <span className="text-right truncate max-w-[70%]" style={{ color: 'var(--text-secondary)' }}>{row.v}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 

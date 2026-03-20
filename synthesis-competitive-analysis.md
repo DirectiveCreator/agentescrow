@@ -187,16 +187,45 @@ This appears to be a **bounty farming strategy** — building minimal integratio
 ### What We Do Better Than Everyone
 1. ✅ **Composable 3-contract architecture** (EscrowVault + ReputationRegistry + ServiceBoard) — most competitors have monolithic contracts
 2. ✅ **8 passing Foundry tests** — many competitors lack test suites
-3. ✅ **Multi-integration story** (Venice AI + x402 + OpenServ + ERC-8004) — broadest integration set
+3. ✅ **Multi-integration story** (Venice AI + x402 + OpenServ + ERC-8004 + Alkahest) — broadest integration set
 4. ✅ **On-chain demo results** — 8 tasks completed on-chain with verifiable transactions
 5. ✅ **Agent-built narrative** — we ARE an agent team, not humans building for agents
+6. ✅ **Human-to-Agent + Agent-to-Agent modes** — Nastar-inspired dual-path UX, not just agent-only
+7. ✅ **Human-friendly UI** — warm shader-driven design, marketplace metaphors over jargon
+
+### 🔥 UNIQUE DIFFERENTIATORS (Cross-Track Moats)
+
+These are capabilities NO competitor has — unique combinations that align with multiple bounty tracks:
+
+#### 1. Venice TEE + Alkahest ERC8004Arbiter ($4,900+ exposure)
+- Agent reasoning runs inside Venice hardware enclaves (TEE) — zero data retention
+- Escrow release gated by Alkahest's deployed ERC8004Arbiter (`0x67B2...35d6`) which validates agent identity scores
+- **PACT** uses Venice but has no Alkahest. **Nastar** has AI disputes but no privacy layer.
+- Tracks: Venice ($11.5K) + Arkhai Applications ($450) + Arkhai Extensions ($450) + ERC-8004 ($4K)
+
+#### 2. x402 Discovery + OpenServ Service Mesh ($10K exposure)
+- Agents expose services via HTTP 402 — discoverable by ANY agent on the internet
+- Combined with OpenServ (Agent #3973), agents find each other across platforms
+- **httpay** has 307 x402 endpoints but no escrow/reputation. **PACT** has no x402.
+- Tracks: Base Agent Services ($5K) + OpenServ ($4.5K) + OpenServ Build Story ($500)
+
+#### 3. Reputation-Gated Autonomy ($7K exposure)
+- Reputation isn't a badge — it's a spending limit. Higher trust score = more financial autonomy.
+- New agents require human approval for large transactions. Track record governs capability.
+- **PACT** has static policies, not dynamic. **Nastar** TrustScore is cosmetic (tier badges), not functional.
+- Tracks: Locus ($3K) + Let the Agent Cook ($4K)
+
+#### 4. Built BY Agents, FOR Agents ($32K exposure — zero build work)
+- AgentEscrow is built by Socialure's 30+ agent system. Every commit is agent-human collaboration.
+- Full conversation logs document the process. We don't just build for agents — we ARE agents.
+- **All competitors** are human-built projects for agents. We are the only agent-built project.
+- Tracks: Open Track ($28K) + Protocol Labs Let the Agent Cook ($4K)
 
 ### What We Could Improve (If Time Permits)
 1. 🔧 **Add dispute resolution** — Even a simple buyer/seller dispute flow would close the gap with Nastar
-2. 🔧 **Better framing** — Consider "Agent Labor Market" or "Agent Services Marketplace" over "Escrow"
-3. 🔧 **Multi-stablecoin support** — Currently ETH-only; USDC support would match Nastar/PACT
-4. 🔧 **Demo video** — PACT and Arbiter Guard have YouTube videos; we don't
-5. 🔧 **Mainnet deployment** — Would differentiate us from the testnet crowd
+2. 🔧 **Demo video** — PACT and Arbiter Guard have YouTube videos; we don't
+3. 🔧 **Mainnet deployment** — Would differentiate us from the testnet crowd
+4. 🔧 **Locus spending controls integration** — Wire reputation scores to wallet autonomy levels
 
 ### Tracks We Should Target (Based on Competition)
 - **Open Track** ($28K): Crowded but our multi-integration story is strong

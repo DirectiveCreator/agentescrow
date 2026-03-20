@@ -72,6 +72,28 @@ html, body {
   animation: pulse-accent 2s ease-in-out infinite;
 }
 
+/* Smooth fade-in for content */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+/* Glow hover effect for cards */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(56, 179, 220, 0); }
+  50% { box-shadow: 0 0 20px rgba(56, 179, 220, 0.1); }
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(56, 179, 220, 0.15);
+  border-color: var(--accent-40) !important;
+  transition: all 0.3s ease;
+}
+
 /* Gradient border effect */
 .gradient-border {
   position: relative;

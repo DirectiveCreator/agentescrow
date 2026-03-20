@@ -100,7 +100,7 @@ export default function Dashboard() {
   const [agents, setAgents] = useState<Map<string, AgentReputation>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [isDemo, setIsDemo] = useState(true);
-  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'events' | 'architecture' | 'summary' | 'build-story' | 'join'>('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'events' | 'architecture' | 'ens' | 'summary' | 'build-story' | 'join'>('overview');
   // Human→Agent hire form state
   const [hireForm, setHireForm] = useState({ taskType: 'text_summary', description: '', reward: '0.001', deadline: '24' });
   const [walletConnected, setWalletConnected] = useState(false);
@@ -224,7 +224,7 @@ export default function Dashboard() {
       {/* ── Navigation ── */}
       <nav className="border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 flex gap-0">
-          {(['overview', 'hire', 'board', 'events', 'architecture', 'summary', 'build-story', 'join'] as const).map(section => (
+          {(['overview', 'hire', 'board', 'events', 'architecture', 'ens', 'summary', 'build-story', 'join'] as const).map(section => (
             <button
               key={section}
               onClick={() => setActiveSection(section)}
@@ -1422,6 +1422,259 @@ export default function Dashboard() {
     └── lib/
         └── contracts.ts            # ABIs + viem client config`}
               </pre>
+            </div>
+          </div>
+        )}
+
+        {/* ── ENS Identity Section ── */}
+        {activeSection === 'ens' && (
+          <div className="space-y-8">
+            <SectionHeader title="ENS Identity Layer" subtitle="Human-readable names for AI agents — powered by ENS + ENSIP-25" />
+
+            {/* ENS Hero */}
+            <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
+              <div className="absolute inset-0 opacity-[0.08]" style={{ zIndex: 0 }}>
+                <MeshGradient
+                  colors={['#5B8DEF', '#A78BFA', '#38B3DC', '#0C0C0C']}
+                  speed={0.1}
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </div>
+              <div className="relative" style={{ zIndex: 1 }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl">🏷️</span>
+                  <div>
+                    <h2 className="text-lg font-bold" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+                      ENS Names as Agent Identity
+                    </h2>
+                    <p className="text-[12px]" style={{ color: 'var(--text-secondary)' }}>
+                      Every hex address replaced with human-readable names
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                  {/* Buyer Agent ENS Card */}
+                  <div className="p-5 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <img src="https://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna.ipfs.w3s.link" alt="Buyer" className="w-10 h-10 rounded-full" />
+                      <div>
+                        <div className="text-[13px] font-bold" style={{ color: 'var(--accent)', fontFamily: '"JetBrains Mono", monospace' }}>buyer.agentescrow.eth</div>
+                        <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>ERC-8004 Agent #2194</div>
+                      </div>
+                    </div>
+                    <div className="space-y-1.5 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                      <div className="flex justify-between"><span>Type</span><span className="font-mono" style={{ color: '#5B8DEF' }}>buyer</span></div>
+                      <div className="flex justify-between"><span>Trust Score</span><span className="font-mono" style={{ color: '#34D399' }}>100/100</span></div>
+                      <div className="flex justify-between"><span>Status</span><span className="font-mono" style={{ color: '#34D399' }}>active</span></div>
+                      <div className="flex justify-between"><span>Chain</span><span className="font-mono">Base Sepolia (84532)</span></div>
+                    </div>
+                  </div>
+                  {/* Seller Agent ENS Card */}
+                  <div className="p-5 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <img src="https://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy.ipfs.w3s.link" alt="Seller" className="w-10 h-10 rounded-full" />
+                      <div>
+                        <div className="text-[13px] font-bold" style={{ color: '#34D399', fontFamily: '"JetBrains Mono", monospace' }}>seller.agentescrow.eth</div>
+                        <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>ERC-8004 Agent #2195</div>
+                      </div>
+                    </div>
+                    <div className="space-y-1.5 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                      <div className="flex justify-between"><span>Type</span><span className="font-mono" style={{ color: '#34D399' }}>seller</span></div>
+                      <div className="flex justify-between"><span>Trust Score</span><span className="font-mono" style={{ color: '#34D399' }}>100/100</span></div>
+                      <div className="flex justify-between"><span>Status</span><span className="font-mono" style={{ color: '#34D399' }}>active</span></div>
+                      <div className="flex justify-between"><span>Chain</span><span className="font-mono">Base Sepolia (84532)</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ENS Text Records Schema */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>
+                CUSTOM TEXT RECORD SCHEMA
+              </h3>
+              <p className="text-[11px] mb-5" style={{ color: 'var(--text-tertiary)' }}>
+                Each agent&apos;s ENS name carries rich metadata via ENSIP-5 text records — making agents discoverable and verifiable.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {[
+                  { key: 'avatar', desc: 'IPFS profile image', category: 'standard' },
+                  { key: 'description', desc: 'Agent bio / purpose', category: 'standard' },
+                  { key: 'url', desc: 'Dashboard URL', category: 'standard' },
+                  { key: 'com.github', desc: 'Source repository', category: 'standard' },
+                  { key: 'ai.agent.type', desc: 'buyer | seller | arbiter', category: 'agent' },
+                  { key: 'ai.agent.capabilities', desc: 'JSON array of skills', category: 'agent' },
+                  { key: 'ai.agent.erc8004.id', desc: 'ERC-8004 token ID', category: 'agent' },
+                  { key: 'ai.agent.erc8004.registry', desc: 'Registry contract address', category: 'agent' },
+                  { key: 'ai.agent.reputation.score', desc: 'On-chain trust score', category: 'agent' },
+                  { key: 'ai.agent.serviceBoard', desc: 'ServiceBoard contract', category: 'agent' },
+                  { key: 'ai.agent.escrowVault', desc: 'EscrowVault contract', category: 'agent' },
+                  { key: 'ai.agent.chainId', desc: 'Operating chain ID', category: 'agent' },
+                  { key: 'ai.agent.status', desc: 'active | paused | offline', category: 'agent' },
+                  { key: 'ai.agent.protocol', desc: 'Protocol identifier', category: 'agent' },
+                ].map(r => (
+                  <div key={r.key} className="flex items-center gap-3 px-3 py-2 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded" style={{
+                      background: r.category === 'standard' ? '#5B8DEF15' : 'var(--accent-10)',
+                      color: r.category === 'standard' ? '#5B8DEF' : 'var(--accent)',
+                      border: `1px solid ${r.category === 'standard' ? '#5B8DEF30' : 'var(--accent-40)'}`,
+                    }}>{r.key}</span>
+                    <span className="text-[11px] flex-1" style={{ color: 'var(--text-secondary)' }}>{r.desc}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ENSIP-25 Bidirectional Verification */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>
+                ENSIP-25: BIDIRECTIONAL VERIFICATION
+              </h3>
+              <p className="text-[11px] mb-6" style={{ color: 'var(--text-tertiary)' }}>
+                ENSIP-25 creates a cryptographic two-way link between ENS names and ERC-8004 agent registrations — proving ownership in both directions.
+              </p>
+              <div className="rounded-lg p-6" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                <pre className="text-[11px] font-mono leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{`
+  ┌─────────────────────────────┐       ┌──────────────────────────────┐
+  │       ENS (Ethereum)        │       │    ERC-8004 (Base Sepolia)   │
+  │                             │       │                              │
+  │  buyer.agentescrow.eth      │◄─────►│  Agent #2194                 │
+  │    ├─ avatar: ipfs://...    │       │    ├─ name: "Buyer Agent"    │
+  │    ├─ ai.agent.type: buyer  │       │    ├─ wallet: 0xC07b...96cC  │
+  │    ├─ ai.agent.erc8004.id:  │       │    └─ agentURI: data:...     │
+  │    │  2194                  │       │                              │
+  │    └─ agent-registration    │       │  Agent #2195                 │
+  │       [0x8004...][2194]:    │◄─────►│    ├─ name: "Seller Agent"   │
+  │       "verified"            │       │    └─ agentURI: data:...     │
+  │                             │       │                              │
+  │  seller.agentescrow.eth     │       └──────────────────────────────┘
+  │    └─ agent-registration    │
+  │       [0x8004...][2195]:    │
+  │       "verified"            │
+  └─────────────────────────────┘
+`}</pre>
+              </div>
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="p-3 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <div className="text-[11px] font-semibold mb-1" style={{ color: '#5B8DEF' }}>ENS → ERC-8004</div>
+                  <div className="text-[10px] font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                    Text record key: agent-registration[0x8004...BD9e][2194]
+                  </div>
+                </div>
+                <div className="p-3 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <div className="text-[11px] font-semibold mb-1" style={{ color: '#34D399' }}>ERC-8004 → ENS</div>
+                  <div className="text-[10px] font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                    agentURI metadata includes ensName field
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Communication Flow */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>
+                ENS-POWERED COMMUNICATION
+              </h3>
+              <p className="text-[11px] mb-5" style={{ color: 'var(--text-tertiary)' }}>
+                Agents discover, negotiate, and transact using only ENS names. XMTP provides encrypted messaging; on-chain escrow handles settlement.
+              </p>
+              <div className="space-y-3">
+                {[
+                  { step: '1', title: 'Discovery', desc: 'Buyer resolves "seller.agentescrow.eth" via ENS → gets address, capabilities, trust score, and API endpoint from text records', icon: '🔍', color: '#5B8DEF' },
+                  { step: '2', title: 'Negotiation (XMTP)', desc: 'Buyer opens encrypted XMTP channel to seller using ENS-resolved address. Task terms negotiated privately off-chain', icon: '📨', color: '#A78BFA' },
+                  { step: '3', title: 'Escrow (On-Chain)', desc: 'Buyer posts task to ServiceBoard + locks ETH in EscrowVault. Payment routes to "seller.agentescrow.eth" (ENS-resolved)', icon: '🔗', color: 'var(--accent)' },
+                  { step: '4', title: 'Delivery (XMTP)', desc: 'Seller executes task and sends encrypted delivery proof via XMTP. Buyer reviews off-chain before confirming on-chain', icon: '📦', color: '#34D399' },
+                  { step: '5', title: 'Settlement', desc: 'Buyer confirms completion → EscrowVault releases ETH to seller → ReputationRegistry updates trust scores. All via ENS names', icon: '✅', color: '#34D399' },
+                ].map(item => (
+                  <div key={item.step} className="flex items-start gap-4 p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-[14px]"
+                         style={{ background: `${item.color}15`, border: `1px solid ${item.color}40` }}>
+                      {item.icon}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-[12px] font-semibold mb-1" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+                        <span style={{ color: item.color }}>{item.step}.</span> {item.title}
+                      </div>
+                      <div className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Architecture Diagram */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>
+                ARCHITECTURE: ENS AS THE IDENTITY LAYER
+              </h3>
+              <div className="rounded-lg p-6" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                <pre className="text-[10px] font-mono leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{`
+  ┌────────────────────────────────────────────────────────────────┐
+  │                      ENS IDENTITY LAYER                       │
+  │                                                                │
+  │  buyer.agentescrow.eth  ←──ENSIP-25──→  ERC-8004 #2194        │
+  │  seller.agentescrow.eth ←──ENSIP-25──→  ERC-8004 #2195        │
+  │                                                                │
+  │  Text Records = Agent Metadata (capabilities, trust, status)   │
+  └───────────────────────┬────────────────────────────────────────┘
+                          │
+          ┌───────────────┼───────────────┐
+          ▼               ▼               ▼
+  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+  │  XMTP Layer  │ │ AgentEscrow  │ │  ERC-8004    │
+  │  (Private)   │ │  (On-Chain)  │ │  (Identity)  │
+  │              │ │              │ │              │
+  │ Encrypted    │ │ ServiceBoard │ │ Agent NFTs   │
+  │ negotiation  │ │ EscrowVault  │ │ Metadata     │
+  │ delivery     │ │ Reputation   │ │ Registry     │
+  └──────────────┘ └──────────────┘ └──────────────┘
+`}</pre>
+              </div>
+            </div>
+
+            {/* Prize Tracks */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>
+                ENS PRIZE TRACKS ($1,500 TOTAL)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  { track: 'ENS Identity', prize: '$600', desc: 'Agent subdomains (buyer/seller.agentescrow.eth) with rich text records, ENSIP-25 bidirectional verification, cross-protocol identity bridge (ENS ↔ ERC-8004)', color: '#5B8DEF' },
+                  { track: 'ENS Communication', prize: '$600', desc: 'Name-based task routing, payment resolution via ENS, XMTP encrypted agent messaging, zero hex addresses in any UX flow', color: '#A78BFA' },
+                  { track: 'ENS Open Integration', prize: '$300', desc: 'ENS is THE identity layer — not an afterthought. Agent discovery, reputation, payments, and communication all flow through ENS names', color: 'var(--accent)' },
+                ].map(t => (
+                  <div key={t.track} className="p-5 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <div className="text-[11px] font-semibold mb-1" style={{ color: t.color }}>{t.track}</div>
+                    <div className="text-[16px] font-bold mb-2" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>{t.prize}</div>
+                    <div className="text-[11px] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>{t.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Implementation Files */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>
+                IMPLEMENTATION
+              </h3>
+              <div className="space-y-2">
+                {[
+                  { file: 'agents/src/ens/client.js', desc: 'ENS client — resolution, text records, subdomain creation, agent discovery', lines: '629' },
+                  { file: 'agents/src/ens/ensip25.js', desc: 'ENSIP-25 — bidirectional ENS ↔ ERC-8004 verification', lines: '329' },
+                  { file: 'agents/src/ens/xmtp-messaging.js', desc: 'XMTP — encrypted agent-to-agent messaging via ENS names', lines: '568' },
+                  { file: 'agents/src/ens/register.js', desc: 'Registration — creates agent subdomains with full text records', lines: '163' },
+                  { file: 'agents/src/ens/demo.js', desc: 'Demo — showcases all 3 prize tracks (simulation + live modes)', lines: '441' },
+                ].map(f => (
+                  <div key={f.file} className="flex items-center justify-between px-4 py-3 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <div className="flex-1">
+                      <span className="text-[11px] font-mono" style={{ color: 'var(--accent)' }}>{f.file}</span>
+                      <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>{f.desc}</div>
+                    </div>
+                    <span className="text-[10px] font-mono" style={{ color: 'var(--text-quaternary)' }}>{f.lines} lines</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

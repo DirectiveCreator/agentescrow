@@ -42,6 +42,7 @@ const CONTRACTS = {
   publicResolver: '0x8FADE66B79cC9f707aB26799354482EB93a5B7dD',
   ethRegistrarController: '0xfb3cE5D01e0f33f41DbB39035dB9745962F1f968',
   universalResolver: '0xc8Af999e38273D658BE1b921b88A9Ddf005769cC',
+  nameWrapper: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
 };
 
 // ─── ABIs ─────────────────────────────────────────────────────────────────
@@ -141,6 +142,31 @@ const REGISTRY_ABI = [
     stateMutability: 'view',
     inputs: [{ name: 'node', type: 'bytes32' }],
     outputs: [{ name: '', type: 'address' }],
+  },
+];
+
+const NAME_WRAPPER_ABI = [
+  {
+    name: 'setSubnodeRecord',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'parentNode', type: 'bytes32' },
+      { name: 'label', type: 'string' },
+      { name: 'owner', type: 'address' },
+      { name: 'resolver', type: 'address' },
+      { name: 'ttl', type: 'uint64' },
+      { name: 'fuses', type: 'uint32' },
+      { name: 'expiry', type: 'uint64' },
+    ],
+    outputs: [{ name: 'node', type: 'bytes32' }],
+  },
+  {
+    name: 'isWrapped',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'node', type: 'bytes32' }],
+    outputs: [{ name: '', type: 'bool' }],
   },
 ];
 
@@ -404,24 +430,70 @@ async function createSubdomains(publicClient, walletClient, parentName, account)
   const parentNode = namehash(normalize(parentName));
   const results = {};
 
+  // Check if parent is wrapped (Sepolia auto-wraps .eth registrations)
+  let isWrapped = false;
+  try {
+    isWrapped = await publicClient.readContract({
+      address: CONTRACTS.nameWrapper,
+      abi: NAME_WRAPPER_ABI,
+      functionName: 'isWrapped',
+      args: [parentNode],
+    });
+  } catch {
+    // If check fails, try both methods
+  }
+
+  console.log(`  Name wrapped: ${isWrapped ? 'YES (using NameWrapper)' : 'NO (using Registry)'}`);
+
   for (const [name, agent] of Object.entries(AGENTS)) {
     const fullName = `${agent.label}.${parentName}`;
     console.log(`\n  🏷️ Creating ${fullName}...`);
 
     try {
-      const hash = await walletClient.writeContract({
-        address: CONTRACTS.registry,
-        abi: REGISTRY_ABI,
-        functionName: 'setSubnodeRecord',
-        args: [parentNode, labelhash(agent.label), account.address, CONTRACTS.publicResolver, 0n],
-      });
+      let hash;
+      if (isWrapped) {
+        // Wrapped names: use NameWrapper.setSubnodeRecord (takes string label, not labelhash)
+        const expiry = BigInt(Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60);
+        hash = await walletClient.writeContract({
+          address: CONTRACTS.nameWrapper,
+          abi: NAME_WRAPPER_ABI,
+          functionName: 'setSubnodeRecord',
+          args: [parentNode, agent.label, account.address, CONTRACTS.publicResolver, 0n, 0, expiry],
+        });
+      } else {
+        // Unwrapped: use Registry.setSubnodeRecord (takes labelhash)
+        hash = await walletClient.writeContract({
+          address: CONTRACTS.registry,
+          abi: REGISTRY_ABI,
+          functionName: 'setSubnodeRecord',
+          args: [parentNode, labelhash(agent.label), account.address, CONTRACTS.publicResolver, 0n],
+        });
+      }
       await publicClient.waitForTransactionReceipt({ hash });
       console.log(`  ✅ Subdomain created: ${hash}`);
       results[name] = { success: true, tx: hash };
     } catch (err) {
       console.log(`  ⚠️ ${err.message.slice(0, 100)}`);
-      // May already exist or be wrapped - try setting records anyway
-      results[name] = { success: false, error: err.message };
+      // If NameWrapper fails, fallback to Registry
+      if (isWrapped) {
+        console.log(`  ↻ Retrying with Registry...`);
+        try {
+          const hash = await walletClient.writeContract({
+            address: CONTRACTS.registry,
+            abi: REGISTRY_ABI,
+            functionName: 'setSubnodeRecord',
+            args: [parentNode, labelhash(agent.label), account.address, CONTRACTS.publicResolver, 0n],
+          });
+          await publicClient.waitForTransactionReceipt({ hash });
+          console.log(`  ✅ Subdomain created (Registry fallback): ${hash}`);
+          results[name] = { success: true, tx: hash, method: 'registry_fallback' };
+        } catch (err2) {
+          console.log(`  ⚠️ Fallback also failed: ${err2.message.slice(0, 80)}`);
+          results[name] = { success: false, error: err2.message };
+        }
+      } else {
+        results[name] = { success: false, error: err.message };
+      }
     }
   }
 

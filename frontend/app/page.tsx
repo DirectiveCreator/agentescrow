@@ -1659,6 +1659,95 @@ export default function Dashboard() {
               </div>
             </div>
 
+            {/* Live ENS Resolver */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>
+                LIVE ENS RESOLVER
+              </h3>
+              <p className="text-[11px] mb-4" style={{ color: 'var(--text-tertiary)' }}>
+                Query the Ethereum Sepolia ENS registry in real-time. Try resolving agent names to see their on-chain identity.
+              </p>
+              <div className="flex gap-2 mb-4">
+                {['buyer.agentescrow.eth', 'seller.agentescrow.eth', 'agentescrow.eth'].map(name => (
+                  <button
+                    key={name}
+                    onClick={async () => {
+                      const el = document.getElementById('ens-lookup-input') as HTMLInputElement;
+                      if (el) el.value = name;
+                      const resultEl = document.getElementById('ens-lookup-result');
+                      if (resultEl) {
+                        resultEl.textContent = 'Resolving...';
+                        resultEl.style.color = 'var(--text-secondary)';
+                        try {
+                          const res = await fetch(`/api/ens?name=${encodeURIComponent(name)}`);
+                          const data = await res.json();
+                          if (data.registered) {
+                            const lines = [`Name: ${data.name}`, `Address: ${data.address || '(not set yet)'}`, ''];
+                            if (data.records && Object.keys(data.records).length > 0) {
+                              lines.push('Text Records:');
+                              for (const [k, v] of Object.entries(data.records)) {
+                                const val = String(v).length > 60 ? String(v).slice(0, 57) + '...' : String(v);
+                                lines.push(`  ${k}: ${val}`);
+                              }
+                            } else {
+                              lines.push('(No text records set yet — run setup-ens.js to register)');
+                            }
+                            if (data.ensip25) {
+                              lines.push('', 'ENSIP-25 Verification: VERIFIED');
+                              lines.push(`  Status: ${data.ensip25.status}`);
+                              lines.push(`  Type: ${data.ensip25.agentType}`);
+                            }
+                            resultEl.textContent = lines.join('\n');
+                            resultEl.style.color = '#34D399';
+                          } else {
+                            resultEl.textContent = `${name}: Not registered yet.\n\nTo register, run:\n  DEPLOYER_PRIVATE_KEY=0x... node agents/src/ens/setup-ens.js agentescrow`;
+                            resultEl.style.color = '#F59E0B';
+                          }
+                        } catch (err) {
+                          resultEl.textContent = `Error: ${(err as Error).message}`;
+                          resultEl.style.color = '#EF4444';
+                        }
+                      }
+                    }}
+                    className="px-3 py-1.5 rounded-lg text-[10px] font-mono transition-all hover:scale-105"
+                    style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--accent)' }}
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-2 mb-4">
+                <input
+                  id="ens-lookup-input"
+                  type="text"
+                  placeholder="Enter ENS name (e.g., buyer.agentescrow.eth)"
+                  className="flex-1 px-4 py-2 rounded-lg text-[12px] font-mono"
+                  style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-primary)', outline: 'none' }}
+                  onKeyDown={async (e) => {
+                    if (e.key === 'Enter') {
+                      const input = e.target as HTMLInputElement;
+                      const resultEl = document.getElementById('ens-lookup-result');
+                      if (resultEl && input.value) {
+                        resultEl.textContent = 'Resolving...';
+                        try {
+                          const res = await fetch(`/api/ens?name=${encodeURIComponent(input.value)}`);
+                          const data = await res.json();
+                          resultEl.textContent = JSON.stringify(data, null, 2);
+                          resultEl.style.color = data.registered ? '#34D399' : '#F59E0B';
+                        } catch (err) {
+                          resultEl.textContent = `Error: ${(err as Error).message}`;
+                          resultEl.style.color = '#EF4444';
+                        }
+                      }
+                    }
+                  }}
+                />
+              </div>
+              <pre id="ens-lookup-result" className="text-[11px] font-mono p-4 rounded-lg whitespace-pre-wrap" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-tertiary)', minHeight: '100px' }}>
+                Click an agent name above or type an ENS name and press Enter to resolve...
+              </pre>
+            </div>
+
             {/* ENS Text Records Schema */}
             <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
               <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>
@@ -1831,10 +1920,12 @@ export default function Dashboard() {
               <div className="space-y-2">
                 {[
                   { file: 'agents/src/ens/client.js', desc: 'ENS client — resolution, text records, subdomain creation, agent discovery', lines: '629' },
+                  { file: 'agents/src/ens/setup-ens.js', desc: 'One-command setup — register name, create subdomains, set records, verify (NameWrapper-aware)', lines: '690' },
                   { file: 'agents/src/ens/ensip25.js', desc: 'ENSIP-25 — bidirectional ENS ↔ ERC-8004 verification', lines: '329' },
                   { file: 'agents/src/ens/xmtp-messaging.js', desc: 'XMTP — encrypted agent-to-agent messaging via ENS names', lines: '568' },
                   { file: 'agents/src/ens/register.js', desc: 'Registration — creates agent subdomains with full text records', lines: '163' },
                   { file: 'agents/src/ens/demo.js', desc: 'Demo — showcases all 3 prize tracks (simulation + live modes)', lines: '441' },
+                  { file: 'frontend/app/api/ens/route.ts', desc: 'Live ENS resolution API — queries Sepolia ENS in real-time', lines: '155' },
                 ].map(f => (
                   <div key={f.file} className="flex items-center justify-between px-4 py-3 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                     <div className="flex-1">

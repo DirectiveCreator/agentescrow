@@ -54,7 +54,7 @@ const XMTP_ENV = process.env.XMTP_ENV || 'dev'; // 'dev' = testnet, 'production'
 
 // ─── ENS Resolution Helper ──────────────────────────────────────────────
 
-const ENS_UNIVERSAL_RESOLVER = '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe';
+const ENS_UNIVERSAL_RESOLVER = '0xc8Af999e38273D658BE1b921b88A9Ddf005769cC';
 
 function getEnsClient() {
   const rpcUrl = process.env.SEPOLIA_RPC || 'https://ethereum-sepolia-rpc.publicnode.com';

@@ -13,10 +13,10 @@
  *
  * ENS Sepolia contracts (same addresses as mainnet):
  * - Registry:           0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e
- * - Public Resolver:    0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5
+ * - Public Resolver:    0x8FADE66B79cC9f707aB26799354482EB93a5B7dD
  * - NameWrapper:        0x0635513f179D50A207757E05759CbD106d7dFcE8
- * - ETH Registrar:      0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85
- * - Universal Resolver: 0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe
+ * - ETH Registrar:      0xfb3cE5D01e0f33f41DbB39035dB9745962F1f968
+ * - Universal Resolver: 0xc8Af999e38273D658BE1b921b88A9Ddf005769cC
  */
 
 import {
@@ -40,9 +40,9 @@ config({ path: '../.env' });
 // ─── ENS Sepolia Contract Addresses ───────────────────────────────────────
 const ENS_CONTRACTS = {
   registry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-  publicResolver: '0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5',
+  publicResolver: '0x8FADE66B79cC9f707aB26799354482EB93a5B7dD',
   nameWrapper: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
-  universalResolver: '0xeEeEEEeE14D718C2B47D9923Deab1335E144EeEe',
+  universalResolver: '0xc8Af999e38273D658BE1b921b88A9Ddf005769cC',
   ethRegistrarController: '0xfb3cE5D01e0f33f41DbB39035dB9745962F1f968',
   reverseRegistrar: '0xA0a1AbcDAe1a2a4A2EF8e9113Ff0e02DD81DC0C6',
 };

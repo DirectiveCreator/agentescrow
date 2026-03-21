@@ -1729,11 +1729,32 @@ export default function Dashboard() {
                       const resultEl = document.getElementById('ens-lookup-result');
                       if (resultEl && input.value) {
                         resultEl.textContent = 'Resolving...';
+                        resultEl.style.color = 'var(--text-secondary)';
                         try {
                           const res = await fetch(`/api/ens?name=${encodeURIComponent(input.value)}`);
                           const data = await res.json();
-                          resultEl.textContent = JSON.stringify(data, null, 2);
-                          resultEl.style.color = data.registered ? '#34D399' : '#F59E0B';
+                          if (data.registered) {
+                            const lines = [`Name: ${data.name}`, `Address: ${data.address || '(not set yet)'}`, ''];
+                            if (data.records && Object.keys(data.records).length > 0) {
+                              lines.push('Text Records:');
+                              for (const [k, v] of Object.entries(data.records)) {
+                                const val = String(v).length > 60 ? String(v).slice(0, 57) + '...' : String(v);
+                                lines.push(`  ${k}: ${val}`);
+                              }
+                            } else {
+                              lines.push('(No text records set yet — run setup-ens.js to register)');
+                            }
+                            if (data.ensip25) {
+                              lines.push('', 'ENSIP-25 Verification: VERIFIED');
+                              lines.push(`  Status: ${data.ensip25.status}`);
+                              lines.push(`  Type: ${data.ensip25.agentType}`);
+                            }
+                            resultEl.textContent = lines.join('\n');
+                            resultEl.style.color = '#34D399';
+                          } else {
+                            resultEl.textContent = `${data.name || input.value}: Not registered yet.\n\nTo register, run:\n  DEPLOYER_PRIVATE_KEY=0x... node agents/src/ens/setup-ens.js agentescrow`;
+                            resultEl.style.color = '#F59E0B';
+                          }
                         } catch (err) {
                           resultEl.textContent = `Error: ${(err as Error).message}`;
                           resultEl.style.color = '#EF4444';
@@ -1742,6 +1763,47 @@ export default function Dashboard() {
                     }
                   }}
                 />
+                <button
+                  onClick={async () => {
+                    const input = document.getElementById('ens-lookup-input') as HTMLInputElement;
+                    const resultEl = document.getElementById('ens-lookup-result');
+                    if (resultEl && input?.value) {
+                      resultEl.textContent = 'Resolving...';
+                      resultEl.style.color = 'var(--text-secondary)';
+                      try {
+                        const res = await fetch(`/api/ens?name=${encodeURIComponent(input.value)}`);
+                        const data = await res.json();
+                        if (data.registered) {
+                          const lines = [`Name: ${data.name}`, `Address: ${data.address || '(not set yet)'}`, ''];
+                          if (data.records && Object.keys(data.records).length > 0) {
+                            lines.push('Text Records:');
+                            for (const [k, v] of Object.entries(data.records)) {
+                              const val = String(v).length > 60 ? String(v).slice(0, 57) + '...' : String(v);
+                              lines.push(`  ${k}: ${val}`);
+                            }
+                          }
+                          if (data.ensip25) {
+                            lines.push('', 'ENSIP-25 Verification: VERIFIED');
+                            lines.push(`  Status: ${data.ensip25.status}`);
+                            lines.push(`  Type: ${data.ensip25.agentType}`);
+                          }
+                          resultEl.textContent = lines.join('\n');
+                          resultEl.style.color = '#34D399';
+                        } else {
+                          resultEl.textContent = `${data.name || input.value}: Not registered yet.`;
+                          resultEl.style.color = '#F59E0B';
+                        }
+                      } catch (err) {
+                        resultEl.textContent = `Error: ${(err as Error).message}`;
+                        resultEl.style.color = '#EF4444';
+                      }
+                    }
+                  }}
+                  className="px-5 py-2 rounded-lg text-[12px] font-semibold transition-all hover:scale-105"
+                  style={{ background: 'var(--accent)', color: '#000', fontFamily: '"Space Grotesk", sans-serif' }}
+                >
+                  Resolve
+                </button>
               </div>
               <pre id="ens-lookup-result" className="text-[11px] font-mono p-4 rounded-lg whitespace-pre-wrap" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-tertiary)', minHeight: '100px' }}>
                 Click an agent name above or type an ENS name and press Enter to resolve...

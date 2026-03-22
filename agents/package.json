@@ -12,7 +12,8 @@
     "openserv:prod": "DISABLE_TUNNEL=true node src/openserv/agent.js",
     "openserv:test": "node src/openserv/test-local.js",
     "delegation:demo": "node src/delegation/demo.js",
-    "ampersend:demo": "node src/ampersend/demo.js"
+    "ampersend:demo": "node src/ampersend/demo.js",
+    "filecoin:demo": "node src/filecoin/demo.js"
   },
   "keywords": [],
   "author": "",

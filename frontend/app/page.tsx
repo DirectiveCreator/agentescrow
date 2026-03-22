@@ -222,7 +222,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             <span className="text-[11px] px-2 py-1 rounded tracking-wide"
                   style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
-              BASE CHAIN
+              MULTI-CHAIN
             </span>
             {isDemo && (
               <span className="text-[11px] px-2 py-1 rounded tracking-wide"
@@ -760,7 +760,7 @@ export default function Dashboard() {
                   <div className="h-px" style={{ background: 'var(--border)' }} />
                   <div className="flex justify-between items-center">
                     <span>Network</span>
-                    <span style={{ color: 'var(--accent)' }}>Base Sepolia (84532) &amp; Celo Sepolia (44787)</span>
+                    <span style={{ color: 'var(--accent)' }}>Base Sepolia (84532) &amp; Celo Sepolia (11142220)</span>
                   </div>
                   <div className="h-px" style={{ background: 'var(--border)' }} />
                   <div className="flex justify-between items-center">
@@ -1168,7 +1168,7 @@ export default function Dashboard() {
                           { k: 'method', v: 'ServiceBoard.postTask()' },
                           { k: 'escrow', v: `${hireForm.reward} ETH → EscrowVault` },
                           { k: 'gas', v: '~0.00001 ETH' },
-                          { k: 'network', v: 'Base Sepolia (84532) & CELO Sepolia (44787)' },
+                          { k: 'network', v: 'Base Sepolia (84532) & CELO Sepolia (11142220)' },
                         ].map(row => (
                           <div key={row.k} className="flex justify-between">
                             <span style={{ color: 'var(--text-quaternary)' }}>{row.k}</span>
@@ -1261,7 +1261,7 @@ export default function Dashboard() {
                     borderRadius: 4,
                     border: '1px solid var(--border)',
                   }}>
-                    Celo 44787
+                    Celo 11142220
                   </span>
                 </div>
 

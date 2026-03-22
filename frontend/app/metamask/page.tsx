@@ -872,60 +872,217 @@ export default function MetaMaskDelegationPage() {
             title="Delegation Chain"
             subtitle="How permissions flow from Human → Buyer Agent → Mediator Agent with narrowing at each level."
           />
-          <div style={{
-            padding: 24,
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            borderRadius: 12,
-            fontFamily: 'var(--font-mono)',
-            fontSize: 12,
-            lineHeight: 2,
-            color: 'var(--text-secondary)',
-            overflow: 'auto',
-          }}>
-            <pre style={{ margin: 0 }}>{`┌─────────────────────────────────────────────────────────────────┐
-│                    DELEGATION CHAIN FLOW                       │
-└─────────────────────────────────────────────────────────────────┘
 
-  ┌──────────────┐         ┌──────────────┐         ┌──────────────┐
-  │   HUMAN      │         │ BUYER AGENT  │         │  MEDIATOR    │
-  │  (Delegator) │         │  (Delegate)  │         │   AGENT      │
-  │              │         │              │         │ (Re-Delegate)│
-  └──────┬───────┘         └──────┬───────┘         └──────┬───────┘
-         │                        │                        │
-         │  Spending Delegation   │                        │
-         │  ─ postTask()          │                        │
-         │  ─ 0.005 ETH/task      │                        │
-         │  ─ 0.02 ETH total      │                        │
-         │  ─ 10 calls, 24h       │                        │
-         │───────────────────────>│                        │
-         │                        │                        │
-         │  Confirmation Deleg.   │                        │
-         │  ─ confirmDelivery()   │                        │
-         │  ─ 10 calls, 24h       │                        │
-         │───────────────────────>│                        │
-         │                        │                        │
-         │                        │  Re-Delegation         │
-         │                        │  ─ confirmDelivery()   │
-         │                        │  ─ 5 calls, 12h        │
-         │                        │  ─ inherits all limits  │
-         │                        │───────────────────────>│
-         │                        │                        │
-         │                  ┌─────┴────────────────────────┤
-         │                  │     REDEMPTION               │
-         │                  │                              │
-         │                  │  Agent calls DelegationMgr   │
-         │                  │  ─ validates signatures      │
-         │                  │  ─ checks ALL caveats        │
-         │                  │  ─ executes from Human's     │
-         │                  │    smart account             │
-         │                  │  ─ msg.sender = Human ✓      │
-         │                  └──────────────────────────────┘
-         │
-  ┌──────┴───────┐
-  │ ServiceBoard │   Sees msg.sender = Human's smart account
-  │              │   No contract changes needed!
-  └──────────────┘`}</pre>
+          {/* Entity cards */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 12,
+            marginBottom: 12,
+          }}>
+            {[
+              { label: 'Human', role: 'Delegator', icon: '\u{1F464}', color: '#F6851B' },
+              { label: 'Buyer Agent', role: 'Delegate', icon: '\u{1F916}', color: '#38B3DC' },
+              { label: 'Mediator Agent', role: 'Re-Delegate', icon: '\u{1F517}', color: '#A78BFA' },
+            ].map(entity => (
+              <div key={entity.label} style={{
+                padding: 16,
+                background: 'var(--bg-card)',
+                border: `1px solid ${entity.color}30`,
+                borderRadius: 12,
+                textAlign: 'center' as const,
+              }}>
+                <div style={{ fontSize: 24, marginBottom: 6 }}>{entity.icon}</div>
+                <div style={{
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 700,
+                  fontSize: 13,
+                  color: entity.color,
+                  marginBottom: 2,
+                }}>
+                  {entity.label}
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10,
+                  color: 'var(--text-tertiary)',
+                  textTransform: 'uppercase' as const,
+                  letterSpacing: '0.05em',
+                }}>
+                  {entity.role}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Delegation arrows */}
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10, marginBottom: 12 }}>
+            {[
+              {
+                title: 'Spending Delegation',
+                from: 'Human',
+                to: 'Buyer Agent',
+                fromColor: '#F6851B',
+                toColor: '#38B3DC',
+                fn: 'postTask()',
+                caveats: ['0.005 ETH per task', '0.02 ETH total', '10 calls max', '24h expiry'],
+              },
+              {
+                title: 'Confirmation Delegation',
+                from: 'Human',
+                to: 'Buyer Agent',
+                fromColor: '#F6851B',
+                toColor: '#38B3DC',
+                fn: 'confirmDelivery()',
+                caveats: ['10 confirmations max', '24h expiry'],
+              },
+              {
+                title: 'Re-Delegation',
+                from: 'Buyer Agent',
+                to: 'Mediator Agent',
+                fromColor: '#38B3DC',
+                toColor: '#A78BFA',
+                fn: 'confirmDelivery()',
+                caveats: ['5 calls max', '12h expiry', 'Inherits parent limits'],
+              },
+            ].map(d => (
+              <div key={d.title} style={{
+                padding: 14,
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 10,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 14,
+              }}>
+                {/* From → To labels */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, minWidth: 180 }}>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: d.fromColor,
+                  }}>
+                    {d.from}
+                  </span>
+                  <span style={{ color: 'var(--text-tertiary)', fontSize: 14 }}>{'\u2192'}</span>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: d.toColor,
+                  }}>
+                    {d.to}
+                  </span>
+                </div>
+
+                {/* Delegation details */}
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 600,
+                    fontSize: 12,
+                    color: 'var(--text-primary)',
+                    marginBottom: 4,
+                  }}>
+                    {d.title}
+                    <span style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 10,
+                      color: d.toColor,
+                      marginLeft: 8,
+                      padding: '2px 6px',
+                      background: `${d.toColor}12`,
+                      borderRadius: 4,
+                    }}>
+                      {d.fn}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const }}>
+                    {d.caveats.map(c => (
+                      <span key={c} style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 10,
+                        color: 'var(--text-tertiary)',
+                        padding: '2px 7px',
+                        background: 'var(--bg-secondary)',
+                        borderRadius: 4,
+                        border: '1px solid var(--border)',
+                      }}>
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Redemption card */}
+          <div style={{
+            padding: 16,
+            background: 'linear-gradient(135deg, #F6851B08, #FBBF2408)',
+            border: '1px solid #F6851B25',
+            borderRadius: 12,
+            display: 'flex',
+            gap: 14,
+            alignItems: 'flex-start',
+          }}>
+            <div style={{
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              background: '#FBBF2415',
+              border: '1px solid #FBBF2430',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 16,
+              flexShrink: 0,
+            }}>
+              {'\u26A1'}
+            </div>
+            <div>
+              <div style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 700,
+                fontSize: 13,
+                color: 'var(--text-primary)',
+                marginBottom: 4,
+              }}>
+                Redemption
+              </div>
+              <p style={{
+                fontSize: 11,
+                color: 'var(--text-secondary)',
+                lineHeight: 1.6,
+                margin: '0 0 8px 0',
+              }}>
+                Agent calls DelegationManager which validates all signatures, checks every caveat in the chain,
+                then executes via the delegator&apos;s smart account &mdash; so{' '}
+                <span style={{ fontFamily: 'var(--font-mono)', color: '#F6851B', fontSize: 10 }}>msg.sender = Human</span>.
+                Transparent to ServiceBoard &mdash; no contract changes needed.
+              </p>
+              <div style={{
+                display: 'flex',
+                gap: 6,
+                flexWrap: 'wrap' as const,
+              }}>
+                {['Validates signatures', 'Checks ALL caveats', "Executes from Human's account", 'Transparent to ServiceBoard'].map(item => (
+                  <span key={item} style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    color: '#FBBF24',
+                    padding: '2px 7px',
+                    background: '#FBBF2410',
+                    borderRadius: 4,
+                    border: '1px solid #FBBF2425',
+                  }}>
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 

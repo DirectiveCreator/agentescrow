@@ -1390,9 +1390,9 @@ export default function MetaMaskDelegationPage() {
             </div>
             {[
               { label: 'DelegationManager', value: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3' },
-              { label: 'ServiceBoard', value: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C' },
-              { label: 'EscrowVault', value: '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E' },
-              { label: 'ReputationRegistry', value: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c' },
+              { label: 'ServiceBoard (V2 Proxy)', value: '0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2' },
+              { label: 'EscrowVault (V2 Proxy)', value: '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579' },
+              { label: 'ReputationRegistry (V2 Proxy)', value: '0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df' },
               { label: 'Enforcers', value: '31 contracts (6 used)' },
             ].map(item => (
               <div key={item.label} style={{
@@ -1441,7 +1441,7 @@ export default function MetaMaskDelegationPage() {
               { label: 'Delegation Toolkit', url: 'https://www.npmjs.com/package/@metamask/delegation-toolkit', icon: '🦊' },
               { label: 'Gator Docs', url: 'https://docs.gator.metamask.io', icon: '📚' },
               { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '🏗' },
-              { label: 'Base Sepolia Explorer', url: 'https://sepolia.basescan.org/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C', icon: '🔍' },
+              { label: 'Base Sepolia Explorer', url: 'https://sepolia.basescan.org/address/0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2', icon: '🔍' },
               { label: 'Celo Sepolia Explorer', url: 'https://celo-sepolia.blockscout.com/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C', icon: '🌿' },
             ].map(link => (
               <a

@@ -2,17 +2,19 @@
  * Celo Client for AgentEscrow
  *
  * Provides Celo-specific functionality:
- * - Multi-network support (Celo mainnet + Alfajores testnet)
+ * - Multi-network support (Celo mainnet + Celo Sepolia testnet)
  * - Stablecoin helpers (cUSD, USDC balance/transfer)
  * - CIP-64 fee abstraction (pay gas in stablecoins)
  * - ERC-8004 identity resolution on Celo
+ *
+ * NOTE: Alfajores is DEPRECATED. Celo Sepolia (chain ID 11142220) is the official testnet.
  *
  * @module celo/client
  */
 
 import { createPublicClient, createWalletClient, http, formatUnits, parseUnits } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { celo, celoAlfajores } from 'viem/chains';
+import { celo, celoSepolia } from 'viem/chains';
 
 // ─── Network Configurations ─────────────────────────────────────────────────
 
@@ -25,13 +27,13 @@ export const CELO_NETWORKS = {
     explorer: 'https://celoscan.io',
     faucet: null,
   },
-  alfajores: {
-    chain: celoAlfajores,
-    chainId: 44787,
-    name: 'Celo Alfajores',
-    rpc: 'https://alfajores-forno.celo-testnet.org',
-    explorer: 'https://alfajores.celoscan.io',
-    faucet: 'https://faucet.celo.org/alfajores',
+  sepolia: {
+    chain: celoSepolia,
+    chainId: 11142220,
+    name: 'Celo Sepolia',
+    rpc: 'https://forno.celo-sepolia.celo-testnet.org',
+    explorer: 'https://celo-sepolia.blockscout.com',
+    faucet: 'https://faucet.celo.org/celo-sepolia',
   },
 };
 
@@ -40,13 +42,13 @@ export const CELO_NETWORKS = {
 export const CELO_STABLECOINS = {
   cUSD: {
     mainnet: '0x765DE816845861e75A25fCA122bb6898B8B1282a',
-    alfajores: '0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1',
+    sepolia: '0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1',
     decimals: 18,
     name: 'Celo Dollar',
   },
   USDC: {
     mainnet: '0xcebA9300f2b948710d2653dD7B07f33A8B32118C',
-    alfajores: '0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B',
+    sepolia: '0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B',
     decimals: 6,
     name: 'USD Coin',
   },
@@ -57,11 +59,11 @@ export const CELO_STABLECOINS = {
 export const FEE_CURRENCY_ADAPTERS = {
   cUSD: {
     mainnet: '0x765DE816845861e75A25fCA122bb6898B8B1282a',
-    alfajores: '0x4822e58de6f5e485eF90df51C41CE01721331dC0',
+    sepolia: '0x4822e58de6f5e485eF90df51C41CE01721331dC0',
   },
   USDC: {
     mainnet: '0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B',
-    alfajores: '0x4822e58de6f5e485eF90df51C41CE01721331dC0',
+    sepolia: '0x4822e58de6f5e485eF90df51C41CE01721331dC0',
   },
 };
 
@@ -70,11 +72,11 @@ export const FEE_CURRENCY_ADAPTERS = {
 export const CELO_REGISTRIES = {
   identityRegistry: {
     mainnet: '0x8004A169FB4a3325136EB29fA0ceB6D2e539a432',
-    alfajores: '0x8004A818BFB912233c491871b3d84c89A494BD9e',
+    sepolia: '0x8004A818BFB912233c491871b3d84c89A494BD9e',
   },
   reputationRegistry: {
     mainnet: '0x8004BAa17C55a88189AE136b182e5fdA19dE9b63',
-    alfajores: '0x8004B663056A597Dffe9eCcC1965A193B7388713',
+    sepolia: '0x8004B663056A597Dffe9eCcC1965A193B7388713',
   },
 };
 
@@ -135,15 +137,15 @@ export class CeloClient {
   /**
    * @param {Object} options
    * @param {string} [options.privateKey] - Hex private key (omit for read-only/simulation)
-   * @param {'mainnet'|'alfajores'} [options.network='alfajores'] - Network to use
+   * @param {'mainnet'|'sepolia'} [options.network='sepolia'] - Network to use
    */
-  constructor({ privateKey, network = 'alfajores' } = {}) {
+  constructor({ privateKey, network = 'sepolia' } = {}) {
     this.network = network;
     this.networkConfig = CELO_NETWORKS[network];
     this.simulation = !privateKey;
 
     if (!this.networkConfig) {
-      throw new Error(`Unknown network: ${network}. Use 'mainnet' or 'alfajores'.`);
+      throw new Error(`Unknown network: ${network}. Use 'mainnet' or 'sepolia'.`);
     }
 
     this.publicClient = createPublicClient({
@@ -345,7 +347,7 @@ export class CeloClient {
  *
  * @param {Object} options
  * @param {string} [options.privateKey] - Hex private key
- * @param {'mainnet'|'alfajores'} [options.network='alfajores'] - Network
+ * @param {'mainnet'|'sepolia'} [options.network='sepolia'] - Network
  * @returns {CeloClient}
  */
 export function createCeloClient(options = {}) {

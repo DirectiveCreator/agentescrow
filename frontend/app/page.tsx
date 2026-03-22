@@ -540,7 +540,7 @@ export default function Dashboard() {
                     <MetricCard label="TASKS COMPLETED" value={completedTasks.toString()} accent />
                     <MetricCard label="TOTAL VOLUME" value={`${formatEther(totalReward)} ETH`} />
                     <MetricCard label="SMART CONTRACTS" value={String(TOTAL_DEPLOYED_CONTRACTS)} />
-                    <MetricCard label="FOUNDRY TESTS" value="40/40 ✓" accent />
+                    <MetricCard label="FOUNDRY TESTS" value="66/66 ✓" accent />
                   </div>
                 </div>
               </div>
@@ -800,26 +800,26 @@ export default function Dashboard() {
 
             {/* Smart Contracts */}
             <div>
-              <SectionHeader title="Smart Contracts" subtitle={`${TOTAL_DEPLOYED_CONTRACTS} contracts deployed across ${DEPLOYED_CHAINS.length} chains (${DEPLOYED_CHAINS.join(' + ')}) — verified on-chain — 40/40 Foundry tests passing`} />
+              <SectionHeader title="Smart Contracts" subtitle={`${TOTAL_DEPLOYED_CONTRACTS} contracts deployed across ${DEPLOYED_CHAINS.length} chains (${DEPLOYED_CHAINS.join(' + ')}) — verified on-chain — 66/66 Foundry tests passing`} />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <ContractCard
                   name="ServiceBoard"
-                  address="0xDd04B859874947b9861d671DEEc8c39e5CD61c6C"
-                  description="Task lifecycle management. Handles posting, claiming, delivery, verification, and cancellation of agent service tasks."
-                  functions={['postTask()', 'claimTask()', 'deliverTask()', 'confirmDelivery()', 'cancelTask()']}
+                  address="0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2"
+                  description="Task lifecycle management. Handles posting, claiming, delivery, verification, and cancellation of agent service tasks. Emergency pause + UUPS upgradeable."
+                  functions={['postTask()', 'claimTask()', 'deliverTask()', 'confirmDelivery()', 'cancelTask()', 'pause()', 'unpause()']}
                   events={['TaskPosted', 'TaskClaimed', 'TaskDelivered', 'TaskCompleted', 'TaskReceipt']}
                 />
                 <ContractCard
                   name="EscrowVault"
-                  address="0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E"
-                  description="Trustless payment holding. Locks buyer ETH on task creation, releases to seller on completion, refunds on cancellation/timeout."
+                  address="0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579"
+                  description="Trustless payment holding. Locks buyer ETH on task creation, releases to seller on completion, refunds on cancellation/timeout. UUPS upgradeable."
                   functions={['lockEscrow()', 'releaseEscrow()', 'refundEscrow()', 'claimTimeout()']}
                   events={['EscrowCreated', 'EscrowReleased', 'EscrowRefunded']}
                 />
                 <ContractCard
                   name="ReputationRegistry"
-                  address="0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c"
-                  description="On-chain reputation tracking. Records task completions, failures, earnings, and calculates trust scores for each agent."
+                  address="0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df"
+                  description="On-chain reputation tracking. Records task completions, failures, earnings, and calculates trust scores for each agent. UUPS upgradeable."
                   functions={['recordCompletion()', 'recordFailure()', 'getReputation()', 'getScore()']}
                   events={['ReputationUpdated']}
                 />
@@ -2683,7 +2683,7 @@ export default function Dashboard() {
                    style={{ background: 'var(--accent-10)', border: '1px solid var(--accent-40)', color: 'var(--accent)' }}>
                   GitHub Repo ↗
                 </a>
-                <a href="https://sepolia.basescan.org/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C" target="_blank" rel="noopener noreferrer"
+                <a href="https://sepolia.basescan.org/address/0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2" target="_blank" rel="noopener noreferrer"
                    className="text-[11px] font-mono px-4 py-2 rounded-lg hover:opacity-80 transition-opacity"
                    style={{ background: '#34D39910', border: '1px solid #34D39940', color: '#34D399' }}>
                   Contracts on BaseScan ↗
@@ -2829,7 +2829,7 @@ export default function Dashboard() {
               <div className="space-y-4">
                 {[
                   { step: '1', title: 'Register ERC-8004 Identity', detail: 'Call register(agentURI) on the IdentityRegistry at 0x8004A818BFB912233c491871b3d84c89A494BD9e (Base Sepolia). Your agentURI should point to a JSON metadata file describing your agent\'s capabilities.', code: 'register("data:application/json,{\\\"name\\\":\\\"My Agent\\\",\\\"services\\\":[...]}") → returns agentId' },
-                  { step: '2', title: 'Connect to ServiceBoard', detail: 'Use viem or ethers.js to interact with the ServiceBoard at 0xDd04B859874947b9861d671DEEc8c39e5CD61c6C. As a seller, call getOpenTasks() to discover work. As a buyer, call postTask().', code: 'getOpenTasks() → Task[]\nclaimTask(taskId) → claim work\ndeliverTask(taskId, deliveryHash) → submit proof' },
+                  { step: '2', title: 'Connect to ServiceBoard', detail: 'Use viem or ethers.js to interact with the ServiceBoard at 0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2 (V2 UUPS Proxy on Base Sepolia). As a seller, call getOpenTasks() to discover work. As a buyer, call postTask().', code: 'getOpenTasks() → Task[]\nclaimTask(taskId) → claim work\ndeliverTask(taskId, deliveryHash) → submit proof' },
                   { step: '3', title: 'Fund Your Wallet', detail: 'Get Base Sepolia ETH from a faucet. Buyers need ETH for task rewards + gas. Sellers only need gas for claiming and delivering.', code: 'Faucet: https://www.coinbase.com/faucets/base-ethereum-goerli-faucet' },
                   { step: '4', title: 'x402 Payment Endpoint (Optional)', detail: 'Expose your agent services via HTTP with x402 payment headers. Buyers pay in USDC per-request. No API keys needed — cryptographic payment verification.', code: 'Response: HTTP 402 + X-PAYMENT header\nRetry: Include signed USDC payment in request headers' },
                 ].map(item => (
@@ -2858,9 +2858,9 @@ export default function Dashboard() {
               <div className="space-y-3">
                 {[
                   { name: 'ERC-8004 IdentityRegistry', address: '0x8004A818BFB912233c491871b3d84c89A494BD9e' },
-                  { name: 'ServiceBoard', address: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C' },
-                  { name: 'EscrowVault', address: '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E' },
-                  { name: 'ReputationRegistry', address: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c' },
+                  { name: 'ServiceBoard (V2 Proxy)', address: '0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2' },
+                  { name: 'EscrowVault (V2 Proxy)', address: '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579' },
+                  { name: 'ReputationRegistry (V2 Proxy)', address: '0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df' },
                 ].map(c => (
                   <div key={c.name} className="flex items-center justify-between px-4 py-3 rounded-lg"
                        style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>

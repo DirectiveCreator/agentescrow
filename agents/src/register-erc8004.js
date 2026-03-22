@@ -55,8 +55,8 @@ const BUYER_METADATA = {
   image: "ipfs://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna",
   services: [
     { name: "web", endpoint: "https://agentescrow.onrender.com/" },
-    { name: "ServiceBoard", endpoint: "eip155:84532:0xDd04B859874947b9861d671DEEc8c39e5CD61c6C" },
-    { name: "EscrowVault", endpoint: "eip155:84532:0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E" }
+    { name: "ServiceBoard", endpoint: "eip155:84532:0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2" },
+    { name: "EscrowVault", endpoint: "eip155:84532:0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579" }
   ],
   x402Support: false,
   active: true,
@@ -71,8 +71,8 @@ const SELLER_METADATA = {
   image: "ipfs://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy",
   services: [
     { name: "web", endpoint: "https://agentescrow.onrender.com/" },
-    { name: "ServiceBoard", endpoint: "eip155:84532:0xDd04B859874947b9861d671DEEc8c39e5CD61c6C" },
-    { name: "ReputationRegistry", endpoint: "eip155:84532:0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c" }
+    { name: "ServiceBoard", endpoint: "eip155:84532:0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2" },
+    { name: "ReputationRegistry", endpoint: "eip155:84532:0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df" }
   ],
   x402Support: false,
   active: true,

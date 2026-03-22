@@ -142,7 +142,7 @@ export function logAccount(label, account) {
 // ─── Contract Addresses (AgentEscrow) ───────────────────────────────────────
 
 export const AGENTESCROW_CONTRACTS = {
-  serviceBoard: process.env.SERVICE_BOARD_ADDRESS || '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C',
-  escrowVault: process.env.ESCROW_VAULT_ADDRESS || '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E',
-  reputationRegistry: process.env.REPUTATION_REGISTRY_ADDRESS || '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c',
+  serviceBoard: process.env.SERVICE_BOARD_ADDRESS || '0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2',
+  escrowVault: process.env.ESCROW_VAULT_ADDRESS || '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579',
+  reputationRegistry: process.env.REPUTATION_REGISTRY_ADDRESS || '0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df',
 };

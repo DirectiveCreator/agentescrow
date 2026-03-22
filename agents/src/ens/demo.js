@@ -69,9 +69,9 @@ const SIM_AGENTS = {
       erc8004Id: '2194',
       erc8004Registry: '0x8004A818BFB912233c491871b3d84c89A494BD9e',
       reputationScore: '100',
-      reputationRegistry: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c',
-      serviceBoardAddress: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C',
-      escrowVaultAddress: '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E',
+      reputationRegistry: '0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df',
+      serviceBoardAddress: '0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2',
+      escrowVaultAddress: '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579',
       chainId: '84532',
       status: 'active',
       protocol: 'agentescrow',
@@ -89,9 +89,9 @@ const SIM_AGENTS = {
       erc8004Id: '2195',
       erc8004Registry: '0x8004A818BFB912233c491871b3d84c89A494BD9e',
       reputationScore: '100',
-      reputationRegistry: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c',
-      serviceBoardAddress: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C',
-      escrowVaultAddress: '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E',
+      reputationRegistry: '0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df',
+      serviceBoardAddress: '0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2',
+      escrowVaultAddress: '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579',
       chainId: '84532',
       status: 'active',
       protocol: 'agentescrow',
@@ -386,9 +386,9 @@ function demoSummary() {
   console.log(`  └─ Universal:       ${ENS_CONTRACTS.universalResolver}`);
 
   console.log('\n  AgentEscrow Contracts (Base Sepolia):');
-  console.log('  ├─ ServiceBoard:      0xDd04B859874947b9861d671DEEc8c39e5CD61c6C');
-  console.log('  ├─ EscrowVault:       0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E');
-  console.log('  └─ ReputationRegistry: 0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c');
+  console.log('  ├─ ServiceBoard:      0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2');
+  console.log('  ├─ EscrowVault:       0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579');
+  console.log('  └─ ReputationRegistry: 0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df');
 
   console.log('\n  Agent ENS Identities:');
   console.log('  ├─ buyer.agentescrow.eth  → ERC-8004 #2194');

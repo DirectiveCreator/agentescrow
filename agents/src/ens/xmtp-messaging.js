@@ -316,7 +316,7 @@ export async function createAgentMessenger(privateKey, options = {}) {
           agentType,
           capabilities,
           status: 'active',
-          serviceBoard: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C',
+          serviceBoard: '0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2',
           chainId: 84532,
         });
 

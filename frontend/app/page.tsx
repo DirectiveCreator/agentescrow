@@ -2196,6 +2196,11 @@ export default function Dashboard() {
                    style={{ background: '#34D39910', border: '1px solid #34D39940', color: '#34D399' }}>
                   Contracts on BaseScan ↗
                 </a>
+                <a href="https://celo-sepolia.blockscout.com/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C" target="_blank" rel="noopener noreferrer"
+                   className="text-[11px] font-mono px-4 py-2 rounded-lg hover:opacity-80 transition-opacity"
+                   style={{ background: '#FCCC0A10', border: '1px solid #FCCC0A40', color: '#FCCC0A' }}>
+                  Contracts on Celo ↗
+                </a>
                 <a href="https://agentescrow.directivecreator.com" target="_blank" rel="noopener noreferrer"
                    className="text-[11px] font-mono px-4 py-2 rounded-lg hover:opacity-80 transition-opacity"
                    style={{ background: '#A78BFA10', border: '1px solid #A78BFA40', color: '#A78BFA' }}>

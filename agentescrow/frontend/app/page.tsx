@@ -397,13 +397,13 @@ export default function Dashboard() {
                       Human → Human
                     </span>
                   </div>
-                  {/* Copy for Agent — primary CTA */}
+                  {/* Copy for Agent — primary CTA with hero shader */}
                   <button
                     onClick={copySkillForAgent}
                     className="w-full mb-4 py-3 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 relative overflow-hidden"
                     style={{
-                      background: skillCopied ? '#34D399' : 'linear-gradient(135deg, #38B3DC, #A78BFA)',
-                      color: '#0C0C0C',
+                      background: skillCopied ? '#34D399' : '#0C0C0C',
+                      color: skillCopied ? '#0C0C0C' : '#FFFFFF',
                       border: 'none',
                       cursor: 'pointer',
                       boxShadow: '0 0 24px rgba(56,179,220,0.25)',
@@ -411,6 +411,30 @@ export default function Dashboard() {
                     onMouseEnter={e => { if (!skillCopied) { e.currentTarget.style.boxShadow = '0 0 32px rgba(56,179,220,0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
                     onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(56,179,220,0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
                   >
+                    {!skillCopied && (
+                      <div className="absolute inset-0" style={{ zIndex: 0 }}>
+                        <MeshGradient
+                          colors={['#38B3DC', '#A78BFA', '#0C0C0C', '#34D399']}
+                          speed={0.12}
+                          distortion={0.4}
+                          swirl={0.6}
+                          style={{ width: '100%', height: '100%' }}
+                        />
+                      </div>
+                    )}
+                    {!skillCopied && (
+                      <div className="absolute inset-0 opacity-30" style={{ zIndex: 0 }}>
+                        <SmokeRing
+                          colors={['#38B3DC', '#A78BFA']}
+                          colorBack="#0C0C0C"
+                          speed={0.15}
+                          noiseScale={1.4}
+                          thickness={0.45}
+                          style={{ width: '100%', height: '100%' }}
+                        />
+                      </div>
+                    )}
+                    <span className="relative flex items-center gap-2" style={{ zIndex: 1 }}>
                     {skillCopied ? (
                       <>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
@@ -422,6 +446,7 @@ export default function Dashboard() {
                         COPY SKILL FOR YOUR AGENT
                       </>
                     )}
+                    </span>
                   </button>
                   <div className="flex gap-3">
                     <a href="https://github.com/DirectiveCreator/agentescrow" target="_blank" rel="noopener noreferrer"
@@ -2458,13 +2483,13 @@ export default function Dashboard() {
                     agentescrow.directivecreator.com/skill.md
                   </a>
                 </p>
-                {/* Copy for Agent Button */}
+                {/* Copy for Agent Button — with hero shader */}
                 <button
                   onClick={copySkillForAgent}
-                  className="w-full mb-4 py-3 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2"
+                  className="w-full mb-4 py-3 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 relative overflow-hidden"
                   style={{
-                    background: skillCopied ? '#34D399' : 'linear-gradient(135deg, #38B3DC, #A78BFA)',
-                    color: '#0C0C0C',
+                    background: skillCopied ? '#34D399' : '#0C0C0C',
+                    color: skillCopied ? '#0C0C0C' : '#FFFFFF',
                     border: 'none',
                     cursor: 'pointer',
                     boxShadow: '0 0 24px rgba(56,179,220,0.25)',
@@ -2472,6 +2497,30 @@ export default function Dashboard() {
                   onMouseEnter={e => { if (!skillCopied) { e.currentTarget.style.boxShadow = '0 0 32px rgba(56,179,220,0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
                   onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(56,179,220,0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
+                  {!skillCopied && (
+                    <div className="absolute inset-0" style={{ zIndex: 0 }}>
+                      <MeshGradient
+                        colors={['#38B3DC', '#A78BFA', '#0C0C0C', '#34D399']}
+                        speed={0.12}
+                        distortion={0.4}
+                        swirl={0.6}
+                        style={{ width: '100%', height: '100%' }}
+                      />
+                    </div>
+                  )}
+                  {!skillCopied && (
+                    <div className="absolute inset-0 opacity-30" style={{ zIndex: 0 }}>
+                      <SmokeRing
+                        colors={['#38B3DC', '#A78BFA']}
+                        colorBack="#0C0C0C"
+                        speed={0.15}
+                        noiseScale={1.4}
+                        thickness={0.45}
+                        style={{ width: '100%', height: '100%' }}
+                      />
+                    </div>
+                  )}
+                  <span className="relative flex items-center gap-2" style={{ zIndex: 1 }}>
                   {skillCopied ? (
                     <>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
@@ -2483,6 +2532,7 @@ export default function Dashboard() {
                       COPY SKILL FOR YOUR AGENT
                     </>
                   )}
+                  </span>
                 </button>
                 <pre className="text-[10px] p-4 rounded-lg overflow-x-auto leading-relaxed"
                      style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontFamily: '"JetBrains Mono", monospace' }}>

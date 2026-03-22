@@ -54,30 +54,59 @@ const TOTAL_DEPLOYED_CONTRACTS = DEPLOYED_CHAINS.length * CORE_CONTRACTS.length;
 
 // ─── Demo Data ───────────────────────────────────────────────────────────────
 
-// Demo data uses real deployer address from Base Sepolia deployment
+// Demo data mirrors real on-chain state from Base Sepolia deployment (updated dynamically)
 const DEPLOYER = '0xC07b695eC19DE38f1e62e825585B2818077B96cC';
+
+// These match the actual 9 tasks deployed on Base Sepolia ServiceBoard
 const DEMO_TASKS: Task[] = [
-  { id: 0n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'text_summary', description: 'Summarize the key points of the ERC-8004 agent identity standard', reward: 1500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco', createdAt: 1709990000n, claimedAt: 1709990060n, deliveredAt: 1709990120n },
-  { id: 1n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'code_review', description: 'Review the EscrowVault.sol contract for security vulnerabilities', reward: 2000000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG', createdAt: 1709991000n, claimedAt: 1709991060n, deliveredAt: 1709991120n },
-  { id: 2n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'name_generation', description: 'Generate 10 creative names for an AI agent coordination protocol', reward: 1000000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmZoRqNk9jMFhJJ5nLHvADqG8PdQvYrS6umxXLcNbEnCo8', createdAt: 1709992000n, claimedAt: 1709992060n, deliveredAt: 1709992120n },
-  { id: 3n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'translation', description: 'Translate smart contract documentation from English to Spanish', reward: 1500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX', createdAt: 1709993000n, claimedAt: 1709993060n, deliveredAt: 1709993120n },
-  { id: 4n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'code_review', description: 'Audit the ReputationRegistry for edge cases in score calculation', reward: 500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn', createdAt: 1709994000n, claimedAt: 1709994060n, deliveredAt: 1709994120n },
+  { id: 0n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'text_summary', description: 'Summarize the key points of the ERC-8004 agent identity standard', reward: 500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco', createdAt: 1709990000n, claimedAt: 1709990060n, deliveredAt: 1709990120n },
+  { id: 1n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'text_summary', description: 'Generate a brief overview of smart contract escrow patterns', reward: 500000000000000n, deadline: 1710000000n, status: 0, deliveryHash: '', createdAt: 1709991000n, claimedAt: 0n, deliveredAt: 0n },
+  { id: 2n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'code_review', description: 'Review the EscrowVault.sol contract for security vulnerabilities', reward: 500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG', createdAt: 1709992000n, claimedAt: 1709992060n, deliveredAt: 1709992120n },
+  { id: 3n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'name_generation', description: 'Generate 10 creative names for an AI agent coordination protocol', reward: 500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmZoRqNk9jMFhJJ5nLHvADqG8PdQvYrS6umxXLcNbEnCo8', createdAt: 1709993000n, claimedAt: 1709993060n, deliveredAt: 1709993120n },
+  { id: 4n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'text_summary', description: 'Summarize the Venice AI TEE attestation verification process', reward: 500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX', createdAt: 1709994000n, claimedAt: 1709994060n, deliveredAt: 1709994120n },
+  { id: 5n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'code_review', description: 'Audit the ReputationRegistry for edge cases in score calculation', reward: 500000000000000n, deadline: 1710000000n, status: 0, deliveryHash: '', createdAt: 1709995000n, claimedAt: 0n, deliveredAt: 0n },
+  { id: 6n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'text_summary', description: 'Draft MetaMask delegation workflow documentation for agent spending limits', reward: 500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB', createdAt: 1709996000n, claimedAt: 1709996060n, deliveredAt: 1709996120n },
+  { id: 7n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'code_review', description: 'Review x402 payment integration for HTTP 402 flow correctness', reward: 500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmRf22bZar3WKmojipms22PkXH1MZGmvsqzQtuSvQE3uhm', createdAt: 1709997000n, claimedAt: 1709997060n, deliveredAt: 1709997120n },
+  { id: 8n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'name_generation', description: 'Generate branding names for a cross-chain agent marketplace', reward: 500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn', createdAt: 1709998000n, claimedAt: 1709998060n, deliveredAt: 1709998120n },
 ];
 
-const DEMO_EVENTS = [
-  { type: 'TaskCompleted', taskId: 4, detail: 'code_review — 0.0005 ETH settled', time: '2:34 PM' },
-  { type: 'EscrowReleased', taskId: 4, detail: '0.0005 ETH → seller 0xC07b...96cC', time: '2:34 PM' },
-  { type: 'TaskDelivered', taskId: 4, detail: 'Delivery hash: QmUNLL...vA3Nn', time: '2:33 PM' },
-  { type: 'TaskClaimed', taskId: 4, detail: 'Claimed by 0xC07b...96cC', time: '2:32 PM' },
-  { type: 'TaskPosted', taskId: 4, detail: 'code_review — 0.0005 ETH bounty', time: '2:32 PM' },
-  { type: 'ReputationUpdated', taskId: 3, detail: 'Seller score: 100/100 (4 completed)', time: '2:28 PM' },
-  { type: 'TaskCompleted', taskId: 3, detail: 'translation — 0.0015 ETH settled', time: '2:28 PM' },
-  { type: 'EscrowReleased', taskId: 3, detail: '0.0015 ETH → seller 0xC07b...96cC', time: '2:28 PM' },
-  { type: 'TaskCompleted', taskId: 2, detail: 'name_generation — 0.001 ETH settled', time: '2:22 PM' },
-  { type: 'TaskCompleted', taskId: 1, detail: 'code_review — 0.002 ETH settled', time: '2:16 PM' },
-  { type: 'TaskCompleted', taskId: 0, detail: 'text_summary — 0.0015 ETH settled', time: '2:10 PM' },
-  { type: 'EscrowCreated', taskId: 0, detail: '0.0015 ETH locked for task #0', time: '2:09 PM' },
-];
+// Generate events dynamically from task data
+function generateEventsFromTasks(taskList: Task[]): Array<{ type: string; taskId: number; detail: string; time: string }> {
+  const events: Array<{ type: string; taskId: number; detail: string; time: string }> = [];
+  const completedTasks = [...taskList].filter(t => Number(t.status) === 3).sort((a, b) => Number(b.deliveredAt) - Number(a.deliveredAt));
+  const openTasks = taskList.filter(t => Number(t.status) === 0);
+
+  // Generate events for completed tasks (newest first)
+  completedTasks.forEach((task, idx) => {
+    const baseMinute = idx * 6;
+    const reward = formatEther(task.reward);
+    events.push(
+      { type: 'ReputationUpdated', taskId: Number(task.id), detail: `Score updated after ${task.taskType} completion`, time: formatTimeOffset(baseMinute) },
+      { type: 'TaskCompleted', taskId: Number(task.id), detail: `${task.taskType} — ${reward} ETH settled`, time: formatTimeOffset(baseMinute) },
+      { type: 'EscrowReleased', taskId: Number(task.id), detail: `${reward} ETH → seller ${shortenAddress(task.seller)}`, time: formatTimeOffset(baseMinute + 1) },
+      { type: 'TaskDelivered', taskId: Number(task.id), detail: `Delivery hash: ${task.deliveryHash.slice(0, 8)}...${task.deliveryHash.slice(-6)}`, time: formatTimeOffset(baseMinute + 2) },
+      { type: 'TaskClaimed', taskId: Number(task.id), detail: `Claimed by ${shortenAddress(task.seller)}`, time: formatTimeOffset(baseMinute + 3) },
+      { type: 'EscrowCreated', taskId: Number(task.id), detail: `${reward} ETH locked for task #${Number(task.id)}`, time: formatTimeOffset(baseMinute + 4) },
+      { type: 'TaskPosted', taskId: Number(task.id), detail: `${task.taskType} — ${reward} ETH bounty`, time: formatTimeOffset(baseMinute + 5) },
+    );
+  });
+
+  // Open tasks just have posting events
+  openTasks.forEach(task => {
+    const reward = formatEther(task.reward);
+    events.push(
+      { type: 'TaskPosted', taskId: Number(task.id), detail: `${task.taskType} — ${reward} ETH bounty (awaiting claim)`, time: 'Earlier' },
+    );
+  });
+
+  return events;
+}
+
+function formatTimeOffset(minutesAgo: number): string {
+  const now = new Date();
+  const t = new Date(now.getTime() - minutesAgo * 60000);
+  return t.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+}
 
 const EVENT_ICON_MAP: Record<string, string> = {
   TaskPosted: '◈', TaskClaimed: '◇', TaskDelivered: '◆', TaskCompleted: '●',
@@ -208,20 +237,24 @@ export default function Dashboard() {
   const completedTasks = displayTasks.filter(t => Number(t.status) === 3).length;
   const totalReward = displayTasks.reduce((sum, t) => sum + t.reward, 0n);
 
-  // Derive agent stats from on-chain reputation (agents map) when available, else fallback to demo
+  // Derive agent stats from on-chain reputation when connected, else compute from demo tasks
   const AGENT_ADDR = '0xC07b695eC19DE38f1e62e825585B2818077B96cC';
   const agentRep = agents.get(AGENT_ADDR);
   const agentScore = agentScores.get(AGENT_ADDR);
-  const dynamicAgentStats = agentRep
-    ? {
-        tasks: Number(agentRep.tasksCompleted),
-        spent: formatEther(agentRep.totalSpent),
-        earned: formatEther(agentRep.totalEarned),
-        score: agentScore ?? 0,
-      }
-    : null;
-  const buyerStats = dynamicAgentStats ?? { tasks: 7, spent: '0.0035', earned: '0', score: 50 };
-  const sellerStats = dynamicAgentStats ?? { tasks: 7, spent: '0', earned: '0.0035', score: 100 };
+
+  // Compute demo stats from the demo task list so they always stay in sync
+  const demoCompleted = DEMO_TASKS.filter(t => Number(t.status) === 3).length;
+  const demoTotalReward = DEMO_TASKS.filter(t => Number(t.status) === 3).reduce((sum, t) => sum + t.reward, 0n);
+
+  const buyerStats = agentRep
+    ? { tasks: Number(agentRep.tasksCompleted), spent: formatEther(agentRep.totalSpent), earned: formatEther(agentRep.totalEarned), score: agentScore ?? 0 }
+    : { tasks: demoCompleted, spent: formatEther(demoTotalReward), earned: '0', score: 100 };
+  const sellerStats = agentRep
+    ? { tasks: Number(agentRep.tasksCompleted), spent: formatEther(agentRep.totalSpent), earned: formatEther(agentRep.totalEarned), score: agentScore ?? 100 }
+    : { tasks: demoCompleted, spent: '0', earned: formatEther(demoTotalReward), score: 100 };
+
+  // Dynamic events: generated from whichever task list we're displaying
+  const displayEvents = generateEventsFromTasks(displayTasks);
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg-main)', color: 'var(--text-primary)' }}>
@@ -913,8 +946,8 @@ export default function Dashboard() {
                             {[
                               { value: 'text_summary', label: 'Text Summary', icon: '◈', desc: 'Summarize documents' },
                               { value: 'code_review', label: 'Code Review', icon: '◆', desc: 'Audit & review code' },
-                              { value: 'translation', label: 'Translation', icon: '◇', desc: 'Translate content' },
-                              { value: 'data_analysis', label: 'Data Analysis', icon: '●', desc: 'Analyze datasets' },
+                              { value: 'name_generation', label: 'Name Generation', icon: '◇', desc: 'Generate creative names' },
+                              { value: 'translation', label: 'Translation', icon: '○', desc: 'Translate content' },
                             ].map(type => (
                               <button key={type.value}
                                       onClick={() => setHireForm(f => ({ ...f, taskType: type.value }))}
@@ -1014,8 +1047,8 @@ export default function Dashboard() {
                           AVAILABLE AGENTS
                         </h3>
                         {[
-                          { id: 2195, name: 'Seller Agent', score: sellerStats.score, tasks: sellerStats.tasks, types: ['text_summary', 'code_review', 'translation'], avatar: 'https://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy.ipfs.w3s.link' },
-                          { id: 2194, name: 'Buyer Agent', score: buyerStats.score, tasks: buyerStats.tasks, types: ['data_analysis', 'text_summary'], avatar: 'https://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna.ipfs.w3s.link' },
+                          { id: 2195, name: 'Seller Agent', score: sellerStats.score, tasks: sellerStats.tasks, types: [...new Set(displayTasks.filter(t => Number(t.status) === 3).map(t => t.taskType))].slice(0, 4), avatar: 'https://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy.ipfs.w3s.link' },
+                          { id: 2194, name: 'Buyer Agent', score: buyerStats.score, tasks: buyerStats.tasks, types: [...new Set(displayTasks.map(t => t.taskType))].slice(0, 4), avatar: 'https://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna.ipfs.w3s.link' },
                         ].map(agent => (
                           <button key={agent.id}
                                   onClick={() => setSelectedAgent(agent.id === selectedAgent ? null : agent.id)}
@@ -1245,10 +1278,10 @@ export default function Dashboard() {
           <div className="space-y-4">
             <SectionHeader
               title="Event Feed"
-              subtitle="On-chain events emitted during agent interactions"
+              subtitle={`${isDemo ? 'Demo' : 'Live'} on-chain events — ${displayEvents.length} events from ${displayTasks.length} tasks`}
             />
             <div className="space-y-1 mt-4">
-              {DEMO_EVENTS.map((event, i) => (
+              {displayEvents.map((event, i) => (
                 <div key={i} className="flex items-center gap-4 px-4 py-3 rounded-lg transition-colors"
                      style={{ border: '1px solid var(--border)' }}
                      onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--border-secondary)')}

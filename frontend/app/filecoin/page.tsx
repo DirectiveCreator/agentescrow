@@ -790,7 +790,7 @@ export default function FilecoinPage() {
               }} />
             </div>
 
-            {/* Filecoin Mainnet Card */}
+            {/* Filecoin Calibration Card */}
             <div style={{
               padding: 24,
               background: 'var(--bg-card)',
@@ -812,7 +812,7 @@ export default function FilecoinPage() {
                   fontSize: 16,
                   color: 'var(--text-primary)',
                 }}>
-                  Filecoin Mainnet
+                  Filecoin Calibration
                 </span>
                 <span style={{
                   fontFamily: 'var(--font-mono)',
@@ -823,7 +823,7 @@ export default function FilecoinPage() {
                   borderRadius: 4,
                   border: '1px solid var(--border)',
                 }}>
-                  Chain 314
+                  Chain 314159
                 </span>
               </div>
 
@@ -1019,7 +1019,7 @@ export default function FilecoinPage() {
               {
                 step: '3',
                 title: 'Run with real Filecoin storage',
-                code: '# Add your key to .env — never pass private keys inline\n# FILECOIN_PRIVATE_KEY=<your-key>\nsource .env && node agents/src/filecoin/demo.js\n# Fund wallet with FIL + USDFC on Filecoin Mainnet or Calibration',
+                code: '# Add your key to .env — never pass private keys inline\n# FILECOIN_PRIVATE_KEY=<your-key>\nsource .env && node agents/src/filecoin/demo.js\n# Fund wallet with FIL + USDFC on Filecoin Calibration testnet',
               },
               {
                 step: '4',
@@ -1185,7 +1185,7 @@ const receipt = await storage.storeDelivery({
   },
   "chain": {
     "escrowChain": "base-sepolia",
-    "storageChain": "filecoin-mainnet"
+    "storageChain": "filecoin-calibration"
   }
 }`}</pre>
           </div>

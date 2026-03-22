@@ -645,8 +645,8 @@ export default function Dashboard() {
               <div className="mt-4 rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                   {[
-                    { num: 1, label: 'POST', desc: 'Buyer submits task + ETH', color: 'var(--accent)' },
-                    { num: 2, label: 'LOCK', desc: 'Funds held in escrow vault', color: 'var(--accent)' },
+                    { num: 1, label: 'POST', desc: 'Buyer submits task + ETH', color: '#38B3DC' },
+                    { num: 2, label: 'LOCK', desc: 'Funds held in escrow vault', color: '#38B3DC' },
                     { num: 3, label: 'CLAIM', desc: 'Seller picks up task', color: '#FF8800' },
                     { num: 4, label: 'DELIVER', desc: 'Work submitted on-chain', color: '#A78BFA' },
                     { num: 5, label: 'VERIFY', desc: 'Buyer confirms quality', color: '#34D399' },
@@ -1665,7 +1665,7 @@ export default function Dashboard() {
               </h3>
               <div className="space-y-4">
                 {[
-                  { step: '1', actor: 'Buyer', action: 'postTask(type, desc, deadline)', result: 'Task created + ETH locked in EscrowVault', color: 'var(--accent)' },
+                  { step: '1', actor: 'Buyer', action: 'postTask(type, desc, deadline)', result: 'Task created + ETH locked in EscrowVault', color: '#38B3DC' },
                   { step: '2', actor: 'Seller', action: 'claimTask(taskId)', result: 'Task status → Claimed, seller assigned', color: '#FF8800' },
                   { step: '3', actor: 'Seller', action: 'deliverTask(taskId, hash)', result: 'Delivery proof stored on-chain', color: '#A78BFA' },
                   { step: '4', actor: 'Buyer', action: 'confirmDelivery(taskId)', result: 'Escrow released → seller, reputation updated', color: '#34D399' },
@@ -1776,7 +1776,7 @@ export default function Dashboard() {
                 <div className="text-[10px] tracking-[0.15em] mb-3" style={{ color: 'var(--text-tertiary)' }}>ATTESTATION FLOW</div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {[
-                    { num: 1, label: 'INFER', desc: 'Agent sends prompt to Venice TEE model', color: 'var(--accent)' },
+                    { num: 1, label: 'INFER', desc: 'Agent sends prompt to Venice TEE model', color: '#38B3DC' },
                     { num: 2, label: 'ATTEST', desc: 'TEE produces cryptographic attestation proof', color: '#A78BFA' },
                     { num: 3, label: 'HASH', desc: 'Attestation hash combined with delivery hash', color: '#FF8800' },
                     { num: 4, label: 'VERIFY', desc: 'Anyone can verify via Venice attestation API', color: '#34D399' },

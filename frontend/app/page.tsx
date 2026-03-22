@@ -1,8 +1,11 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { formatEther, parseEther, encodeFunctionData } from 'viem';
-import { publicClient, ServiceBoardABI, ReputationRegistryABI, EscrowVaultABI, CONTRACTS, connectWallet, switchChain, getWalletClient, getPublicClientForChain, SUPPORTED_CHAINS } from '@/lib/contracts';
+import { formatEther, parseEther } from 'viem';
+import { useAccount, useConnect, useDisconnect, useBalance, useSwitchChain, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi';
+import { injected } from 'wagmi/connectors';
+import { publicClient, ServiceBoardABI, ReputationRegistryABI, EscrowVaultABI, CONTRACTS, getPublicClientForChain, SUPPORTED_CHAINS } from '@/lib/contracts';
+import { CONTRACTS as WAGMI_CONTRACTS } from '@/lib/wagmi';
 import { MeshGradient, NeuroNoise, GrainGradient, DotGrid, SmokeRing, Waves, Metaballs } from '@paper-design/shaders-react';
 import { Shader, Blob, ChromaticAberration, FilmGrain, Swirl } from 'shaders/react';
 
@@ -74,7 +77,7 @@ const DEMO_TASKS: Task[] = [
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function shortenAddress(addr: string) {
+function shortenAddress(addr: string | undefined) {
   if (!addr || addr === '0x0000000000000000000000000000000000000000') return '—';
   return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 }
@@ -93,145 +96,150 @@ export default function Dashboard() {
   const integrationsRef = useRef<HTMLDivElement>(null);
   // Human→Agent hire form state
   const [hireForm, setHireForm] = useState({ taskType: 'text_summary', description: '', reward: '0.001', deadline: '24' });
-  const [walletConnected, setWalletConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState('');
   const [hireStep, setHireStep] = useState<'connect' | 'form' | 'confirm' | 'submitted'>('connect');
   const [selectedAgent, setSelectedAgent] = useState<number | null>(null);
-  const [walletChainId, setWalletChainId] = useState<number>(84532); // Default Base Sepolia
-  const [walletBalance, setWalletBalance] = useState<string>('');
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [txHash, setTxHash] = useState<string>('');
   const [txError, setTxError] = useState<string>('');
-  const [isSigning, setIsSigning] = useState(false);
   const [postedTaskId, setPostedTaskId] = useState<string>('');
+  const [liveTaskStatus, setLiveTaskStatus] = useState<number>(0); // 0=Open,1=Claimed,2=Delivered,3=Completed,4=Cancelled
+  const [liveTaskSeller, setLiveTaskSeller] = useState<string>('');
+  const [liveTaskDeliveryHash, setLiveTaskDeliveryHash] = useState<string>('');
   const prevTaskCountRef = useRef(0);
 
-  // Wallet event listeners — track account/chain changes
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.ethereum) return;
-    const handleAccountsChanged = (...args: unknown[]) => {
-      const accounts = args[0] as string[];
-      if (accounts.length === 0) {
-        setWalletConnected(false);
-        setWalletAddress('');
-        setHireStep('connect');
-      } else {
-        setWalletAddress(accounts[0]);
-      }
-    };
-    const handleChainChanged = (...args: unknown[]) => {
-      const chainIdHex = args[0] as string;
-      setWalletChainId(parseInt(chainIdHex, 16));
-    };
-    window.ethereum.on('accountsChanged', handleAccountsChanged);
-    window.ethereum.on('chainChanged', handleChainChanged);
-    return () => {
-      window.ethereum?.removeListener('accountsChanged', handleAccountsChanged);
-      window.ethereum?.removeListener('chainChanged', handleChainChanged);
-    };
-  }, []);
+  // ── Wagmi hooks ──
+  const { address: walletAddress, isConnected: walletConnected, chain: connectedChain } = useAccount();
+  const walletChainId = connectedChain?.id || 84532;
+  const { connect, isPending: isConnecting } = useConnect();
+  const { disconnect } = useDisconnect();
+  const { data: balanceData } = useBalance({ address: walletAddress, chainId: walletChainId });
+  const { switchChain: wagmiSwitchChain } = useSwitchChain();
+  const { writeContractAsync, isPending: isSigning, data: txHash } = useWriteContract();
+  const { data: txReceipt } = useWaitForTransactionReceipt({ hash: txHash });
 
-  // Fetch wallet balance when connected
+  // Write contract for confirmDelivery and cancelTask
+  const { writeContractAsync: writeConfirm, isPending: isConfirming } = useWriteContract();
+  const { writeContractAsync: writeCancel, isPending: isCancelling } = useWriteContract();
+
+  // Auto-advance to form when wallet connects
   useEffect(() => {
-    if (!walletConnected || !walletAddress) return;
-    const fetchBalance = async () => {
+    if (walletConnected && hireStep === 'connect') {
+      setHireStep('form');
+      // Switch to supported chain if needed
+      const supportedIds = SUPPORTED_CHAINS.map(c => c.id as number);
+      if (!supportedIds.includes(walletChainId)) {
+        wagmiSwitchChain?.({ chainId: 84532 });
+      }
+    }
+    if (!walletConnected && hireStep !== 'connect') {
+      setHireStep('connect');
+    }
+  }, [walletConnected, hireStep, walletChainId, wagmiSwitchChain]);
+
+  // Extract task ID from tx receipt
+  useEffect(() => {
+    if (txReceipt && txReceipt.logs.length > 0) {
+      const taskIdHex = txReceipt.logs[0]?.topics?.[1];
+      if (taskIdHex) {
+        setPostedTaskId(BigInt(taskIdHex).toString());
+      }
+    }
+  }, [txReceipt]);
+
+  // ── Live task polling — poll on-chain status every 5s after posting ──
+  useEffect(() => {
+    if (hireStep !== 'submitted' || !postedTaskId) return;
+    let cancelled = false;
+    const poll = async () => {
       try {
         const client = getPublicClientForChain(walletChainId);
-        const bal = await client.getBalance({ address: walletAddress as `0x${string}` });
-        setWalletBalance(formatEther(bal));
-      } catch { setWalletBalance(''); }
-    };
-    fetchBalance();
-    const interval = setInterval(fetchBalance, 10000);
-    return () => clearInterval(interval);
-  }, [walletConnected, walletAddress, walletChainId]);
-
-  // Real wallet connection handler
-  const handleConnectWallet = useCallback(async () => {
-    setIsConnecting(true);
-    setTxError('');
-    try {
-      if (!window.ethereum) {
-        setTxError('No wallet detected. Please install MetaMask or another EVM wallet.');
-        setIsConnecting(false);
-        return;
-      }
-      const result = await connectWallet();
-      if (result) {
-        setWalletAddress(result.address);
-        setWalletChainId(result.chainId);
-        setWalletConnected(true);
-        setHireStep('form');
-        // Switch to a supported chain if not on one
-        const supportedIds = SUPPORTED_CHAINS.map(c => c.id as number);
-        if (!supportedIds.includes(result.chainId)) {
-          await switchChain(84532); // Default to Base Sepolia
-          setWalletChainId(84532);
+        const task = await client.readContract({
+          address: CONTRACTS.serviceBoard as `0x${string}`,
+          abi: ServiceBoardABI,
+          functionName: 'getTask',
+          args: [BigInt(postedTaskId)],
+        }) as { status: number; seller: string; deliveryHash: string };
+        if (!cancelled) {
+          setLiveTaskStatus(Number(task.status));
+          setLiveTaskSeller(task.seller);
+          setLiveTaskDeliveryHash(task.deliveryHash);
         }
-      } else {
-        setTxError('Wallet connection was rejected or failed.');
-      }
-    } catch {
-      setTxError('Failed to connect wallet.');
-    }
-    setIsConnecting(false);
-  }, []);
+      } catch { /* ignore polling errors */ }
+    };
+    poll(); // immediate first poll
+    const interval = setInterval(poll, 5000);
+    return () => { cancelled = true; clearInterval(interval); };
+  }, [hireStep, postedTaskId, walletChainId]);
 
-  // Real on-chain task posting handler
+  // Wallet connection handler (wagmi)
+  const handleConnectWallet = useCallback(() => {
+    setTxError('');
+    if (typeof window !== 'undefined' && !window.ethereum) {
+      setTxError('No wallet detected. Please install MetaMask or another EVM wallet.');
+      return;
+    }
+    connect({ connector: injected() });
+  }, [connect]);
+
+  // Real on-chain task posting handler (wagmi)
   const handlePostTask = useCallback(async () => {
     if (!walletAddress || !walletConnected) return;
-    setIsSigning(true);
     setTxError('');
-    setTxHash('');
     try {
-      const walletClient = getWalletClient(walletChainId);
-      if (!walletClient) throw new Error('Wallet not available');
-
       const deadlineTimestamp = BigInt(Math.floor(Date.now() / 1000) + parseInt(hireForm.deadline) * 3600);
       const rewardWei = parseEther(hireForm.reward);
 
-      // Encode the function call
-      const data = encodeFunctionData({
+      await writeContractAsync({
+        address: WAGMI_CONTRACTS.serviceBoard,
         abi: ServiceBoardABI,
         functionName: 'postTask',
         args: [hireForm.taskType, hireForm.description, deadlineTimestamp],
-      });
-
-      // Send the transaction via wallet
-      const targetChain = walletChainId === 11142220
-        ? { id: 11142220, name: 'Celo Sepolia', nativeCurrency: { name: 'CELO', symbol: 'CELO', decimals: 18 }, rpcUrls: { default: { http: ['https://forno.celo-sepolia.celo-testnet.org'] } }, blockExplorers: { default: { name: 'Blockscout', url: 'https://celo-sepolia.blockscout.com' } }, testnet: true } as const
-        : undefined; // use client default (baseSepolia)
-      const hash = await walletClient.sendTransaction({
-        account: walletAddress as `0x${string}`,
-        to: CONTRACTS.serviceBoard as `0x${string}`,
-        data,
         value: rewardWei,
-        chain: targetChain,
       });
 
-      setTxHash(hash);
       setHireStep('submitted');
-
-      // Wait for confirmation to get task ID
-      const client = getPublicClientForChain(walletChainId);
-      const receipt = await client.waitForTransactionReceipt({ hash });
-      // Parse TaskPosted event to get task ID
-      if (receipt.logs.length > 0) {
-        // First topic of TaskPosted is the event sig, second is taskId (indexed)
-        const taskIdHex = receipt.logs[0]?.topics?.[1];
-        if (taskIdHex) {
-          setPostedTaskId(BigInt(taskIdHex).toString());
-        }
-      }
-      // Refresh data after a short delay to show the new task
-      setTimeout(() => window.location.reload(), 3000);
+      setLiveTaskStatus(0);
+      setLiveTaskSeller('');
+      setLiveTaskDeliveryHash('');
     } catch (err: unknown) {
       const msg = (err as { shortMessage?: string; message?: string })?.shortMessage || (err as Error)?.message || 'Transaction failed';
       setTxError(msg);
     }
-    setIsSigning(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletAddress, walletConnected, walletChainId, hireForm]);
+  }, [walletAddress, walletConnected, hireForm, writeContractAsync]);
+
+  // Confirm delivery handler
+  const handleConfirmDelivery = useCallback(async () => {
+    if (!postedTaskId) return;
+    setTxError('');
+    try {
+      await writeConfirm({
+        address: WAGMI_CONTRACTS.serviceBoard,
+        abi: ServiceBoardABI,
+        functionName: 'confirmDelivery',
+        args: [BigInt(postedTaskId)],
+      });
+    } catch (err: unknown) {
+      const msg = (err as { shortMessage?: string; message?: string })?.shortMessage || (err as Error)?.message || 'Confirm failed';
+      setTxError(msg);
+    }
+  }, [postedTaskId, writeConfirm]);
+
+  // Cancel task handler
+  const handleCancelTask = useCallback(async () => {
+    if (!postedTaskId) return;
+    setTxError('');
+    try {
+      await writeCancel({
+        address: WAGMI_CONTRACTS.serviceBoard,
+        abi: ServiceBoardABI,
+        functionName: 'cancelTask',
+        args: [BigInt(postedTaskId)],
+      });
+    } catch (err: unknown) {
+      const msg = (err as { shortMessage?: string; message?: string })?.shortMessage || (err as Error)?.message || 'Cancel failed';
+      setTxError(msg);
+    }
+  }, [postedTaskId, writeCancel]);
+
+  const walletBalance = balanceData ? formatEther(balanceData.value) : '';
 
   const fetchData = useCallback(async () => {
     try {
@@ -980,10 +988,9 @@ export default function Dashboard() {
                     {/* Chain selector */}
                     <select
                       value={walletChainId}
-                      onChange={async (e) => {
+                      onChange={(e) => {
                         const newChainId = parseInt(e.target.value);
-                        const switched = await switchChain(newChainId);
-                        if (switched) setWalletChainId(newChainId);
+                        wagmiSwitchChain?.({ chainId: newChainId });
                       }}
                       className="text-[11px] px-2 py-1 rounded cursor-pointer"
                       style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
@@ -991,7 +998,7 @@ export default function Dashboard() {
                         <option key={c.id} value={c.id}>{c.name}</option>
                       ))}
                     </select>
-                    <button onClick={() => { setWalletConnected(false); setWalletAddress(''); setHireStep('connect'); setSelectedAgent(null); setTxHash(''); setTxError(''); setPostedTaskId(''); }}
+                    <button onClick={() => { disconnect(); setHireStep('connect'); setSelectedAgent(null); setTxError(''); setPostedTaskId(''); }}
                             className="text-[11px] px-3 py-1 rounded hover:opacity-80 transition-opacity"
                             style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-tertiary)' }}>
                       Disconnect
@@ -1300,33 +1307,122 @@ export default function Dashboard() {
                           Your {hireForm.reward} {SUPPORTED_CHAINS.find(c => c.id === walletChainId)?.currency || 'ETH'} is locked in escrow{postedTaskId ? ` (Task #${postedTaskId})` : ''}. AI agents can now discover and claim your task.
                         </p>
 
-                        {/* Live task status simulation */}
+                        {/* Live task status — polls chain every 5s */}
                         <div className="rounded-lg p-4 mb-6 text-left" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                          <div className="text-[10px] tracking-wider mb-3" style={{ color: 'var(--text-tertiary)' }}>TASK STATUS</div>
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="text-[10px] tracking-wider" style={{ color: 'var(--text-tertiary)' }}>LIVE TASK STATUS</div>
+                            <div className="flex items-center gap-1.5">
+                              <div className="w-1.5 h-1.5 rounded-full pulse-accent" style={{ background: '#34D399' }} />
+                              <span className="text-[9px]" style={{ color: '#34D399' }}>POLLING</span>
+                            </div>
+                          </div>
                           <div className="space-y-3">
                             {[
-                              { status: 'POSTED', time: 'Just now', icon: '◈', color: 'var(--accent)', done: true },
-                              { status: 'ESCROW LOCKED', time: 'Just now', icon: '▣', color: 'var(--accent)', done: true },
-                              { status: 'WAITING FOR AGENT', time: 'Pending...', icon: '◇', color: '#FF8800', done: false },
-                              { status: 'IN PROGRESS', time: '—', icon: '◆', color: '#A78BFA', done: false },
-                              { status: 'DELIVERY REVIEW', time: '—', icon: '●', color: '#34D399', done: false },
+                              { status: 'POSTED', icon: '◈', color: 'var(--accent)', done: true },
+                              { status: 'ESCROW LOCKED', icon: '▣', color: 'var(--accent)', done: true },
+                              { status: 'AGENT CLAIMED', icon: '◇', color: '#FF8800', done: liveTaskStatus >= 1 },
+                              { status: 'DELIVERED', icon: '◆', color: '#A78BFA', done: liveTaskStatus >= 2 },
+                              { status: 'COMPLETED', icon: '●', color: '#34D399', done: liveTaskStatus >= 3 },
                             ].map((s, i) => (
                               <div key={i} className="flex items-center gap-3">
                                 <span className={`text-sm ${s.done ? '' : 'opacity-30'}`} style={{ color: s.color }}>{s.icon}</span>
                                 <span className={`text-[11px] font-medium flex-1 ${s.done ? '' : 'opacity-40'}`}>{s.status}</span>
-                                <span className="text-[10px] font-mono" style={{ color: 'var(--text-quaternary)' }}>{s.time}</span>
+                                <span className="text-[10px] font-mono" style={{ color: s.done ? '#34D399' : 'var(--text-quaternary)' }}>
+                                  {s.done ? '✓' : '—'}
+                                </span>
                               </div>
                             ))}
                           </div>
+                          {liveTaskSeller && liveTaskSeller !== '0x0000000000000000000000000000000000000000' && (
+                            <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
+                              <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
+                                Claimed by <span className="font-mono" style={{ color: 'var(--accent)' }}>{shortenAddress(liveTaskSeller)}</span>
+                              </div>
+                            </div>
+                          )}
+                          {liveTaskDeliveryHash && (
+                            <div className="mt-2">
+                              <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
+                                Delivery: <span className="font-mono" style={{ color: '#A78BFA' }}>{liveTaskDeliveryHash.slice(0, 40)}...</span>
+                              </div>
+                            </div>
+                          )}
                         </div>
 
-                        <div className="flex gap-3 justify-center">
+                        {/* Action buttons based on live status */}
+                        {liveTaskStatus === 2 && (
+                          <div className="rounded-lg p-4 mb-4" style={{ background: '#A78BFA10', border: '1px solid #A78BFA40' }}>
+                            <div className="flex items-start gap-3">
+                              <span className="text-lg">📦</span>
+                              <div className="flex-1">
+                                <p className="text-[12px] font-semibold mb-1" style={{ color: '#A78BFA' }}>Delivery Ready for Review</p>
+                                <p className="text-[11px] mb-3" style={{ color: 'var(--text-secondary)' }}>
+                                  The agent has submitted their work. Review the delivery and confirm to release payment, or reject if unsatisfactory.
+                                </p>
+                                <div className="flex gap-2">
+                                  <button onClick={handleConfirmDelivery}
+                                          disabled={isConfirming}
+                                          className="px-5 py-2 rounded-lg text-[12px] font-semibold transition-all hover:shadow-[0_0_20px_rgba(52,211,153,0.3)]"
+                                          style={{ background: isConfirming ? 'var(--bg-hover)' : '#34D399', color: isConfirming ? 'var(--text-quaternary)' : '#0C0C0C', cursor: isConfirming ? 'wait' : 'pointer' }}>
+                                    {isConfirming ? 'Confirming...' : 'Confirm Delivery'}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {liveTaskStatus === 3 && (
+                          <div className="rounded-lg p-4 mb-4" style={{ background: '#34D39910', border: '1px solid #34D39940' }}>
+                            <div className="flex items-center gap-3">
+                              <span className="text-lg">✅</span>
+                              <div>
+                                <p className="text-[12px] font-semibold" style={{ color: '#34D399' }}>Task Complete — Payment Released</p>
+                                <p className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                                  You confirmed delivery. The escrowed funds have been released to the seller agent.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {liveTaskStatus === 4 && (
+                          <div className="rounded-lg p-4 mb-4" style={{ background: '#EF444410', border: '1px solid #EF444440' }}>
+                            <div className="flex items-center gap-3">
+                              <span className="text-lg">❌</span>
+                              <div>
+                                <p className="text-[12px] font-semibold" style={{ color: '#EF4444' }}>Task Cancelled — Funds Refunded</p>
+                                <p className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                                  This task was cancelled and escrowed funds returned to your wallet.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {txError && (
+                          <div className="mb-4 px-4 py-3 rounded-lg text-[12px]"
+                               style={{ background: '#EF444410', border: '1px solid #EF444440', color: '#EF4444' }}>
+                            {txError}
+                          </div>
+                        )}
+
+                        <div className="flex gap-3 justify-center flex-wrap">
+                          {/* Cancel — only available when Open (no agent claimed yet) */}
+                          {liveTaskStatus === 0 && postedTaskId && (
+                            <button onClick={handleCancelTask}
+                                    disabled={isCancelling}
+                                    className="px-5 py-2.5 rounded-lg text-[12px] font-medium transition-colors"
+                                    style={{ background: '#EF444410', border: '1px solid #EF444440', color: '#EF4444', cursor: isCancelling ? 'wait' : 'pointer' }}>
+                              {isCancelling ? 'Cancelling...' : 'Cancel & Refund'}
+                            </button>
+                          )}
                           <button onClick={() => setActiveSection('board')}
                                   className="px-6 py-2.5 rounded-lg text-[12px] font-medium transition-colors"
                                   style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
                             View Board
                           </button>
-                          <button onClick={() => { setHireStep('form'); setHireForm({ taskType: 'text_summary', description: '', reward: '0.001', deadline: '24' }); setSelectedAgent(null); setTxHash(''); setTxError(''); setPostedTaskId(''); }}
+                          <button onClick={() => { setHireStep('form'); setHireForm({ taskType: 'text_summary', description: '', reward: '0.001', deadline: '24' }); setSelectedAgent(null); setTxError(''); setPostedTaskId(''); setLiveTaskStatus(0); setLiveTaskSeller(''); setLiveTaskDeliveryHash(''); }}
                                   className="px-6 py-2.5 rounded-lg text-[12px] font-semibold transition-all hover:shadow-[0_0_20px_rgba(56,179,220,0.3)]"
                                   style={{ background: 'var(--accent)', color: '#0C0C0C' }}>
                             Post Another Task

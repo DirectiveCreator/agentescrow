@@ -105,6 +105,10 @@ export async function switchChain(chainId: number): Promise<boolean> {
 export const ServiceBoardABI = [
   // Write functions
   { type: 'function', name: 'postTask', inputs: [{ name: 'taskType', type: 'string' }, { name: 'description', type: 'string' }, { name: 'deadline', type: 'uint256' }], outputs: [{ name: '', type: 'uint256' }], stateMutability: 'payable' },
+  { type: 'function', name: 'confirmDelivery', inputs: [{ name: 'taskId', type: 'uint256' }], outputs: [], stateMutability: 'nonpayable' },
+  { type: 'function', name: 'cancelTask', inputs: [{ name: 'taskId', type: 'uint256' }], outputs: [], stateMutability: 'nonpayable' },
+  { type: 'function', name: 'claimTask', inputs: [{ name: 'taskId', type: 'uint256' }], outputs: [], stateMutability: 'nonpayable' },
+  { type: 'function', name: 'deliverTask', inputs: [{ name: 'taskId', type: 'uint256' }, { name: 'deliveryHash', type: 'string' }], outputs: [], stateMutability: 'nonpayable' },
   // Read functions
   { type: 'function', name: 'getTask', inputs: [{ name: 'taskId', type: 'uint256' }], outputs: [{ name: '', type: 'tuple', components: [{ name: 'id', type: 'uint256' }, { name: 'buyer', type: 'address' }, { name: 'seller', type: 'address' }, { name: 'taskType', type: 'string' }, { name: 'description', type: 'string' }, { name: 'reward', type: 'uint256' }, { name: 'deadline', type: 'uint256' }, { name: 'status', type: 'uint8' }, { name: 'deliveryHash', type: 'string' }, { name: 'createdAt', type: 'uint256' }, { name: 'claimedAt', type: 'uint256' }, { name: 'deliveredAt', type: 'uint256' }] }], stateMutability: 'view' },
   { type: 'function', name: 'getTaskCount', inputs: [], outputs: [{ name: '', type: 'uint256' }], stateMutability: 'view' },

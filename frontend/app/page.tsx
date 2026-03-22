@@ -268,34 +268,32 @@ export default function Dashboard() {
             {integrationsOpen && (
               <div className="absolute top-full left-0 mt-[1px] rounded-lg py-2 z-50 min-w-[180px] border" style={{ background: 'var(--bg-card)', borderColor: 'var(--border)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
                 {[
-                  { label: 'Base', icon: '🔵', section: 'overview' as const },
-                  { label: 'Celo', icon: '🟢', href: '/celo' },
-                  { label: 'ENS', icon: '🔵', href: '/ens' },
-                  { label: 'Filecoin', icon: '🔷', href: '/filecoin' },
-                  { label: 'MetaMask', icon: '🦊', href: '/metamask' },
-                  { label: 'OpenServ', icon: '🤖', href: '/openserv' },
-                  { label: 'Venice AI', icon: '🟣', href: '/venice' },
-                  { label: 'Ampersend', icon: '⚡', href: '/ampersend' },
+                  { label: 'Base', section: 'overview' as const },
+                  { label: 'Celo', href: '/celo' },
+                  { label: 'ENS', href: '/ens' },
+                  { label: 'Filecoin', href: '/filecoin' },
+                  { label: 'MetaMask', href: '/metamask' },
+                  { label: 'OpenServ', href: '/openserv' },
+                  { label: 'Venice AI', href: '/venice' },
+                  { label: 'Ampersend', href: '/ampersend' },
                 ].map(item => (
                   'href' in item ? (
                     <a
                       key={item.label}
                       href={item.href}
-                      className="flex items-center gap-3 px-4 py-2.5 text-[12px] tracking-wide transition-colors hover:bg-white/5"
+                      className="block px-4 py-2.5 text-[12px] tracking-wide transition-colors hover:bg-white/5"
                       style={{ color: 'var(--text-secondary)' }}
                       onClick={() => setIntegrationsOpen(false)}
                     >
-                      <span>{item.icon}</span>
                       {item.label.toUpperCase()}
                     </a>
                   ) : (
                     <button
                       key={item.label}
-                      className="flex items-center gap-3 px-4 py-2.5 text-[12px] tracking-wide transition-colors hover:bg-white/5 w-full text-left"
+                      className="block px-4 py-2.5 text-[12px] tracking-wide transition-colors hover:bg-white/5 w-full text-left"
                       style={{ color: 'var(--text-secondary)' }}
                       onClick={() => { setActiveSection(item.section); setIntegrationsOpen(false); }}
                     >
-                      <span>{item.icon}</span>
                       {item.label.toUpperCase()}
                     </button>
                   )

@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
+import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "../src/EscrowVault.sol";
 import "../src/ReputationRegistry.sol";
 import "../src/ServiceBoard.sol";
 
 /// @title Extended test suite for AgentEscrow contracts
 /// @notice Covers edge cases, access control, reputation scoring, volume tracking,
-///         and state transition guards not covered by the base test suite.
+///         state transition guards, ownership transfer, delivered-timeout, and reentrancy.
 contract AgentEscrowExtendedTest is Test {
     EscrowVault public vault;
     ReputationRegistry public reputation;
@@ -20,9 +21,29 @@ contract AgentEscrowExtendedTest is Test {
     address third = makeAddr("third");
 
     function setUp() public {
-        vault = new EscrowVault();
-        reputation = new ReputationRegistry();
-        board = new ServiceBoard(address(vault), address(reputation));
+        // Deploy implementations
+        EscrowVault vaultImpl = new EscrowVault();
+        ReputationRegistry reputationImpl = new ReputationRegistry();
+        ServiceBoard boardImpl = new ServiceBoard();
+
+        // Deploy proxies
+        ERC1967Proxy vaultProxy = new ERC1967Proxy(
+            address(vaultImpl),
+            abi.encodeCall(EscrowVault.initialize, ())
+        );
+        ERC1967Proxy reputationProxy = new ERC1967Proxy(
+            address(reputationImpl),
+            abi.encodeCall(ReputationRegistry.initialize, ())
+        );
+        ERC1967Proxy boardProxy = new ERC1967Proxy(
+            address(boardImpl),
+            abi.encodeCall(ServiceBoard.initialize, (address(vaultProxy), address(reputationProxy)))
+        );
+
+        vault = EscrowVault(payable(address(vaultProxy)));
+        reputation = ReputationRegistry(address(reputationProxy));
+        board = ServiceBoard(address(boardProxy));
+
         vault.setServiceBoard(address(board));
         reputation.setServiceBoard(address(board));
 
@@ -44,9 +65,6 @@ contract AgentEscrowExtendedTest is Test {
     // ─── Reputation: Mixed Completions and Failures ─────────────────────
 
     /// @notice Score should reflect mix of completions and failures
-    /// @dev recordFailure is callable only by ServiceBoard, so we test
-    ///      via timeout path which doesn't call recordFailure (by design).
-    ///      We test the score formula directly by simulating through board.
     function testReputationScoreAfterCompletionsAndTimeout() public {
         // Complete 3 tasks
         for (uint256 i = 0; i < 3; i++) {
@@ -61,6 +79,30 @@ contract AgentEscrowExtendedTest is Test {
         ReputationRegistry.AgentReputation memory sellerRep = reputation.getReputation(seller);
         assertEq(sellerRep.tasksCompleted, 3);
         assertEq(sellerRep.tasksFailed, 0);
+    }
+
+    // ─── Reputation: Failure Recording on Timeout ────────────────────────
+
+    /// @notice Seller should get a failure recorded when claimed task times out
+    function testSellerFailureOnClaimedTimeout() public {
+        // Complete 2 tasks first
+        _completeTask(0.1 ether);
+        _completeTask(0.1 ether);
+
+        // Now claim but don't deliver — timeout
+        vm.prank(buyer);
+        uint256 taskId = board.postTask{value: 0.1 ether}("text_summary", "Test", block.timestamp + 1 hours);
+        vm.prank(seller);
+        board.claimTask(taskId);
+
+        vm.warp(block.timestamp + 2 hours);
+        board.claimTimeout(taskId);
+
+        // Seller should now have 2 completions, 1 failure → score = 66
+        ReputationRegistry.AgentReputation memory sellerRep = reputation.getReputation(seller);
+        assertEq(sellerRep.tasksCompleted, 2);
+        assertEq(sellerRep.tasksFailed, 1);
+        assertEq(reputation.getScore(seller), 66); // 2 * 100 / 3 = 66
     }
 
     // ─── Reputation: Volume Accumulation ────────────────────────────────
@@ -108,6 +150,157 @@ contract AgentEscrowExtendedTest is Test {
         rep = reputation.getReputation(seller);
         assertEq(rep.firstActiveAt, 1000, "firstActiveAt should remain 1000");
         assertEq(rep.lastActiveAt, 2000, "lastActiveAt should update to 2000");
+    }
+
+    // ─── Delivered Task Timeout (M-1 fix) ────────────────────────────────
+
+    /// @notice Delivered tasks can be timed out after deadline + grace period
+    function testDeliveredTaskTimeout() public {
+        vm.prank(buyer);
+        uint256 taskId = board.postTask{value: 1 ether}("text_summary", "Test", block.timestamp + 1 hours);
+
+        vm.prank(seller);
+        board.claimTask(taskId);
+        vm.prank(seller);
+        board.deliverTask(taskId, "QmGarbage");
+
+        // Warp past deadline but not past grace period
+        vm.warp(block.timestamp + 2 hours);
+        vm.expectRevert("Delivery grace period not elapsed");
+        board.claimTimeout(taskId);
+
+        // Warp past deadline + 24 hour grace period
+        vm.warp(block.timestamp + 24 hours);
+
+        uint256 buyerBalBefore = buyer.balance;
+        board.claimTimeout(taskId);
+
+        ServiceBoard.Task memory task = board.getTask(taskId);
+        assertEq(uint(task.status), uint(ServiceBoard.TaskStatus.Cancelled));
+        assertEq(buyer.balance, buyerBalBefore + 1 ether, "Buyer should get refund");
+
+        // Seller should get failure recorded
+        ReputationRegistry.AgentReputation memory sellerRep = reputation.getReputation(seller);
+        assertEq(sellerRep.tasksFailed, 1, "Seller should have 1 failure");
+    }
+
+    // ─── Ownership Transfer (H-2 fix) ────────────────────────────────────
+
+    /// @notice Two-step ownership transfer on ServiceBoard
+    function testServiceBoardOwnershipTransfer() public {
+        address newOwner = makeAddr("newOwner");
+
+        // Step 1: Current owner initiates transfer
+        board.transferOwnership(newOwner);
+        assertEq(board.pendingOwner(), newOwner);
+        assertEq(board.owner(), address(this)); // Still old owner
+
+        // Non-pending owner cannot accept
+        vm.prank(attacker);
+        vm.expectRevert("Not pending owner");
+        board.acceptOwnership();
+
+        // Step 2: New owner accepts
+        vm.prank(newOwner);
+        board.acceptOwnership();
+        assertEq(board.owner(), newOwner);
+        assertEq(board.pendingOwner(), address(0));
+    }
+
+    /// @notice Two-step ownership transfer on EscrowVault
+    function testVaultOwnershipTransfer() public {
+        address newOwner = makeAddr("newOwner");
+        vault.transferOwnership(newOwner);
+        vm.prank(newOwner);
+        vault.acceptOwnership();
+        assertEq(vault.owner(), newOwner);
+    }
+
+    /// @notice Two-step ownership transfer on ReputationRegistry
+    function testReputationOwnershipTransfer() public {
+        address newOwner = makeAddr("newOwner");
+        reputation.transferOwnership(newOwner);
+        vm.prank(newOwner);
+        reputation.acceptOwnership();
+        assertEq(reputation.owner(), newOwner);
+    }
+
+    /// @notice Cannot transfer ownership to zero address
+    function testCannotTransferOwnershipToZero() public {
+        vm.expectRevert("Zero address");
+        board.transferOwnership(address(0));
+    }
+
+    // ─── Buyer Validation in Refund (M-4 fix) ────────────────────────────
+
+    /// @notice EscrowVault.refund() validates buyer matches stored escrow buyer
+    function testRefundValidatesBuyer() public {
+        // This is tested indirectly — ServiceBoard always passes correct buyer.
+        // Direct test would require calling vault.refund() from ServiceBoard address.
+        // The require(buyer == escrow.buyer) is defense-in-depth.
+        vm.prank(buyer);
+        uint256 taskId = board.postTask{value: 0.1 ether}("text_summary", "Test", block.timestamp + 1 hours);
+
+        // Cancel refunds to the correct buyer
+        uint256 buyerBalBefore = buyer.balance;
+        vm.prank(buyer);
+        board.cancelTask(taskId);
+        assertEq(buyer.balance, buyerBalBefore + 0.1 ether);
+    }
+
+    // ─── Input Validation: Task Type Required ────────────────────────────
+
+    /// @notice postTask rejects empty task type
+    function testCannotPostEmptyTaskType() public {
+        vm.prank(buyer);
+        vm.expectRevert("Task type required");
+        board.postTask{value: 0.1 ether}("", "Test description", block.timestamp + 1 hours);
+    }
+
+    // ─── Input Validation: Deadline Too Far ──────────────────────────────
+
+    /// @notice postTask rejects deadlines more than 365 days out
+    function testCannotPostDeadlineTooFar() public {
+        vm.prank(buyer);
+        vm.expectRevert("Deadline too far in future");
+        board.postTask{value: 0.1 ether}("text_summary", "Test", block.timestamp + 400 days);
+    }
+
+    // ─── Pagination ──────────────────────────────────────────────────────
+
+    /// @notice getOpenTasksPaginated returns correct subset
+    function testGetOpenTasksPaginated() public {
+        vm.startPrank(buyer);
+        for (uint256 i = 0; i < 5; i++) {
+            board.postTask{value: 0.1 ether}("text_summary", string(abi.encodePacked("Task ", vm.toString(i))), block.timestamp + 1 hours);
+        }
+        vm.stopPrank();
+
+        // Get first 2
+        ServiceBoard.Task[] memory page1 = board.getOpenTasksPaginated(0, 2);
+        assertEq(page1.length, 2);
+        assertEq(page1[0].id, 0);
+        assertEq(page1[1].id, 1);
+
+        // Get next 2
+        ServiceBoard.Task[] memory page2 = board.getOpenTasksPaginated(2, 2);
+        assertEq(page2.length, 2);
+        assertEq(page2[0].id, 2);
+        assertEq(page2[1].id, 3);
+
+        // Get remaining
+        ServiceBoard.Task[] memory page3 = board.getOpenTasksPaginated(4, 10);
+        assertEq(page3.length, 1);
+        assertEq(page3[0].id, 4);
+    }
+
+    // ─── No receive() on EscrowVault ─────────────────────────────────────
+
+    /// @notice Direct ETH transfers to vault are rejected
+    function testVaultRejectsDirectETH() public {
+        vm.prank(buyer);
+        (bool success,) = address(vault).call{value: 0.1 ether}("");
+        assertFalse(success, "Vault should reject direct ETH transfers");
     }
 
     // ─── Access Control: Cannot Cancel Claimed Task ─────────────────────
@@ -205,7 +398,6 @@ contract AgentEscrowExtendedTest is Test {
         vm.prank(buyer);
         uint256 taskId = board.postTask{value: 0.1 ether}("text_summary", "Test", block.timestamp + 1 hours);
 
-        // seller is not the task seller (no one is), so "Not seller" first
         vm.prank(seller);
         vm.expectRevert("Not seller");
         board.deliverTask(taskId, "QmHash");
@@ -263,6 +455,34 @@ contract AgentEscrowExtendedTest is Test {
         vm.prank(buyer);
         vm.expectRevert("Deadline must be in the future");
         board.postTask{value: 0.1 ether}("text_summary", "Test", 500);
+    }
+
+    // ─── Input Validation: Zero Address in setServiceBoard ──────────────
+
+    /// @notice setServiceBoard should reject zero address
+    function testSetServiceBoardRejectsZeroAddress() public {
+        EscrowVault newVaultImpl = new EscrowVault();
+        ERC1967Proxy newVaultProxy = new ERC1967Proxy(
+            address(newVaultImpl),
+            abi.encodeCall(EscrowVault.initialize, ())
+        );
+        EscrowVault newVault = EscrowVault(payable(address(newVaultProxy)));
+
+        vm.expectRevert("Zero address");
+        newVault.setServiceBoard(address(0));
+    }
+
+    /// @notice ReputationRegistry setServiceBoard should reject zero address
+    function testReputationSetServiceBoardRejectsZeroAddress() public {
+        ReputationRegistry newRepImpl = new ReputationRegistry();
+        ERC1967Proxy newRepProxy = new ERC1967Proxy(
+            address(newRepImpl),
+            abi.encodeCall(ReputationRegistry.initialize, ())
+        );
+        ReputationRegistry newRep = ReputationRegistry(address(newRepProxy));
+
+        vm.expectRevert("Zero address");
+        newRep.setServiceBoard(address(0));
     }
 
     // ─── Timeout: Open Task Timeout ─────────────────────────────────────
@@ -381,7 +601,12 @@ contract AgentEscrowExtendedTest is Test {
 
     /// @notice Non-owner cannot set the ServiceBoard address
     function testNonOwnerCannotSetServiceBoard() public {
-        EscrowVault newVault = new EscrowVault();
+        EscrowVault newVaultImpl = new EscrowVault();
+        ERC1967Proxy newVaultProxy = new ERC1967Proxy(
+            address(newVaultImpl),
+            abi.encodeCall(EscrowVault.initialize, ())
+        );
+        EscrowVault newVault = EscrowVault(payable(address(newVaultProxy)));
 
         vm.prank(attacker);
         vm.expectRevert("Only owner");
@@ -538,6 +763,34 @@ contract AgentEscrowExtendedTest is Test {
         vm.expectEmit(true, true, true, true);
         emit ServiceBoard.TaskCompleted(taskId, buyer, seller, 0.1 ether);
         board.confirmDelivery(taskId);
+    }
+
+    // ─── Event Emission: TaskCancelled includes reason ───────────────────
+
+    /// @notice TaskCancelled event includes reason string
+    function testCancelEventIncludesReason() public {
+        vm.prank(buyer);
+        uint256 taskId = board.postTask{value: 0.1 ether}("text_summary", "Test", block.timestamp + 1 hours);
+
+        vm.prank(buyer);
+        vm.expectEmit(true, false, false, true);
+        emit ServiceBoard.TaskCancelled(taskId, "buyer_cancelled");
+        board.cancelTask(taskId);
+    }
+
+    /// @notice Timeout event includes appropriate reason
+    function testTimeoutEventIncludesReason() public {
+        vm.prank(buyer);
+        uint256 taskId = board.postTask{value: 0.1 ether}("text_summary", "Test", block.timestamp + 1 hours);
+
+        vm.prank(seller);
+        board.claimTask(taskId);
+
+        vm.warp(block.timestamp + 2 hours);
+
+        vm.expectEmit(true, false, false, true);
+        emit ServiceBoard.TaskCancelled(taskId, "timeout_claimed");
+        board.claimTimeout(taskId);
     }
 
     // ─── Helper: Complete a task end-to-end ─────────────────────────────

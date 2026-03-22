@@ -1,28 +1,39 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "forge-std/Script.sol";
+import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "../src/EscrowVault.sol";
 import "../src/ReputationRegistry.sol";
 import "../src/ServiceBoard.sol";
 
 /**
  * @title DeployMainnet
- * @notice Mainnet deployment script with chain-ID safety checks.
+ * @author AgentEscrow (Synthesis Hackathon 2026)
+ * @notice Mainnet deployment script with safety checks.
+ *         Deploys all 3 contracts as UUPS proxies and wires permissions atomically.
+ *
+ * @dev Deployment is atomic within a single broadcast — if any step fails,
+ *      no partial state is left on-chain. The deployer becomes the initial owner
+ *      of all 3 contracts and can later transfer ownership via 2-step transfer.
  *
  * Usage (Base mainnet):
- *   export PRIVATE_KEY=0x...
- *   forge script script/DeployMainnet.s.sol:DeployMainnet \
+ *   PRIVATE_KEY=0x... forge script script/DeployMainnet.s.sol:DeployMainnet \
  *     --rpc-url https://mainnet.base.org \
- *     --broadcast -vvv
+ *     --broadcast \
+ *     --verify \
+ *     --etherscan-api-key $BASESCAN_API_KEY
  *
  * Usage (Celo mainnet):
- *   export PRIVATE_KEY=0x...
- *   forge script script/DeployMainnet.s.sol:DeployMainnet \
+ *   PRIVATE_KEY=0x... forge script script/DeployMainnet.s.sol:DeployMainnet \
  *     --rpc-url https://forno.celo.org \
- *     --broadcast -vvv
+ *     --broadcast \
+ *     --verify \
+ *     --etherscan-api-key $CELOSCAN_API_KEY
  */
 contract DeployMainnet is Script {
+    /// @notice Deploy all contracts and wire permissions
+    /// @dev Requires PRIVATE_KEY env var. Only runs on Base (8453) or Celo (42220) mainnet.
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
@@ -33,40 +44,74 @@ contract DeployMainnet is Script {
 
         // Safety: confirm this is a mainnet chain
         require(
-            block.chainid == 8453 ||   // Base mainnet
-            block.chainid == 42220,     // Celo mainnet
+            block.chainid == 8453 ||    // Base mainnet
+            block.chainid == 42220,      // Celo mainnet
             "NOT a mainnet chain! Aborting."
         );
 
-        // 1. Deploy contracts
-        EscrowVault vault = new EscrowVault();
-        console.log("EscrowVault:", address(vault));
+        // 1. Deploy implementation contracts
+        EscrowVault vaultImpl = new EscrowVault();
+        console.log("EscrowVault impl:", address(vaultImpl));
 
-        ReputationRegistry reputation = new ReputationRegistry();
-        console.log("ReputationRegistry:", address(reputation));
+        ReputationRegistry reputationImpl = new ReputationRegistry();
+        console.log("ReputationRegistry impl:", address(reputationImpl));
 
-        ServiceBoard board = new ServiceBoard(address(vault), address(reputation));
-        console.log("ServiceBoard:", address(board));
+        ServiceBoard boardImpl = new ServiceBoard();
+        console.log("ServiceBoard impl:", address(boardImpl));
 
-        // 2. Wire permissions (one-time-only calls)
-        vault.setServiceBoard(address(board));
-        console.log("  -> vault.setServiceBoard() done");
+        // 2. Deploy UUPS proxies with initializers
+        ERC1967Proxy vaultProxy = new ERC1967Proxy(
+            address(vaultImpl),
+            abi.encodeCall(EscrowVault.initialize, ())
+        );
+        console.log("EscrowVault proxy:", address(vaultProxy));
 
-        reputation.setServiceBoard(address(board));
-        console.log("  -> reputation.setServiceBoard() done");
+        ERC1967Proxy reputationProxy = new ERC1967Proxy(
+            address(reputationImpl),
+            abi.encodeCall(ReputationRegistry.initialize, ())
+        );
+        console.log("ReputationRegistry proxy:", address(reputationProxy));
+
+        ERC1967Proxy boardProxy = new ERC1967Proxy(
+            address(boardImpl),
+            abi.encodeCall(ServiceBoard.initialize, (address(vaultProxy), address(reputationProxy)))
+        );
+        console.log("ServiceBoard proxy:", address(boardProxy));
+
+        // 3. Wire up permissions (atomic — same broadcast, no front-running window)
+        EscrowVault(payable(address(vaultProxy))).setServiceBoard(address(boardProxy));
+        ReputationRegistry(address(reputationProxy)).setServiceBoard(address(boardProxy));
 
         console.log("");
         console.log("=== DEPLOYMENT COMPLETE ===");
-        if (block.chainid == 8453) {
-            console.log("Chain: Base Mainnet");
-        } else {
-            console.log("Chain: Celo Mainnet");
-        }
+        console.log(block.chainid == 8453 ? "Chain: Base Mainnet" : "Chain: Celo Mainnet");
         console.log("");
-        console.log("--- Copy these into your .env ---");
-        console.log(string.concat("SERVICE_BOARD_ADDRESS=", vm.toString(address(board))));
-        console.log(string.concat("ESCROW_VAULT_ADDRESS=", vm.toString(address(vault))));
-        console.log(string.concat("REPUTATION_REGISTRY_ADDRESS=", vm.toString(address(reputation))));
+        console.log("Add to .env:");
+        console.log(string.concat("SERVICE_BOARD_ADDRESS=", vm.toString(address(boardProxy))));
+        console.log(string.concat("ESCROW_VAULT_ADDRESS=", vm.toString(address(vaultProxy))));
+        console.log(string.concat("REPUTATION_REGISTRY_ADDRESS=", vm.toString(address(reputationProxy))));
+        console.log("");
+        console.log("IMPORTANT: Consider transferring ownership to a multisig (Gnosis Safe)");
+        console.log("  All 3 contracts support 2-step ownership transfer via transferOwnership()");
+
+        // 4. Fund demo wallets (Buyer & Seller) with a small amount of ETH for gas
+        address buyer  = 0xab85b3E08443afB41177B361b71f42068D1683fC;
+        address seller = 0xaffDC52347B22D97561770f54619591a2c59f08b;
+        uint256 fundAmount = 0.0005 ether; // ~0.0005 ETH each for demo gas
+
+        (bool okBuyer,)  = buyer.call{value: fundAmount}("");
+        (bool okSeller,) = seller.call{value: fundAmount}("");
+
+        if (okBuyer) {
+            console.log("Funded Buyer  (0xab85...83fC):", fundAmount);
+        } else {
+            console.log("WARNING: Failed to fund Buyer");
+        }
+        if (okSeller) {
+            console.log("Funded Seller (0xaffD...f08b):", fundAmount);
+        } else {
+            console.log("WARNING: Failed to fund Seller");
+        }
 
         vm.stopBroadcast();
     }

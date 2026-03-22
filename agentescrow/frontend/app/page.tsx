@@ -96,7 +96,25 @@ export default function Dashboard() {
   const [walletAddress, setWalletAddress] = useState('');
   const [hireStep, setHireStep] = useState<'connect' | 'form' | 'confirm' | 'submitted'>('connect');
   const [selectedAgent, setSelectedAgent] = useState<number | null>(null);
+  const [skillCopied, setSkillCopied] = useState(false);
   const prevTaskCountRef = useRef(0);
+
+  const SKILL_URL = 'https://agentescrow.directivecreator.com/skill.md';
+
+  const copySkillForAgent = async () => {
+    try {
+      const res = await fetch('/skill.md');
+      const text = await res.text();
+      await navigator.clipboard.writeText(text);
+      setSkillCopied(true);
+      setTimeout(() => setSkillCopied(false), 2500);
+    } catch {
+      // Fallback: copy the URL itself
+      await navigator.clipboard.writeText(SKILL_URL);
+      setSkillCopied(true);
+      setTimeout(() => setSkillCopied(false), 2500);
+    }
+  };
 
   const fetchData = useCallback(async () => {
     try {
@@ -379,6 +397,32 @@ export default function Dashboard() {
                       Human → Human
                     </span>
                   </div>
+                  {/* Copy for Agent — primary CTA */}
+                  <button
+                    onClick={copySkillForAgent}
+                    className="w-full mb-4 py-3 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 relative overflow-hidden"
+                    style={{
+                      background: skillCopied ? '#34D399' : 'linear-gradient(135deg, #38B3DC, #A78BFA)',
+                      color: '#0C0C0C',
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxShadow: '0 0 24px rgba(56,179,220,0.25)',
+                    }}
+                    onMouseEnter={e => { if (!skillCopied) { e.currentTarget.style.boxShadow = '0 0 32px rgba(56,179,220,0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(56,179,220,0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                  >
+                    {skillCopied ? (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                        COPIED — PASTE TO YOUR AGENT
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                        COPY SKILL FOR YOUR AGENT
+                      </>
+                    )}
+                  </button>
                   <div className="flex gap-3">
                     <a href="https://github.com/DirectiveCreator/agentescrow" target="_blank" rel="noopener noreferrer"
                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[12px] font-medium transition-all hover:shadow-[0_0_20px_rgba(56,179,220,0.3)]"
@@ -2392,20 +2436,56 @@ export default function Dashboard() {
             </div>
 
             {/* Skill File */}
-            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
-                AGENT SKILL FILE
-              </h3>
-              <p className="text-[11px] mb-4" style={{ color: 'var(--text-tertiary)' }}>
-                Add this skill to your agent to enable AgentEscrow integration. Download from the{' '}
-                <a href="https://github.com/DirectiveCreator/agentescrow/blob/main/skills/agentescrow-integration.md"
-                   target="_blank" rel="noopener noreferrer"
-                   className="hover:underline" style={{ color: 'var(--accent)' }}>
-                  GitHub repo
-                </a>.
-              </p>
-              <pre className="text-[10px] p-4 rounded-lg overflow-x-auto leading-relaxed"
-                   style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontFamily: '"JetBrains Mono", monospace' }}>
+            <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
+              <div className="absolute inset-0 opacity-[0.08]" style={{ zIndex: 0 }}>
+                <MeshGradient
+                  colors={['#38B3DC', '#A78BFA', '#0C0C0C', '#34D399']}
+                  speed={0.08}
+                  distortion={0.3}
+                  swirl={0.5}
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </div>
+              <div className="relative" style={{ zIndex: 1 }}>
+                <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
+                  AGENT SKILL FILE
+                </h3>
+                <p className="text-[11px] mb-4" style={{ color: 'var(--text-tertiary)' }}>
+                  Add this skill to your agent to enable AgentEscrow integration. Available at{' '}
+                  <a href={SKILL_URL}
+                     target="_blank" rel="noopener noreferrer"
+                     className="hover:underline font-mono" style={{ color: 'var(--accent)' }}>
+                    agentescrow.directivecreator.com/skill.md
+                  </a>
+                </p>
+                {/* Copy for Agent Button */}
+                <button
+                  onClick={copySkillForAgent}
+                  className="w-full mb-4 py-3 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2"
+                  style={{
+                    background: skillCopied ? '#34D399' : 'linear-gradient(135deg, #38B3DC, #A78BFA)',
+                    color: '#0C0C0C',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 0 24px rgba(56,179,220,0.25)',
+                  }}
+                  onMouseEnter={e => { if (!skillCopied) { e.currentTarget.style.boxShadow = '0 0 32px rgba(56,179,220,0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+                  onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(56,179,220,0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  {skillCopied ? (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                      COPIED — PASTE TO YOUR AGENT
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                      COPY SKILL FOR YOUR AGENT
+                    </>
+                  )}
+                </button>
+                <pre className="text-[10px] p-4 rounded-lg overflow-x-auto leading-relaxed"
+                     style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontFamily: '"JetBrains Mono", monospace' }}>
 {`---
 name: agentescrow-integration
 description: Integrate with AgentEscrow — a trustless
@@ -2446,8 +2526,9 @@ Same contract addresses on both chains:
 x402 · ENS · MetaMask Delegation · Venice AI
 Ampersend · Filecoin · OpenServ
 
-Full skill file: skills/agentescrow-integration.md`}
-              </pre>
+Skill file: agentescrow.directivecreator.com/skill.md`}
+                </pre>
+              </div>
             </div>
           </div>
         )}

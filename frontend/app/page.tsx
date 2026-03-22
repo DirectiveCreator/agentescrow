@@ -301,7 +301,7 @@ export default function Dashboard() {
             {integrationsOpen && (
               <div className="absolute top-full left-0 mt-[1px] rounded-lg py-2 z-50 min-w-[180px] border" style={{ background: 'var(--bg-card)', borderColor: 'var(--border)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
                 {[
-                  { label: 'Base', icon: '🔵', section: 'overview' as const },
+                  { label: 'Base', icon: '🔵', href: '/base' },
                   { label: 'Celo', icon: '🟢', href: '/celo' },
                   { label: 'ENS', icon: '🔵', href: '/ens' },
                   { label: 'Filecoin', icon: '🔷', href: '/filecoin' },
@@ -310,7 +310,6 @@ export default function Dashboard() {
                   { label: 'Venice AI', icon: '🟣', href: '/venice' },
                   { label: 'Ampersend', icon: '⚡', href: '/ampersend' },
                 ].map(item => (
-                  'href' in item ? (
                     <a
                       key={item.label}
                       href={item.href}
@@ -321,17 +320,6 @@ export default function Dashboard() {
                       <span>{item.icon}</span>
                       {item.label.toUpperCase()}
                     </a>
-                  ) : (
-                    <button
-                      key={item.label}
-                      className="flex items-center gap-3 px-4 py-2.5 text-[12px] tracking-wide transition-colors hover:bg-white/5 w-full text-left"
-                      style={{ color: 'var(--text-secondary)' }}
-                      onClick={() => { setActiveSection(item.section); setIntegrationsOpen(false); }}
-                    >
-                      <span>{item.icon}</span>
-                      {item.label.toUpperCase()}
-                    </button>
-                  )
                 ))}
               </div>
             )}

@@ -478,9 +478,8 @@ export default function FilecoinPage() {
             marginBottom: 16,
           }}>
             <span style={{ fontSize: 12, color: '#0090FF', fontFamily: 'var(--font-mono)' }}>
-              Filecoin Foundation Bounty
+              Filecoin Foundation Synthesis Hackathon
             </span>
-            <span style={{ fontSize: 12, color: '#0090FF', fontWeight: 700 }}>$2,000</span>
           </div>
 
           <h1 style={{
@@ -491,7 +490,7 @@ export default function FilecoinPage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            Filecoin Onchain Cloud + AgentEscrow
+            Agent Escrow + <span style={{ color: '#0090FF' }}>Filecoin On-Chain Cloud</span>
           </h1>
           <p style={{
             fontSize: 15,

@@ -139,6 +139,10 @@ contract AgentEscrowTest is Test {
         ServiceBoard.Task memory task = board.getTask(taskId);
         assertEq(uint(task.status), uint(ServiceBoard.TaskStatus.Cancelled));
         assertEq(buyer.balance, buyerBalBefore + 0.1 ether);
+
+        // Seller should have a failure recorded
+        ReputationRegistry.AgentReputation memory sellerRep = reputation.getReputation(seller);
+        assertEq(sellerRep.tasksFailed, 1, "Seller should have 1 failure");
     }
 
     function testCannotClaimOwnTask() public {

@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /**
  * @title EscrowVault
@@ -15,6 +16,7 @@ import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
  *   - Each task has exactly one Escrow entry, identified by taskId.
  *   - Funds flow: Buyer -> EscrowVault (on task post) -> Seller (on confirm) OR -> Buyer (on cancel/timeout).
  *   - UUPS upgradeable proxy pattern for post-deploy fixes.
+ *   - ReentrancyGuard protects all payout functions against cross-contract reentrancy.
  *
  * Agent Integration Notes:
  *   - Agents interact with this contract indirectly via ServiceBoard.
@@ -26,17 +28,20 @@ import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
  *   - setServiceBoard is one-time-only (cannot be changed after initial setup).
  *   - Uses low-level call for ETH transfers to handle contracts as recipients.
  *   - Each escrow can only be settled once (released XOR refunded, never both).
+ *   - ReentrancyGuard prevents cross-function reentrancy during ETH transfers.
+ *   - Two-step ownership transfer prevents accidental lockout.
  */
-contract EscrowVault is Initializable, UUPSUpgradeable {
+contract EscrowVault is Initializable, UUPSUpgradeable, ReentrancyGuard {
     /// @notice Represents a single escrow deposit for a task
     /// @dev One escrow per taskId. Both `released` and `refunded` start false.
+    ///      Struct is packed: buyer (20) + released (1) + refunded (1) fit in one slot.
     struct Escrow {
+        address buyer;      // The agent who funded this escrow (20 bytes)
+        bool released;      // True if funds were released to the seller (1 byte, same slot as buyer)
+        bool refunded;      // True if funds were refunded to the buyer (1 byte, same slot as buyer)
         uint256 taskId;     // The task this escrow is for (matches ServiceBoard.Task.id)
-        address buyer;      // The agent who funded this escrow
         uint256 amount;     // Amount of ETH locked (in wei)
         uint256 deadline;   // Task deadline timestamp — used for timeout refund eligibility
-        bool released;      // True if funds were released to the seller
-        bool refunded;      // True if funds were refunded to the buyer
     }
 
     /// @notice Maps taskId -> Escrow. One escrow per task.
@@ -46,8 +51,11 @@ contract EscrowVault is Initializable, UUPSUpgradeable {
     /// @dev Set once via setServiceBoard(). All deposit/release/refund calls must come from this address.
     address public serviceBoard;
 
-    /// @notice The deployer/owner who can set the ServiceBoard address
+    /// @notice The current owner who can set the ServiceBoard address and authorize upgrades
     address public owner;
+
+    /// @notice The pending owner in a two-step ownership transfer
+    address public pendingOwner;
 
     // ─── Events ────────────────────────────────────────────────────────
 
@@ -60,6 +68,15 @@ contract EscrowVault is Initializable, UUPSUpgradeable {
     /// @notice Emitted when escrowed funds are refunded to the buyer (task cancelled/timed out)
     event EscrowRefunded(uint256 indexed taskId, address indexed buyer, uint256 amount);
 
+    /// @notice Emitted when ownership transfer is initiated
+    event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
+
+    /// @notice Emitted when ownership transfer is accepted by the new owner
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /// @notice Emitted when the ServiceBoard address is set
+    event ServiceBoardSet(address indexed serviceBoard);
+
     // ─── Modifiers ─────────────────────────────────────────────────────
 
     /// @dev Restricts function access to the linked ServiceBoard contract only
@@ -68,7 +85,7 @@ contract EscrowVault is Initializable, UUPSUpgradeable {
         _;
     }
 
-    /// @dev Restricts function access to the contract deployer/owner
+    /// @dev Restricts function access to the contract owner
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner");
         _;
@@ -96,6 +113,25 @@ contract EscrowVault is Initializable, UUPSUpgradeable {
         require(serviceBoard == address(0), "Already set");
         require(_serviceBoard != address(0), "Zero address");
         serviceBoard = _serviceBoard;
+        emit ServiceBoardSet(_serviceBoard);
+    }
+
+    /// @notice Initiate a two-step ownership transfer
+    /// @dev The new owner must call acceptOwnership() to complete the transfer.
+    /// @param newOwner Address of the proposed new owner
+    function transferOwnership(address newOwner) external onlyOwner {
+        require(newOwner != address(0), "Zero address");
+        pendingOwner = newOwner;
+        emit OwnershipTransferStarted(owner, newOwner);
+    }
+
+    /// @notice Accept a pending ownership transfer
+    /// @dev Only the pending owner can call this to complete the two-step transfer.
+    function acceptOwnership() external {
+        require(msg.sender == pendingOwner, "Not pending owner");
+        emit OwnershipTransferred(owner, msg.sender);
+        owner = msg.sender;
+        pendingOwner = address(0);
     }
 
     // ─── UUPS Upgrade Authorization ────────────────────────────────────
@@ -115,12 +151,12 @@ contract EscrowVault is Initializable, UUPSUpgradeable {
         require(escrows[taskId].amount == 0, "Escrow exists");
 
         escrows[taskId] = Escrow({
-            taskId: taskId,
             buyer: buyer,
-            amount: msg.value,
-            deadline: deadline,
             released: false,
-            refunded: false
+            refunded: false,
+            taskId: taskId,
+            amount: msg.value,
+            deadline: deadline
         });
 
         emit EscrowCreated(taskId, buyer, msg.value, deadline);
@@ -128,9 +164,10 @@ contract EscrowVault is Initializable, UUPSUpgradeable {
 
     /// @notice Release escrowed funds to the seller. Called when buyer confirms delivery.
     /// @dev Marks escrow as released and transfers ETH to seller via low-level call.
+    ///      Protected by ReentrancyGuard to prevent cross-contract reentrancy.
     /// @param taskId The task whose escrow to release
     /// @param seller The address of the agent who completed the work
-    function release(uint256 taskId, address seller) external onlyServiceBoard {
+    function release(uint256 taskId, address seller) external onlyServiceBoard nonReentrant {
         Escrow storage escrow = escrows[taskId];
         require(escrow.amount > 0, "No escrow");
         require(!escrow.released && !escrow.refunded, "Already settled");
@@ -147,12 +184,15 @@ contract EscrowVault is Initializable, UUPSUpgradeable {
 
     /// @notice Refund escrowed funds to the buyer. Called on cancellation or timeout.
     /// @dev Marks escrow as refunded and transfers ETH back to buyer via low-level call.
+    ///      Validates buyer address matches stored escrow buyer for defense-in-depth.
+    ///      Protected by ReentrancyGuard to prevent cross-contract reentrancy.
     /// @param taskId The task whose escrow to refund
     /// @param buyer The address of the agent who funded the task
-    function refund(uint256 taskId, address buyer) external onlyServiceBoard {
+    function refund(uint256 taskId, address buyer) external onlyServiceBoard nonReentrant {
         Escrow storage escrow = escrows[taskId];
         require(escrow.amount > 0, "No escrow");
         require(!escrow.released && !escrow.refunded, "Already settled");
+        require(buyer == escrow.buyer, "Wrong buyer");
 
         escrow.refunded = true;
         uint256 amount = escrow.amount;
@@ -168,7 +208,7 @@ contract EscrowVault is Initializable, UUPSUpgradeable {
 
     /// @notice Get the full escrow details for a task
     /// @param taskId The task to look up
-    /// @return The Escrow struct (taskId, buyer, amount, deadline, released, refunded)
+    /// @return The Escrow struct (buyer, released, refunded, taskId, amount, deadline)
     function getEscrow(uint256 taskId) external view returns (Escrow memory) {
         return escrows[taskId];
     }
@@ -179,6 +219,6 @@ contract EscrowVault is Initializable, UUPSUpgradeable {
         return address(this).balance;
     }
 
-    /// @dev Accept direct ETH transfers (e.g., for testing or emergency deposits)
-    receive() external payable {}
+    // NOTE: No receive() function — direct ETH transfers are rejected to prevent
+    // unaccounted funds. All deposits must go through the deposit() function.
 }

@@ -14,7 +14,9 @@ import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
  *   - Both buyers and sellers accrue reputation through task completions.
  *   - Reputation score is a simple percentage: (completed / total) * 100.
  *   - New agents start with a default score of 50 (neutral reputation).
+ *   - recordFailure() is called by ServiceBoard on timeout to penalize non-delivering sellers.
  *   - UUPS upgradeable proxy pattern for post-deploy fixes.
+ *   - Two-step ownership transfer prevents accidental lockout.
  *
  * Agent Integration Notes:
  *   - Agents can read any agent's reputation: getReputation(address) returns full stats.
@@ -26,7 +28,7 @@ import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
  *   - Score = (tasksCompleted * 100) / (tasksCompleted + tasksFailed)
  *   - Score of 50 = new agent (no history), Score of 100 = perfect record
  *   - Both buyer and seller get their tasksCompleted incremented on success.
- *   - Only the failing party gets tasksFailed incremented (via recordFailure).
+ *   - The failing party (seller who doesn't deliver) gets tasksFailed incremented.
  *
  * Security Model:
  *   - Only ServiceBoard can record completions and failures (prevents manipulation).
@@ -52,8 +54,11 @@ contract ReputationRegistry is Initializable, UUPSUpgradeable {
     /// @dev Set once via setServiceBoard(). All write operations are gated to this address.
     address public serviceBoard;
 
-    /// @notice The deployer/owner who can set the ServiceBoard address
+    /// @notice The current owner who can set the ServiceBoard address and authorize upgrades
     address public owner;
+
+    /// @notice The pending owner in a two-step ownership transfer
+    address public pendingOwner;
 
     // ─── Events ────────────────────────────────────────────────────────
 
@@ -66,6 +71,15 @@ contract ReputationRegistry is Initializable, UUPSUpgradeable {
     /// @notice Emitted when a task failure is recorded for an agent
     event FailureRecorded(address indexed agent, uint256 indexed taskId);
 
+    /// @notice Emitted when ownership transfer is initiated
+    event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
+
+    /// @notice Emitted when ownership transfer is accepted
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /// @notice Emitted when the ServiceBoard address is set
+    event ServiceBoardSet(address indexed serviceBoard);
+
     // ─── Modifiers ─────────────────────────────────────────────────────
 
     /// @dev Restricts function access to the linked ServiceBoard contract only
@@ -74,7 +88,7 @@ contract ReputationRegistry is Initializable, UUPSUpgradeable {
         _;
     }
 
-    /// @dev Restricts function access to the contract deployer/owner
+    /// @dev Restricts function access to the contract owner
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner");
         _;
@@ -102,6 +116,27 @@ contract ReputationRegistry is Initializable, UUPSUpgradeable {
         require(serviceBoard == address(0), "Already set");
         require(_serviceBoard != address(0), "Zero address");
         serviceBoard = _serviceBoard;
+        emit ServiceBoardSet(_serviceBoard);
+    }
+
+    // ─── Ownership Transfer (Two-Step) ────────────────────────────────
+
+    /// @notice Initiate a two-step ownership transfer
+    /// @dev The new owner must call acceptOwnership() to complete the transfer.
+    /// @param newOwner Address of the proposed new owner
+    function transferOwnership(address newOwner) external onlyOwner {
+        require(newOwner != address(0), "Zero address");
+        pendingOwner = newOwner;
+        emit OwnershipTransferStarted(owner, newOwner);
+    }
+
+    /// @notice Accept a pending ownership transfer
+    /// @dev Only the pending owner can call this to complete the two-step transfer.
+    function acceptOwnership() external {
+        require(msg.sender == pendingOwner, "Not pending owner");
+        emit OwnershipTransferred(owner, msg.sender);
+        owner = msg.sender;
+        pendingOwner = address(0);
     }
 
     // ─── UUPS Upgrade Authorization ────────────────────────────────────
@@ -140,7 +175,7 @@ contract ReputationRegistry is Initializable, UUPSUpgradeable {
     }
 
     /// @notice Record a task failure or timeout for an agent
-    /// @dev Called by ServiceBoard when a task times out or is disputed.
+    /// @dev Called by ServiceBoard.claimTimeout() when a seller fails to deliver.
     ///      Only the responsible agent's failure count is incremented.
     /// @param agent The address of the agent who failed the task
     /// @param taskId The task that failed (for event logging)

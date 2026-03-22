@@ -16,9 +16,11 @@ import "./ReputationRegistry.sol";
  *   - ServiceBoard is the orchestrator. It manages the task lifecycle and coordinates
  *     with EscrowVault (funds) and ReputationRegistry (trust scores).
  *   - Task lifecycle: Open -> Claimed -> Delivered -> Completed (happy path)
- *   - Alternative paths: Open -> Cancelled (buyer cancels) or Claimed -> Cancelled (timeout)
+ *   - Alternative paths: Open -> Cancelled (buyer cancels), Claimed -> Cancelled (timeout),
+ *     Delivered -> Cancelled (timeout with extended grace period)
  *   - Emergency pause mechanism allows owner to freeze operations if a bug is found.
  *   - UUPS upgradeable proxy pattern for post-deploy fixes.
+ *   - Two-step ownership transfer prevents accidental lockout.
  *
  * Agent Integration Notes:
  *   - BUYER AGENT workflow:
@@ -50,14 +52,15 @@ import "./ReputationRegistry.sol";
  *   - TaskClaimed: Task has been claimed by a seller agent
  *   - TaskDelivered: Seller has submitted their work
  *   - TaskCompleted: Buyer confirmed, payment released
- *   - TaskCancelled: Task was cancelled or timed out
+ *   - TaskCancelled: Task was cancelled or timed out (includes reason)
  *   - TaskReceipt: Full receipt emitted on completion (for indexing/reporting)
  *   - Paused / Unpaused: Emergency circuit breaker state changes
  */
 contract ServiceBoard is Initializable, UUPSUpgradeable {
     /// @notice The possible states a task can be in
     /// @dev Linear progression: Open -> Claimed -> Delivered -> Completed
-    ///      Branch paths: Open -> Cancelled, Claimed -> Cancelled (timeout)
+    ///      Branch paths: Open -> Cancelled, Claimed -> Cancelled (timeout),
+    ///      Delivered -> Cancelled (timeout after extended grace)
     enum TaskStatus {
         Open,       // Task posted, waiting for a seller to claim
         Claimed,    // Seller has claimed, working on delivery
@@ -68,30 +71,35 @@ contract ServiceBoard is Initializable, UUPSUpgradeable {
     }
 
     /// @notice Represents a single task on the service board
-    /// @dev All fields are set at creation except seller/delivery/timing fields
+    /// @dev All fields are set at creation except seller/delivery/timing fields.
+    ///      buyer (20 bytes) + status (1 byte) are packed into one slot.
     struct Task {
         uint256 id;            // Unique task identifier (auto-incremented)
         address buyer;         // Agent who posted and funded the task
+        TaskStatus status;     // Current lifecycle status (packed with buyer)
         address seller;        // Agent who claimed and will deliver (address(0) if unclaimed)
         string taskType;       // Type of work: "text_summary", "code_review", etc.
         string description;    // Human/agent-readable description of what's needed
         uint256 reward;        // ETH reward in wei (locked in EscrowVault)
         uint256 deadline;      // Unix timestamp — task expires after this time
-        TaskStatus status;     // Current lifecycle status
         string deliveryHash;   // IPFS hash or content hash of delivered work (empty until delivery)
         uint256 createdAt;     // Timestamp when task was posted
         uint256 claimedAt;     // Timestamp when seller claimed (0 if unclaimed)
         uint256 deliveredAt;   // Timestamp when work was delivered (0 if not yet)
     }
 
+    /// @notice Extended grace period after deadline for Delivered tasks (24 hours)
+    /// @dev Delivered tasks can be timed out after deadline + DELIVERY_GRACE_PERIOD
+    uint256 public constant DELIVERY_GRACE_PERIOD = 24 hours;
+
+    /// @notice Maximum allowed deadline (365 days from now)
+    uint256 public constant MAX_DEADLINE_DURATION = 365 days;
+
     /// @notice Auto-incrementing task ID counter
     uint256 public nextTaskId;
 
     /// @notice Maps taskId -> Task struct
     mapping(uint256 => Task) public tasks;
-
-    /// @notice Array of all task IDs (for enumeration)
-    uint256[] public taskIds;
 
     /// @notice The EscrowVault contract that holds task funds
     EscrowVault public escrowVault;
@@ -101,6 +109,9 @@ contract ServiceBoard is Initializable, UUPSUpgradeable {
 
     /// @notice The deployer/owner who can pause/unpause and authorize upgrades
     address public owner;
+
+    /// @notice The pending owner in a two-step ownership transfer
+    address public pendingOwner;
 
     /// @notice Whether the contract is paused (emergency circuit breaker)
     bool public paused;
@@ -120,7 +131,9 @@ contract ServiceBoard is Initializable, UUPSUpgradeable {
     event TaskCompleted(uint256 indexed taskId, address indexed buyer, address indexed seller, uint256 reward);
 
     /// @notice Emitted when a task is cancelled (by buyer or timeout)
-    event TaskCancelled(uint256 indexed taskId);
+    /// @param taskId The cancelled task
+    /// @param reason Why it was cancelled: "buyer_cancelled", "timeout_open", "timeout_claimed", "timeout_delivered"
+    event TaskCancelled(uint256 indexed taskId, string reason);
 
     /// @notice Full receipt emitted on task completion — useful for indexing and reporting
     event TaskReceipt(uint256 indexed taskId, address indexed buyer, address indexed seller, string taskType, uint256 reward, uint256 timestamp);
@@ -130,6 +143,12 @@ contract ServiceBoard is Initializable, UUPSUpgradeable {
 
     /// @notice Emitted when the contract is unpaused
     event Unpaused(address account);
+
+    /// @notice Emitted when ownership transfer is initiated
+    event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
+
+    /// @notice Emitted when ownership transfer is accepted
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     // ─── Modifiers ─────────────────────────────────────────────────────
 
@@ -171,6 +190,8 @@ contract ServiceBoard is Initializable, UUPSUpgradeable {
     /// @param _escrowVault Address of the deployed EscrowVault contract
     /// @param _reputationRegistry Address of the deployed ReputationRegistry contract
     function initialize(address _escrowVault, address _reputationRegistry) external initializer {
+        require(_escrowVault != address(0), "Zero address");
+        require(_reputationRegistry != address(0), "Zero address");
         escrowVault = EscrowVault(payable(_escrowVault));
         reputationRegistry = ReputationRegistry(_reputationRegistry);
         owner = msg.sender;
@@ -195,6 +216,26 @@ contract ServiceBoard is Initializable, UUPSUpgradeable {
         emit Unpaused(msg.sender);
     }
 
+    // ─── Ownership Transfer (Two-Step) ────────────────────────────────
+
+    /// @notice Initiate a two-step ownership transfer
+    /// @dev The new owner must call acceptOwnership() to complete the transfer.
+    /// @param newOwner Address of the proposed new owner
+    function transferOwnership(address newOwner) external onlyOwner {
+        require(newOwner != address(0), "Zero address");
+        pendingOwner = newOwner;
+        emit OwnershipTransferStarted(owner, newOwner);
+    }
+
+    /// @notice Accept a pending ownership transfer
+    /// @dev Only the pending owner can call this to complete the two-step transfer.
+    function acceptOwnership() external {
+        require(msg.sender == pendingOwner, "Not pending owner");
+        emit OwnershipTransferred(owner, msg.sender);
+        owner = msg.sender;
+        pendingOwner = address(0);
+    }
+
     // ─── UUPS Upgrade Authorization ────────────────────────────────────
 
     /// @dev Only the owner can authorize contract upgrades
@@ -204,7 +245,8 @@ contract ServiceBoard is Initializable, UUPSUpgradeable {
 
     /// @notice Post a new task with ETH reward. Funds are locked in escrow immediately.
     /// @dev The caller becomes the buyer. msg.value is the task reward.
-    ///      The deadline must be in the future. Emits TaskPosted.
+    ///      The deadline must be in the future and within MAX_DEADLINE_DURATION.
+    ///      taskType must not be empty. Emits TaskPosted.
     /// @param taskType The type of work needed (e.g., "text_summary", "code_review")
     /// @param description A description of the task for seller agents to evaluate
     /// @param deadline Unix timestamp after which the task expires
@@ -216,23 +258,24 @@ contract ServiceBoard is Initializable, UUPSUpgradeable {
     ) external payable whenNotPaused returns (uint256) {
         require(msg.value > 0, "Must send ETH for reward");
         require(deadline > block.timestamp, "Deadline must be in the future");
+        require(deadline <= block.timestamp + MAX_DEADLINE_DURATION, "Deadline too far in future");
+        require(bytes(taskType).length > 0, "Task type required");
 
         uint256 taskId = nextTaskId++;
         tasks[taskId] = Task({
             id: taskId,
             buyer: msg.sender,
+            status: TaskStatus.Open,
             seller: address(0),
             taskType: taskType,
             description: description,
             reward: msg.value,
             deadline: deadline,
-            status: TaskStatus.Open,
             deliveryHash: "",
             createdAt: block.timestamp,
             claimedAt: 0,
             deliveredAt: 0
         });
-        taskIds.push(taskId);
 
         // Lock funds in escrow vault — funds are held until delivery confirmed or timeout
         escrowVault.deposit{value: msg.value}(taskId, msg.sender, deadline);
@@ -305,27 +348,56 @@ contract ServiceBoard is Initializable, UUPSUpgradeable {
         task.status = TaskStatus.Cancelled;
         escrowVault.refund(taskId, task.buyer);
 
-        emit TaskCancelled(taskId);
+        emit TaskCancelled(taskId, "buyer_cancelled");
     }
 
     /// @notice Trigger a timeout refund for an expired task. Anyone can call this.
     /// @dev This is a public good function — any agent or EOA can call it to clean up
-    ///      expired tasks and return funds to the buyer. Works for both Open and Claimed
-    ///      tasks that have passed their deadline.
+    ///      expired tasks and return funds to the buyer. Works for Open, Claimed,
+    ///      and Delivered tasks that have passed their deadline.
+    ///      - Open/Claimed tasks: refundable after deadline
+    ///      - Delivered tasks: refundable after deadline + DELIVERY_GRACE_PERIOD (24h)
+    ///        This gives the buyer time to review delivered work before it can be timed out.
+    ///      - Claimed tasks that timeout record a failure for the seller's reputation.
     ///      NOTE: claimTimeout works even when paused — users must be able to recover expired funds.
     /// @param taskId The expired task to refund
     function claimTimeout(uint256 taskId) external {
         Task storage task = tasks[taskId];
         require(
-            task.status == TaskStatus.Claimed || task.status == TaskStatus.Open,
+            task.status == TaskStatus.Claimed ||
+            task.status == TaskStatus.Open ||
+            task.status == TaskStatus.Delivered,
             "Task not eligible for timeout"
         );
-        require(block.timestamp >= task.deadline, "Deadline not reached");
+
+        if (task.status == TaskStatus.Delivered) {
+            // Delivered tasks get an extended grace period for buyer to review
+            require(
+                block.timestamp >= task.deadline + DELIVERY_GRACE_PERIOD,
+                "Delivery grace period not elapsed"
+            );
+        } else {
+            require(block.timestamp >= task.deadline, "Deadline not reached");
+        }
+
+        // Record failure for seller if they claimed but didn't deliver, or delivered garbage
+        if (task.status == TaskStatus.Claimed || task.status == TaskStatus.Delivered) {
+            reputationRegistry.recordFailure(task.seller, taskId);
+        }
+
+        string memory reason;
+        if (task.status == TaskStatus.Open) {
+            reason = "timeout_open";
+        } else if (task.status == TaskStatus.Claimed) {
+            reason = "timeout_claimed";
+        } else {
+            reason = "timeout_delivered";
+        }
 
         task.status = TaskStatus.Cancelled;
         escrowVault.refund(taskId, task.buyer);
 
-        emit TaskCancelled(taskId);
+        emit TaskCancelled(taskId, reason);
     }
 
     // ─── View Functions ────────────────────────────────────────────────
@@ -343,9 +415,35 @@ contract ServiceBoard is Initializable, UUPSUpgradeable {
         return nextTaskId;
     }
 
+    /// @notice Get currently open (unclaimed) tasks with pagination
+    /// @dev Iterates tasks starting from `offset`. Gas cost scales with `limit`.
+    ///      For production at scale, consider off-chain indexing via events instead.
+    /// @param offset The task ID to start scanning from
+    /// @param limit Maximum number of open tasks to return
+    /// @return An array of Task structs with status == Open
+    function getOpenTasksPaginated(uint256 offset, uint256 limit) external view returns (Task[] memory) {
+        uint256 count = 0;
+        uint256 end = nextTaskId;
+
+        // First pass: count matching tasks
+        for (uint256 i = offset; i < end && count < limit; i++) {
+            if (tasks[i].status == TaskStatus.Open) count++;
+        }
+
+        // Second pass: collect them
+        Task[] memory openTasks = new Task[](count);
+        uint256 idx = 0;
+        for (uint256 i = offset; i < end && idx < count; i++) {
+            if (tasks[i].status == TaskStatus.Open) {
+                openTasks[idx++] = tasks[i];
+            }
+        }
+        return openTasks;
+    }
+
     /// @notice Get all currently open (unclaimed) tasks
-    /// @dev Iterates all tasks — gas cost scales with total task count.
-    ///      For production, consider off-chain indexing via events instead.
+    /// @dev WARNING: Iterates all tasks — gas cost scales with total task count.
+    ///      Use getOpenTasksPaginated() for large datasets or off-chain indexing via events.
     /// @return An array of Task structs with status == Open
     function getOpenTasks() external view returns (Task[] memory) {
         uint256 count = 0;

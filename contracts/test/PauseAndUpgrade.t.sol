@@ -48,7 +48,7 @@ contract PauseAndUpgradeTest is Test {
         boardProxyAddr = address(boardProxy);
 
         vault = EscrowVault(payable(vaultProxyAddr));
-        reputation = ReputationRegistry(reputationProxyAddr);
+        reputation = ReputationRegistry(address(reputationProxy));
         board = ServiceBoard(boardProxyAddr);
 
         vault.setServiceBoard(address(board));

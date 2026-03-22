@@ -1,410 +1,69 @@
-[
-  {
-    "type": "constructor",
-    "inputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "UPGRADE_INTERFACE_VERSION",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "string",
-        "internalType": "string"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getReputation",
-    "inputs": [
-      {
-        "name": "agent",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "tuple",
-        "internalType": "struct ReputationRegistry.AgentReputation",
-        "components": [
-          {
-            "name": "tasksCompleted",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "tasksFailed",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "totalEarned",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "totalSpent",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "firstActiveAt",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "lastActiveAt",
-            "type": "uint256",
-            "internalType": "uint256"
-          }
-        ]
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getScore",
-    "inputs": [
-      {
-        "name": "agent",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "initialize",
-    "inputs": [],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "owner",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "proxiableUUID",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "bytes32",
-        "internalType": "bytes32"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "recordCompletion",
-    "inputs": [
-      {
-        "name": "buyer",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "seller",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "taskId",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "amount",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "recordFailure",
-    "inputs": [
-      {
-        "name": "agent",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "taskId",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "reputations",
-    "inputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "tasksCompleted",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "tasksFailed",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "totalEarned",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "totalSpent",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "firstActiveAt",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "lastActiveAt",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "serviceBoard",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "setServiceBoard",
-    "inputs": [
-      {
-        "name": "_serviceBoard",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "upgradeToAndCall",
-    "inputs": [
-      {
-        "name": "newImplementation",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "data",
-        "type": "bytes",
-        "internalType": "bytes"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "payable"
-  },
-  {
-    "type": "event",
-    "name": "CompletionRecorded",
-    "inputs": [
-      {
-        "name": "seller",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "taskId",
-        "type": "uint256",
-        "indexed": true,
-        "internalType": "uint256"
-      },
-      {
-        "name": "earned",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "FailureRecorded",
-    "inputs": [
-      {
-        "name": "agent",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "taskId",
-        "type": "uint256",
-        "indexed": true,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "Initialized",
-    "inputs": [
-      {
-        "name": "version",
-        "type": "uint64",
-        "indexed": false,
-        "internalType": "uint64"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "ReputationUpdated",
-    "inputs": [
-      {
-        "name": "agent",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "completed",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      },
-      {
-        "name": "failed",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "Upgraded",
-    "inputs": [
-      {
-        "name": "implementation",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "error",
-    "name": "AddressEmptyCode",
-    "inputs": [
-      {
-        "name": "target",
-        "type": "address",
-        "internalType": "address"
-      }
-    ]
-  },
-  {
-    "type": "error",
-    "name": "ERC1967InvalidImplementation",
-    "inputs": [
-      {
-        "name": "implementation",
-        "type": "address",
-        "internalType": "address"
-      }
-    ]
-  },
-  {
-    "type": "error",
-    "name": "ERC1967NonPayable",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "FailedCall",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "InvalidInitialization",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "NotInitializing",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "UUPSUnauthorizedCallContext",
-    "inputs": []
-  },
-  {
-    "type": "error",
-    "name": "UUPSUnsupportedProxiableUUID",
-    "inputs": [
-      {
-        "name": "slot",
-        "type": "bytes32",
-        "internalType": "bytes32"
-      }
-    ]
-  }
-]
+
+╭-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------╮
+| Type        | Signature                                                                           | Selector                                                           |
++========================================================================================================================================================================+
+| event       | CompletionRecorded(address,uint256,uint256)                                         | 0xfe7456d24d16b7509ac7be1d5eeebc2b29e6a60515fa3e9f96b905faa544892a |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| event       | FailureRecorded(address,uint256)                                                    | 0xd94baf05af81ae32fef9778f498da4fd52fe2063df703aada90ff8f72b9bc086 |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| event       | Initialized(uint64)                                                                 | 0xc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d2 |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| event       | OwnershipTransferStarted(address,address)                                           | 0x38d16b8cac22d99fc7c124b9cd0de2d3fa1faef420bfe791d8c362d765e22700 |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| event       | OwnershipTransferred(address,address)                                               | 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0 |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| event       | ReputationUpdated(address,uint256,uint256)                                          | 0x5b88a2e3fc1a53234357ab78c104df11c33ccfa79886793654565ad70b8afb6e |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| event       | ServiceBoardSet(address)                                                            | 0x9ca36146d915660266f1d00cfc0ac892eea8b2c52db6de4dd9085f6c71540bc4 |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| event       | Upgraded(address)                                                                   | 0xbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| error       | AddressEmptyCode(address)                                                           | 0x9996b315                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| error       | ERC1967InvalidImplementation(address)                                               | 0x4c9c8ce3                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| error       | ERC1967NonPayable()                                                                 | 0xb398979f                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| error       | FailedCall()                                                                        | 0xd6bda275                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| error       | InvalidInitialization()                                                             | 0xf92ee8a9                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| error       | NotInitializing()                                                                   | 0xd7e6bcf8                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| error       | UUPSUnauthorizedCallContext()                                                       | 0xe07c8dba                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| error       | UUPSUnsupportedProxiableUUID(bytes32)                                               | 0xaa1d49a4                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | UPGRADE_INTERFACE_VERSION() view returns (string)                                   | 0xad3cb1cc                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | acceptOwnership() nonpayable                                                        | 0x79ba5097                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | getReputation(address) view returns (ReputationRegistry.AgentReputation)            | 0x9c89a0e2                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | getScore(address) view returns (uint256)                                            | 0xd47875d0                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | initialize() nonpayable                                                             | 0x8129fc1c                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | owner() view returns (address)                                                      | 0x8da5cb5b                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | pendingOwner() view returns (address)                                               | 0xe30c3978                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | proxiableUUID() view returns (bytes32)                                              | 0x52d1902d                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | recordCompletion(address,address,uint256,uint256) nonpayable                        | 0xac8c4880                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | recordFailure(address,uint256) nonpayable                                           | 0xdbc0963d                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | reputations(address) view returns (uint256,uint256,uint256,uint256,uint256,uint256) | 0x06fa15a7                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | serviceBoard() view returns (address)                                               | 0xe9ffeea3                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | setServiceBoard(address) nonpayable                                                 | 0x27d45e7a                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | transferOwnership(address) nonpayable                                               | 0xf2fde38b                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| function    | upgradeToAndCall(address,bytes) payable                                             | 0x4f1ef286                                                         |
+|-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------|
+| constructor | constructor() nonpayable                                                            |                                                                    |
+╰-------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------╯
+

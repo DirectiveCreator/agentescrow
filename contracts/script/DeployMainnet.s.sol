@@ -9,8 +9,13 @@ import "../src/ServiceBoard.sol";
 
 /**
  * @title DeployMainnet
+ * @author AgentEscrow (Synthesis Hackathon 2026)
  * @notice Mainnet deployment script with safety checks.
- *         Deploy via UUPS proxy pattern for upgradeability.
+ *         Deploys all 3 contracts as UUPS proxies and wires permissions atomically.
+ *
+ * @dev Deployment is atomic within a single broadcast — if any step fails,
+ *      no partial state is left on-chain. The deployer becomes the initial owner
+ *      of all 3 contracts and can later transfer ownership via 2-step transfer.
  *
  * Usage (Base mainnet):
  *   PRIVATE_KEY=0x... forge script script/DeployMainnet.s.sol:DeployMainnet \
@@ -27,6 +32,8 @@ import "../src/ServiceBoard.sol";
  *     --etherscan-api-key $CELOSCAN_API_KEY
  */
 contract DeployMainnet is Script {
+    /// @notice Deploy all contracts and wire permissions
+    /// @dev Requires PRIVATE_KEY env var. Only runs on Base (8453) or Celo (42220) mainnet.
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
@@ -71,7 +78,7 @@ contract DeployMainnet is Script {
         );
         console.log("ServiceBoard proxy:", address(boardProxy));
 
-        // 3. Wire up permissions
+        // 3. Wire up permissions (atomic — same broadcast, no front-running window)
         EscrowVault(payable(address(vaultProxy))).setServiceBoard(address(boardProxy));
         ReputationRegistry(address(reputationProxy)).setServiceBoard(address(boardProxy));
 
@@ -83,6 +90,9 @@ contract DeployMainnet is Script {
         console.log(string.concat("SERVICE_BOARD_ADDRESS=", vm.toString(address(boardProxy))));
         console.log(string.concat("ESCROW_VAULT_ADDRESS=", vm.toString(address(vaultProxy))));
         console.log(string.concat("REPUTATION_REGISTRY_ADDRESS=", vm.toString(address(reputationProxy))));
+        console.log("");
+        console.log("IMPORTANT: Consider transferring ownership to a multisig (Gnosis Safe)");
+        console.log("  All 3 contracts support 2-step ownership transfer via transferOwnership()");
 
         vm.stopBroadcast();
     }

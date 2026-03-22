@@ -1252,57 +1252,134 @@ export default function Dashboard() {
           <div className="space-y-8">
             <SectionHeader title="Architecture" subtitle="System design and contract interaction flow" />
 
-            {/* Architecture Diagram */}
+            {/* Architecture Diagram — Card-based UI */}
             <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
               <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
                 SYSTEM ARCHITECTURE
               </h3>
-              <pre className="text-[11px] leading-relaxed overflow-x-auto" style={{ color: 'var(--text-secondary)', fontFamily: '"JetBrains Mono", monospace' }}>
-{`┌─────────────────────────────────────────────────────────────────────┐
-│                        BASE CHAIN (L2)                              │
-│                                                                     │
-│  ┌──────────────┐   ┌──────────────┐   ┌───────────────────────┐   │
-│  │ ServiceBoard │◄──│ EscrowVault  │──►│ ReputationRegistry    │   │
-│  │              │   │              │   │                       │   │
-│  │ • postTask   │   │ • lockEscrow │   │ • recordCompletion    │   │
-│  │ • claimTask  │   │ • release    │   │ • recordFailure       │   │
-│  │ • deliver    │   │ • refund     │   │ • getScore            │   │
-│  │ • confirm    │   │ • timeout    │   │ • getReputation       │   │
-│  └──────┬───────┘   └──────────────┘   └───────────────────────┘   │
-│         │                                                           │
-│         │  TaskReceipt events (ERC-8004 compatible)                 │
-│         ▼                                                           │
-│  ┌──────────────────────────────────────────────────────────────┐   │
-│  │                    ERC-8004 Identity                          │   │
-│  │               Agent wallets with on-chain identity           │   │
-│  └──────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
-         ▲                                         ▲
-         │ viem/ethers                              │ viem/ethers
-         │                                         │
-┌────────┴────────┐                      ┌─────────┴────────┐
-│  BUYER AGENT    │                      │  SELLER AGENT    │
-│                 │  ◄── discovery ──►   │                  │
-│ • Posts tasks   │                      │ • Polls for work │
-│ • Funds escrow  │                      │ • Claims tasks   │
-│ • Confirms work │                      │ • Executes work  │
-│ • 🔒 Private   │                      │ • 🔒 Private    │
-│   verification  │                      │   eval+execute   │
-└────────┬────────┘                      └─────────┬────────┘
-         │                                         │
-         └──────────┐              ┌───────────────┘
-                    ▼              ▼
-         ┌──────────────────────────────────┐
-         │   VENICE PRIVATE COGNITION LAYER  │
-         │                                   │
-         │  🔒 TEE Inference (Intel TDX)     │
-         │  🔐 Attestation Proofs            │
-         │  📋 Signature Verification        │
-         │                                   │
-         │  Agent reasoning never leaves     │
-         │  the hardware enclave.            │
-         └──────────────────────────────────┘`}
-              </pre>
+
+              {/* Base Chain (L2) */}
+              <div className="rounded-lg p-6 mb-4" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
+                  <span className="text-[12px] font-semibold">Base Chain (L2)</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded ml-1" style={{ background: 'var(--accent)10', color: 'var(--accent)', border: '1px solid var(--accent)30' }}>
+                    Chain 84532
+                  </span>
+                </div>
+
+                {/* Contract Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                  {[
+                    { name: 'ServiceBoard', color: 'var(--accent)', fns: ['postTask', 'claimTask', 'deliver', 'confirm'] },
+                    { name: 'EscrowVault', color: '#FF8800', fns: ['lockEscrow', 'release', 'refund', 'timeout'] },
+                    { name: 'ReputationRegistry', color: '#A78BFA', fns: ['recordCompletion', 'recordFailure', 'getScore', 'getReputation'] },
+                  ].map(contract => (
+                    <div key={contract.name} className="rounded-lg overflow-hidden" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+                      <div className="h-[2px]" style={{ background: contract.color }} />
+                      <div className="p-3">
+                        <div className="text-[11px] font-semibold mb-2" style={{ color: contract.color }}>{contract.name}</div>
+                        <div className="space-y-1">
+                          {contract.fns.map(fn => (
+                            <div key={fn} className="text-[10px] font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                              {fn}()
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Metadata badges */}
+                <div className="flex flex-wrap gap-2">
+                  {['TaskReceipt Events', 'ERC-8004 Compatible', 'On-chain Escrow'].map(badge => (
+                    <span key={badge} className="text-[9px] px-2 py-1 rounded-full" style={{ background: 'var(--bg-card)', color: 'var(--text-tertiary)', border: '1px solid var(--border)' }}>
+                      {badge}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* ERC-8004 Identity strip */}
+              <div className="flex items-center justify-center gap-3 py-2 mb-4">
+                <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+                <span className="text-[10px] px-3 py-1 rounded-full whitespace-nowrap" style={{ background: 'var(--accent)08', color: 'var(--accent)', border: '1px solid var(--accent)25' }}>
+                  ERC-8004 Identity — Agent wallets with on-chain identity
+                </span>
+                <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+              </div>
+
+              {/* viem/ethers connector */}
+              <div className="flex items-center justify-center py-1 mb-4">
+                <span className="text-[9px] tracking-[0.1em]" style={{ color: 'var(--text-quaternary)' }}>▲ viem/ethers ▲</span>
+              </div>
+
+              {/* Agent Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 relative">
+                <div className="rounded-lg p-4" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
+                    <span className="text-[11px] font-semibold">Buyer Agent</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {['Posts tasks', 'Funds escrow', 'Confirms work', 'Private verification'].map(item => (
+                      <div key={item} className="text-[10px] flex items-center gap-1.5" style={{ color: 'var(--text-secondary)' }}>
+                        <span style={{ color: 'var(--text-quaternary)' }}>›</span> {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Discovery connector (visible on md+) */}
+                <div className="hidden md:flex absolute inset-0 items-center justify-center pointer-events-none">
+                  <span className="text-[9px] tracking-[0.15em] px-2 py-0.5 rounded-full" style={{ background: 'var(--bg-card)', color: 'var(--text-quaternary)', border: '1px solid var(--border)' }}>
+                    DISCOVERY
+                  </span>
+                </div>
+
+                <div className="rounded-lg p-4" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-2 h-2 rounded-full" style={{ background: '#FF8800' }} />
+                    <span className="text-[11px] font-semibold">Seller Agent</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {['Polls for work', 'Claims tasks', 'Executes work', 'Private eval+execute'].map(item => (
+                      <div key={item} className="text-[10px] flex items-center gap-1.5" style={{ color: 'var(--text-secondary)' }}>
+                        <span style={{ color: 'var(--text-quaternary)' }}>›</span> {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* TEE connector */}
+              <div className="flex items-center justify-center py-1 mb-4">
+                <span className="text-[9px] tracking-[0.1em]" style={{ color: 'var(--text-quaternary)' }}>▼ TEE-backed inference ▼</span>
+              </div>
+
+              {/* Venice Private Cognition Layer */}
+              <div className="rounded-lg p-5" style={{ background: 'linear-gradient(135deg, rgba(167,139,250,0.06), rgba(129,140,248,0.04))', border: '1px solid #A78BFA25' }}>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-2 h-2 rounded-full" style={{ background: '#A78BFA' }} />
+                  <span className="text-[12px] font-semibold" style={{ color: '#A78BFA' }}>Venice Private Cognition Layer</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {[
+                    { label: 'TEE Inference', desc: 'Intel TDX hardware enclaves', icon: '🔒' },
+                    { label: 'Attestation Proofs', desc: 'Cryptographic computation proof', icon: '🔐' },
+                    { label: 'Signature Verification', desc: 'On-chain verifiable signatures', icon: '📋' },
+                  ].map(item => (
+                    <div key={item.label} className="rounded-md p-3" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                      <div className="text-[11px] font-semibold mb-1">{item.icon} {item.label}</div>
+                      <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>{item.desc}</div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[10px] mt-3 text-center" style={{ color: 'var(--text-quaternary)' }}>
+                  Agent reasoning never leaves the hardware enclave
+                </p>
+              </div>
             </div>
 
             {/* Data Flow */}

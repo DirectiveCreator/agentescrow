@@ -99,12 +99,30 @@ export default function Dashboard() {
   const [hireForm, setHireForm] = useState({ taskType: 'text_summary', description: '', reward: '0.001', deadline: '24' });
   const [hireStep, setHireStep] = useState<'connect' | 'form' | 'confirm' | 'submitted'>('connect');
   const [selectedAgent, setSelectedAgent] = useState<number | null>(null);
+  const [skillCopied, setSkillCopied] = useState(false);
   const [txError, setTxError] = useState<string>('');
   const [postedTaskId, setPostedTaskId] = useState<string>('');
   const [liveTaskStatus, setLiveTaskStatus] = useState<number>(0); // 0=Open,1=Claimed,2=Delivered,3=Completed,4=Cancelled
   const [liveTaskSeller, setLiveTaskSeller] = useState<string>('');
   const [liveTaskDeliveryHash, setLiveTaskDeliveryHash] = useState<string>('');
   const prevTaskCountRef = useRef(0);
+
+  const SKILL_URL = 'https://agentescrow.directivecreator.com/skill.md';
+
+  const copySkillForAgent = async () => {
+    try {
+      const res = await fetch('/api/skill');
+      const text = await res.text();
+      await navigator.clipboard.writeText(text);
+      setSkillCopied(true);
+      setTimeout(() => setSkillCopied(false), 2500);
+    } catch {
+      // Fallback: copy the URL itself
+      await navigator.clipboard.writeText(SKILL_URL);
+      setSkillCopied(true);
+      setTimeout(() => setSkillCopied(false), 2500);
+    }
+  };
 
   // ── Wagmi hooks ──
   const { address: walletAddress, isConnected: walletConnected, chain: connectedChain } = useAccount();
@@ -491,6 +509,57 @@ export default function Dashboard() {
                       Human → Human
                     </span>
                   </div>
+                  {/* Copy for Agent — primary CTA with hero shader */}
+                  <button
+                    onClick={copySkillForAgent}
+                    className="w-full mb-4 py-3 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 relative overflow-hidden"
+                    style={{
+                      background: skillCopied ? '#34D399' : '#0C0C0C',
+                      color: skillCopied ? '#0C0C0C' : '#FFFFFF',
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxShadow: '0 0 24px rgba(56,179,220,0.25)',
+                    }}
+                    onMouseEnter={e => { if (!skillCopied) { e.currentTarget.style.boxShadow = '0 0 32px rgba(56,179,220,0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(56,179,220,0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                  >
+                    {!skillCopied && (
+                      <div className="absolute inset-0" style={{ zIndex: 0 }}>
+                        <MeshGradient
+                          colors={['#38B3DC', '#A78BFA', '#0C0C0C', '#34D399']}
+                          speed={0.12}
+                          distortion={0.4}
+                          swirl={0.6}
+                          style={{ width: '100%', height: '100%' }}
+                        />
+                      </div>
+                    )}
+                    {!skillCopied && (
+                      <div className="absolute inset-0 opacity-30" style={{ zIndex: 0 }}>
+                        <SmokeRing
+                          colors={['#38B3DC', '#A78BFA']}
+                          colorBack="#0C0C0C"
+                          speed={0.15}
+                          noiseScale={1.4}
+                          thickness={0.45}
+                          style={{ width: '100%', height: '100%' }}
+                        />
+                      </div>
+                    )}
+                    <span className="relative flex items-center gap-2" style={{ zIndex: 1 }}>
+                    {skillCopied ? (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                        COPIED — PASTE TO YOUR AGENT
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                        COPY SKILL FOR YOUR AGENT
+                      </>
+                    )}
+                    </span>
+                  </button>
                   <div className="flex gap-3">
                     <a href="https://github.com/DirectiveCreator/agentescrow" target="_blank" rel="noopener noreferrer"
                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[12px] font-medium transition-all hover:shadow-[0_0_20px_rgba(56,179,220,0.3)]"
@@ -2735,20 +2804,81 @@ export default function Dashboard() {
             </div>
 
             {/* Skill File */}
-            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
-                AGENT SKILL FILE
-              </h3>
-              <p className="text-[11px] mb-4" style={{ color: 'var(--text-tertiary)' }}>
-                Add this skill to your agent to enable AgentEscrow integration. Download from the{' '}
-                <a href="https://github.com/DirectiveCreator/agentescrow/blob/main/skills/agentescrow-integration.md"
-                   target="_blank" rel="noopener noreferrer"
-                   className="hover:underline" style={{ color: 'var(--accent)' }}>
-                  GitHub repo
-                </a>.
-              </p>
-              <pre className="text-[10px] p-4 rounded-lg overflow-x-auto leading-relaxed"
-                   style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontFamily: '"JetBrains Mono", monospace' }}>
+            <div className="rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <div className="absolute inset-0 opacity-[0.03]" style={{ zIndex: 0 }}>
+                <MeshGradient
+                  colors={['#38B3DC', '#A78BFA', '#0C0C0C', '#34D399']}
+                  speed={0.08}
+                  distortion={0.3}
+                  swirl={0.5}
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </div>
+              <div className="relative" style={{ zIndex: 1 }}>
+                <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>
+                  AGENT SKILL FILE
+                </h3>
+                <p className="text-[11px] mb-4" style={{ color: 'var(--text-tertiary)' }}>
+                  Add this skill to your agent to enable AgentEscrow integration. Available at{' '}
+                  <a href={SKILL_URL}
+                     target="_blank" rel="noopener noreferrer"
+                     className="hover:underline font-mono" style={{ color: 'var(--accent)' }}>
+                    agentescrow.directivecreator.com/skill.md
+                  </a>
+                </p>
+                {/* Copy for Agent Button — with hero shader */}
+                <button
+                  onClick={copySkillForAgent}
+                  className="w-full mb-4 py-3 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 relative overflow-hidden"
+                  style={{
+                    background: skillCopied ? '#34D399' : '#0C0C0C',
+                    color: skillCopied ? '#0C0C0C' : '#FFFFFF',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 0 24px rgba(56,179,220,0.25)',
+                  }}
+                  onMouseEnter={e => { if (!skillCopied) { e.currentTarget.style.boxShadow = '0 0 32px rgba(56,179,220,0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+                  onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(56,179,220,0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  {!skillCopied && (
+                    <div className="absolute inset-0" style={{ zIndex: 0 }}>
+                      <MeshGradient
+                        colors={['#38B3DC', '#A78BFA', '#0C0C0C', '#34D399']}
+                        speed={0.12}
+                        distortion={0.4}
+                        swirl={0.6}
+                        style={{ width: '100%', height: '100%' }}
+                      />
+                    </div>
+                  )}
+                  {!skillCopied && (
+                    <div className="absolute inset-0 opacity-30" style={{ zIndex: 0 }}>
+                      <SmokeRing
+                        colors={['#38B3DC', '#A78BFA']}
+                        colorBack="#0C0C0C"
+                        speed={0.15}
+                        noiseScale={1.4}
+                        thickness={0.45}
+                        style={{ width: '100%', height: '100%' }}
+                      />
+                    </div>
+                  )}
+                  <span className="relative flex items-center gap-2" style={{ zIndex: 1 }}>
+                  {skillCopied ? (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                      COPIED — PASTE TO YOUR AGENT
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                      COPY SKILL FOR YOUR AGENT
+                    </>
+                  )}
+                  </span>
+                </button>
+                <pre className="text-[10px] p-4 rounded-lg overflow-x-auto leading-relaxed"
+                     style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontFamily: '"JetBrains Mono", monospace' }}>
 {`---
 name: agentescrow-integration
 description: Integrate with AgentEscrow — a trustless
@@ -2770,7 +2900,7 @@ Same contract addresses on both chains:
 ## As a BUYER:
 1. postTask(taskType, description, deadline)
    - Base: Send ETH as reward
-   - Celo: Approve cUSD/USDC → postTask
+   - Celo: Native CELO as reward
    - taskType: text_summary | code_review |
      data_analysis | name_generation | translation
 2. confirmDelivery(taskId) → releases escrow
@@ -2781,7 +2911,6 @@ Same contract addresses on both chains:
 3. deliverTask(taskId, deliveryHash) → submit proof
 
 ## Celo Features:
-- Stablecoin payments (cUSD, USDC)
 - CIP-64 fee abstraction (pay gas in cUSD)
 - CeloClient SDK: agents/src/celo/client.js
 
@@ -2789,8 +2918,9 @@ Same contract addresses on both chains:
 x402 · ENS · MetaMask Delegation · Venice
 Ampersend · Filecoin · OpenServ
 
-Full skill file: skills/agentescrow-integration.md`}
-              </pre>
+Full skill file: agentescrow.directivecreator.com/skill.md`}
+                </pre>
+              </div>
             </div>
           </div>
         )}

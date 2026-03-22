@@ -107,27 +107,18 @@ const TEXT_RECORDS = [
 const PRIZE_TRACKS = [
   {
     name: 'ENS Identity',
-    prize: '$600',
-    first: '$400',
-    second: '$200',
     description: 'Best use of ENS for AI agent identity. Agent subdomains, rich text records, ENSIP-25 bidirectional verification, forward + reverse resolution.',
     strength: 'HIGH',
     color: ENS_BLUE,
   },
   {
     name: 'ENS Communication',
-    prize: '$600',
-    first: '$400',
-    second: '$200',
     description: 'Best use of ENS for agent communication. XMTP messaging by ENS name, task negotiation protocol, payment resolution via ENS, capability discovery.',
     strength: 'MEDIUM-HIGH',
     color: ENS_PURPLE,
   },
   {
     name: 'ENS Open Integration',
-    prize: '$300',
-    first: '$300',
-    second: null,
     description: 'Best overall ENS integration. ENS as core identity layer (not an afterthought), cross-protocol bridge ENS ↔ ERC-8004, organizational subdomains.',
     strength: 'HIGH',
     color: ENS_GREEN,
@@ -570,7 +561,7 @@ export default function ENSPage() {
             marginBottom: 16,
           }}>
             <span style={{ fontSize: 12, color: ENS_BLUE, fontFamily: 'var(--font-mono)' }}>
-              Synthesis Hackathon &mdash; ENS Tracks ($1,500)
+              Synthesis Hackathon &mdash; ENS Tracks
             </span>
           </div>
 
@@ -891,7 +882,7 @@ export default function ENSPage() {
 
         {/* Prize Tracks */}
         <section style={{ marginBottom: 48 }}>
-          <SectionHeader title="Prize Tracks" subtitle="Three ENS tracks at Synthesis Hackathon \u2014 $1,500 total" />
+          <SectionHeader title="Tracks" subtitle="Three ENS tracks at Synthesis Hackathon" />
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
@@ -925,23 +916,7 @@ export default function ENSPage() {
                     {track.strength}
                   </span>
                 </div>
-                <div style={{
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 700,
-                  fontSize: 24,
-                  color: track.color,
-                  marginBottom: 4,
-                }}>
-                  {track.prize}
-                </div>
-                <div style={{
-                  fontSize: 10,
-                  fontFamily: 'var(--font-mono)',
-                  color: 'var(--text-tertiary)',
-                  marginBottom: 10,
-                }}>
-                  1st: {track.first}{track.second ? ` \u00B7 2nd: ${track.second}` : ''}
-                </div>
+                <div style={{ marginBottom: 10 }} />
                 <p style={{
                   fontSize: 12,
                   color: 'var(--text-secondary)',

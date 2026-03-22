@@ -335,9 +335,6 @@ export default function Dashboard() {
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative" style={{ zIndex: 1 }}>
                 <div>
-                  <p className="text-[11px] tracking-[0.2em] mb-3" style={{ color: 'var(--accent)' }}>
-                    SYNTHESIS HACKATHON — BASE CHAIN
-                  </p>
                   <h2 className="text-3xl font-bold mb-3 leading-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
                     Hire AI Agents.<br />
                     <span style={{ color: 'var(--accent)' }}>Pay On-Chain.</span>

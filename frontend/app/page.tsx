@@ -1806,204 +1806,22 @@ export default function Dashboard() {
           <div className="space-y-8">
             <SectionHeader title="Filecoin Onchain Cloud" subtitle="Autonomous decentralized storage for agent task results, memory, and attestations" />
 
-            {/* FOC Hero */}
-            <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
-              <div className="absolute inset-0 opacity-[0.08]" style={{ zIndex: 0 }}>
-                <MeshGradient
-                  colors={['#0090FF', '#00C4B4', '#38B3DC', '#0C0C0C']}
-                  speed={0.1}
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </div>
-              <div className="relative" style={{ zIndex: 1 }}>
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-2xl">&#x1F5C4;&#xFE0F;</span>
-                  <div>
-                    <h2 className="text-lg font-bold" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                      Agentic Storage on Filecoin
-                    </h2>
-                    <p className="text-[12px]" style={{ color: 'var(--text-secondary)' }}>
-                      Every task delivery, agent memory snapshot, and TEE attestation stored permanently on Filecoin Onchain Cloud
-                    </p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                  <div className="text-center p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                    <div className="text-xl font-bold" style={{ color: '#0090FF', fontFamily: '"JetBrains Mono", monospace' }}>4</div>
-                    <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>Items Stored</div>
-                  </div>
-                  <div className="text-center p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                    <div className="text-xl font-bold" style={{ color: '#00C4B4', fontFamily: '"JetBrains Mono", monospace' }}>2x</div>
-                    <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>Replica Copies</div>
-                  </div>
-                  <div className="text-center p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                    <div className="text-xl font-bold" style={{ color: '#38B3DC', fontFamily: '"JetBrains Mono", monospace' }}>PDP</div>
-                    <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>Proof of Storage</div>
-                  </div>
-                  <div className="text-center p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                    <div className="text-xl font-bold" style={{ color: '#A78BFA', fontFamily: '"JetBrains Mono", monospace' }}>$2.50</div>
-                    <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>/TiB/month</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* How It Works */}
-            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
-                AGENTIC STORAGE WORKFLOW
-              </h3>
-              <div className="space-y-4">
-                {[
-                  { step: '1', title: 'Task Posted', desc: 'Buyer posts task on ServiceBoard (Base Sepolia), funds locked in EscrowVault', icon: '&#9670;', color: 'var(--accent)' },
-                  { step: '2', title: 'Seller Executes', desc: 'AI agent completes the task autonomously (text summary, code review, translation, etc.)', icon: '&#9672;', color: '#FF8800' },
-                  { step: '3', title: 'Store on FOC', desc: 'Result stored on Filecoin Onchain Cloud via Synapse SDK. PieceCID returned as content identifier.', icon: '&#9636;', color: '#0090FF' },
-                  { step: '4', title: 'PieceCID as Delivery Hash', desc: 'Seller submits PieceCID to on-chain ServiceBoard.deliverTask() — verifiable proof of delivery content.', icon: '&#9734;', color: '#A78BFA' },
-                  { step: '5', title: 'Buyer Retrieves & Verifies', desc: 'Buyer downloads content from FOC using PieceCID, validates against task requirements, confirms delivery.', icon: '&#9679;', color: '#34D399' },
-                  { step: '6', title: 'Escrow Released', desc: 'On-chain confirmation triggers escrow release. Content persists on Filecoin with PDP proofs.', icon: '&#9633;', color: '#00C4B4' },
-                ].map(item => (
-                  <div key={item.step} className="flex items-start gap-4 p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-[14px] font-bold" style={{ background: `${item.color}15`, color: item.color, border: `1px solid ${item.color}30` }}>
-                      {item.step}
-                    </div>
-                    <div>
-                      <div className="text-[13px] font-semibold" style={{ color: item.color }}>{item.title}</div>
-                      <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-secondary)' }}>{item.desc}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Storage Receipts */}
-            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
-                STORED ON FILECOIN ONCHAIN CLOUD
-              </h3>
-              <div className="space-y-3">
-                {[
-                  { type: 'Task Delivery', taskType: 'text_summary', taskId: '#42', size: '793 B', pieceCid: 'baga6ea4seaqkf7x...a7b9', color: 'var(--accent)', icon: '&#9670;' },
-                  { type: 'Task Delivery', taskType: 'code_review', taskId: '#43', size: '776 B', pieceCid: 'baga6ea4seaqd4n8...l0', color: '#A78BFA', icon: '&#9670;' },
-                  { type: 'Agent Memory', taskType: 'session snapshot', taskId: 'Agent #2195', size: '549 B', pieceCid: 'baga6ea4seaqn6p0...n2', color: '#FF8800', icon: '&#9733;' },
-                  { type: 'TEE Attestation', taskType: 'venice tee proof', taskId: 'sgx-venice-001', size: '500 B', pieceCid: 'baga6ea4seaqr4t8...r0', color: '#34D399', icon: '&#9635;' },
-                ].map((receipt, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                    <div className="flex items-center gap-3">
-                      <span className="text-[16px]" style={{ color: receipt.color }} dangerouslySetInnerHTML={{ __html: receipt.icon }} />
-                      <div>
-                        <div className="text-[12px] font-semibold" style={{ color: 'var(--text-primary)' }}>
-                          {receipt.type} <span className="font-normal" style={{ color: 'var(--text-tertiary)' }}>({receipt.taskType})</span>
-                        </div>
-                        <div className="text-[10px] font-mono" style={{ color: receipt.color }}>{receipt.pieceCid}</div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-[11px] font-mono" style={{ color: 'var(--text-secondary)' }}>{receipt.taskId}</div>
-                      <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>{receipt.size} | 2 copies</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* What Gets Stored */}
-            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
-                WHAT AGENTS STORE AUTONOMOUSLY
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { title: 'Task Deliveries', desc: 'Complete results of every task: summaries, code reviews, translations, name generations. Each delivery gets a unique PieceCID that serves as the verifiable delivery hash on-chain.', color: '#0090FF' },
-                  { title: 'Agent Memory', desc: 'Session snapshots: tasks completed, trust scores, earnings, capabilities, last active time. Agents can reconstruct state from Filecoin after restarts.', color: '#FF8800' },
-                  { title: 'TEE Attestations', desc: 'Venice TEE cryptographic proofs archived permanently. Hardware-attested inference results that anyone can verify — audit trail for private computation.', color: '#34D399' },
-                  { title: 'Reputation Proofs', desc: 'Cross-chain reputation data: ERC-8004 identity, trust scores, completion history. Portable agent credentials stored on neutral infrastructure.', color: '#A78BFA' },
-                ].map((item, i) => (
-                  <div key={i} className="p-5 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                    <div className="text-[13px] font-semibold mb-2" style={{ color: item.color }}>{item.title}</div>
-                    <div className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{item.desc}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Technical Stack */}
-            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
-                TECHNICAL INTEGRATION
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                  <div className="text-[11px] font-bold mb-2" style={{ color: '#0090FF' }}>SDK</div>
-                  <div className="text-[10px] font-mono" style={{ color: 'var(--text-secondary)' }}>@filoz/synapse-sdk v0.40.0</div>
-                  <div className="text-[10px] mt-1" style={{ color: 'var(--text-tertiary)' }}>Official Filecoin Onchain Cloud SDK with viem v2 integration</div>
-                </div>
-                <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                  <div className="text-[11px] font-bold mb-2" style={{ color: '#00C4B4' }}>Storage</div>
-                  <div className="text-[10px] font-mono" style={{ color: 'var(--text-secondary)' }}>Filecoin Warm Storage + PDP</div>
-                  <div className="text-[10px] mt-1" style={{ color: 'var(--text-tertiary)' }}>24-hour proof cycles, 2x replicas, USDFC payments</div>
-                </div>
-                <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                  <div className="text-[11px] font-bold mb-2" style={{ color: '#A78BFA' }}>Network</div>
-                  <div className="text-[10px] font-mono" style={{ color: 'var(--text-secondary)' }}>Filecoin Mainnet (Chain 314)</div>
-                  <div className="text-[10px] mt-1" style={{ color: 'var(--text-tertiary)' }}>Production FOC with Calibration testnet support</div>
-                </div>
-              </div>
-              <div className="mt-6 p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                <div className="text-[11px] font-bold mb-3" style={{ color: 'var(--text-secondary)' }}>Agent Integration Files</div>
-                <div className="space-y-1.5">
-                  {[
-                    { file: 'agents/src/filecoin/client.js', desc: 'AgentStorage class — store/retrieve with PieceCID tracking' },
-                    { file: 'agents/src/filecoin/enhanced-seller.js', desc: 'Seller agent — executes tasks, stores results on FOC' },
-                    { file: 'agents/src/filecoin/enhanced-buyer.js', desc: 'Buyer agent — retrieves from FOC, verifies, confirms escrow' },
-                    { file: 'agents/src/filecoin/demo.js', desc: 'Full demo — 6-step workflow in simulation or live mode' },
-                  ].map((f, i) => (
-                    <div key={i} className="flex items-center gap-2 text-[10px]">
-                      <span className="font-mono" style={{ color: 'var(--accent)' }}>{f.file}</span>
-                      <span style={{ color: 'var(--text-tertiary)' }}>&mdash; {f.desc}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Cross-Chain Architecture */}
-            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
-                CROSS-CHAIN ARCHITECTURE
-              </h3>
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="text-center p-6 rounded-lg flex-1" style={{ background: 'var(--bg-main)', border: '1px solid #0052FF30' }}>
-                  <div className="text-[14px] font-bold mb-1" style={{ color: '#0052FF' }}>Base Sepolia</div>
-                  <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>ServiceBoard + EscrowVault + Reputation</div>
-                  <div className="text-[10px] mt-2 font-mono" style={{ color: 'var(--text-secondary)' }}>Task lifecycle & payments</div>
-                </div>
-                <div className="text-[20px]" style={{ color: 'var(--text-tertiary)' }}>&harr;</div>
-                <div className="text-center p-6 rounded-lg flex-1" style={{ background: 'var(--bg-main)', border: '1px solid #0090FF30' }}>
-                  <div className="text-[14px] font-bold mb-1" style={{ color: '#0090FF' }}>Filecoin Mainnet</div>
-                  <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>Onchain Cloud + PDP Proofs</div>
-                  <div className="text-[10px] mt-2 font-mono" style={{ color: 'var(--text-secondary)' }}>Content storage & verification</div>
-                </div>
-              </div>
-              <div className="text-center mt-4 text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
-                PieceCID bridges both chains: stored on Filecoin, referenced on Base as deliveryHash
-              </div>
-            </div>
-
-            {/* Bounty Info */}
-            <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid #0090FF30' }}>
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-[14px]">&#127942;</span>
-                <div>
-                  <div className="text-[13px] font-bold" style={{ color: '#0090FF' }}>Filecoin Foundation Bounty</div>
-                  <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>Best Use Case with Agentic Storage &mdash; $2,000</div>
-                </div>
-              </div>
-              <div className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                AgentEscrow demonstrates a real-world use case where AI agents autonomously store task deliveries,
-                memory snapshots, and TEE attestations on Filecoin Onchain Cloud. PieceCIDs serve as verifiable
-                delivery hashes bridging Base Sepolia (payments) and Filecoin Mainnet (storage) &mdash; creating
-                a complete audit trail for agent-to-agent commerce.
-              </div>
+            <div className="text-center py-12">
+              <span className="text-4xl mb-4 block">&#x1F5C4;&#xFE0F;</span>
+              <h2 className="text-lg font-bold mb-2" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+                Agentic Storage on Filecoin
+              </h2>
+              <p className="text-[13px] mb-6 max-w-md mx-auto" style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+                Task deliveries, agent memory, and TEE attestations stored permanently on Filecoin Onchain Cloud with PDP proofs.
+              </p>
+              <a href="/filecoin" className="inline-flex items-center gap-2 px-8 py-3 rounded-lg text-[14px] font-semibold transition-all hover:opacity-90" style={{
+                background: '#0090FF',
+                color: '#FFFFFF',
+                fontFamily: '"Space Grotesk", sans-serif',
+                textDecoration: 'none',
+              }}>
+                View Filecoin Integration &rarr;
+              </a>
             </div>
           </div>
         )}

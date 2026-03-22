@@ -1898,7 +1898,7 @@ export default function CeloPage() {
               marginBottom: 12,
             }}>
               <span style={{ fontSize: 11, color: '#5298FF', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
-                ADDITIONAL BOUNTY OPPORTUNITY
+                IDENTITY STANDARDS
               </span>
             </div>
             <h2 style={{
@@ -1908,7 +1908,7 @@ export default function CeloPage() {
               color: 'var(--text-primary)',
               marginBottom: 8,
             }}>
-              ENS Bounty &amp; ERC-8004 Agent Identity
+              ENS &amp; ERC-8004 Agent Identity
             </h2>
             <p style={{
               fontSize: 13,
@@ -1916,15 +1916,15 @@ export default function CeloPage() {
               lineHeight: 1.6,
               maxWidth: 700,
             }}>
-              The ENS bounty is <span style={{ color: '#5298FF', fontWeight: 600 }}>separate from the main Celo prize pool</span> &mdash;
-              an additional prize opportunity for projects that integrate ENS with agent identity.
-              Combined with ERC-8004 and the Agentscan registry, this creates a complete agent identity stack.
+              AgentEscrow integrates ENS naming, ERC-8004 identity, and the Agentscan registry to create
+              a <span style={{ color: '#5298FF', fontWeight: 600 }}>complete agent identity stack</span> &mdash;
+              human-readable names, verifiable on-chain identities, and cross-platform discoverability.
             </p>
           </div>
 
           {/* Three pillars */}
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 14 }}>
-            {/* ENS Bounty */}
+            {/* ENS Integration */}
             <div style={{
               padding: 24,
               background: 'var(--bg-card)',
@@ -1955,7 +1955,7 @@ export default function CeloPage() {
                       fontSize: 16,
                       color: 'var(--text-primary)',
                     }}>
-                      ENS Bounty (Separate Prize)
+                      ENS Naming &amp; Resolution
                     </span>
                     <span style={{
                       fontSize: 10,
@@ -1966,7 +1966,7 @@ export default function CeloPage() {
                       border: '1px solid #5298FF20',
                       borderRadius: 4,
                     }}>
-                      $1,500 ACROSS 3 TRACKS
+                      DEPLOYED ON SEPOLIA
                     </span>
                   </div>
                   <p style={{
@@ -1978,8 +1978,8 @@ export default function CeloPage() {
                     ENS provides human-readable naming for agent identities &mdash; turning opaque wallet addresses into
                     discoverable names like <span style={{ fontFamily: 'var(--font-mono)', color: '#5298FF' }}>buyer.agentescrow.eth</span> and{' '}
                     <span style={{ fontFamily: 'var(--font-mono)', color: '#5298FF' }}>seller.agentescrow.eth</span>.
-                    This bounty is <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>not part of the main Celo prize pool</span> &mdash;
-                    it&apos;s an additional opportunity that stacks on top.
+                    Each agent&apos;s ENS name resolves to <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>16 custom text records</span> containing
+                    capabilities, endpoints, and identity metadata.
                   </p>
                   <div style={{
                     display: 'grid',
@@ -1988,12 +1988,12 @@ export default function CeloPage() {
                     marginBottom: 12,
                   }}>
                     {[
-                      'ENS Identity Track ($600)',
-                      'ENS Communication Track ($600)',
-                      'ENS Open Integration ($300)',
                       'agentescrow.eth registered on Sepolia',
+                      'buyer.agentescrow.eth + seller.agentescrow.eth subdomains',
                       '16 custom text records per agent',
-                      'ENSIP-25 bidirectional verification',
+                      'ENSIP-25 bidirectional verification (ENS ↔ ERC-8004)',
+                      'On-chain address resolution',
+                      'Agent discovery via ENS lookup',
                     ].map(cap => (
                       <div key={cap} style={{
                         display: 'flex',
@@ -2205,7 +2205,7 @@ export default function CeloPage() {
                 color: 'var(--text-primary)',
                 marginBottom: 6,
               }}>
-                AgentEscrow&apos;s Identity Stack &mdash; Already Aligned
+                Integrated Identity Stack &mdash; Deployed &amp; Working
               </div>
               <p style={{
                 fontSize: 12,
@@ -2213,13 +2213,12 @@ export default function CeloPage() {
                 lineHeight: 1.7,
                 margin: 0,
               }}>
-                AgentEscrow&apos;s agent identity approach was built on the same primitives Celo is promoting.
-                Our agents are registered via ERC-8004, discoverable through ENS subdomains, and verified
-                with ENSIP-25 bidirectional links between ENS names and ERC-8004 IDs. The Agentscan registry
-                makes our agents discoverable beyond our own platform &mdash; any service can look up{' '}
+                All three layers are integrated and deployed. Agents are registered via ERC-8004, discoverable through
+                ENS subdomains, and verified with ENSIP-25 bidirectional links between ENS names and ERC-8004 IDs.
+                Any service can look up{' '}
                 <span style={{ fontFamily: 'var(--font-mono)', color: '#5298FF', fontSize: 11 }}>buyer.agentescrow.eth</span>,
                 resolve its ERC-8004 identity, and verify capabilities, reputation, and contract endpoints on-chain.
-                This isn&apos;t theoretical alignment &mdash; it&apos;s deployed and working today.
+                The Agentscan registry makes agents discoverable beyond our platform. This is live on Sepolia today.
               </p>
             </div>
           </div>

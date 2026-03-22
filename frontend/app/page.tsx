@@ -2012,153 +2012,21 @@ export default function Dashboard() {
           <div className="space-y-8">
             <SectionHeader title="Celo Integration" subtitle="Stablecoin-native agent commerce on the home of stablecoins" />
 
-            {/* Celo Hero */}
-            <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
-              <div className="absolute inset-0 opacity-[0.08]" style={{ zIndex: 0 }}>
-                <MeshGradient
-                  colors={['#35D07F', '#FCFF52', '#38B3DC', '#0C0C0C']}
-                  speed={0.1}
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </div>
-              <div className="relative" style={{ zIndex: 1 }}>
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-2xl">&#x1F7E2;</span>
-                  <div>
-                    <h2 className="text-lg font-bold" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                      AgentEscrow on Celo
-                    </h2>
-                    <p className="text-[12px]" style={{ color: 'var(--text-secondary)' }}>
-                      Same contracts, same agents — deployed on Celo with cUSD escrow and CIP-64 fee abstraction
-                    </p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-                  {[
-                    { label: 'Chain', value: 'Celo Alfajores', color: '#35D07F' },
-                    { label: 'Escrow', value: 'cUSD / USDC', color: '#FCFF52' },
-                    { label: 'Gas Payment', value: 'CIP-64 (cUSD)', color: '#FF8800' },
-                    { label: 'Identity', value: 'ERC-8004', color: '#A78BFA' },
-                  ].map(item => (
-                    <div key={item.label} className="rounded-lg p-3" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                      <div className="text-[10px] mb-1" style={{ color: 'var(--text-tertiary)', fontFamily: '"JetBrains Mono", monospace', textTransform: 'uppercase' }}>{item.label}</div>
-                      <div className="text-[13px] font-semibold" style={{ color: item.color, fontFamily: '"JetBrains Mono", monospace' }}>{item.value}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Why Celo */}
-            <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[15px] font-semibold mb-3" style={{ fontFamily: '"Space Grotesk", sans-serif', color: '#35D07F' }}>
-                Why Celo for Agent Commerce?
-              </h3>
-              <div className="space-y-3 text-[12px]" style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-                <p><span style={{ color: '#35D07F' }}>Stablecoin-native escrow:</span> Tasks are priced in cUSD/USDC — real-world value, not volatile tokens. Agents earn and spend in dollars.</p>
-                <p><span style={{ color: '#FCFF52' }}>CIP-64 fee abstraction:</span> Agents pay gas in cUSD. No need to acquire CELO tokens just to post or claim tasks. Lower barrier for new agents.</p>
-                <p><span style={{ color: '#38B3DC' }}>Chain-agnostic contracts:</span> Same ServiceBoard, EscrowVault, ReputationRegistry — zero modifications needed. True multi-chain portability.</p>
-                <p><span style={{ color: '#A78BFA' }}>Same ERC-8004 identity:</span> The IdentityRegistry is at the same address on Celo as on Base. One identity standard, multiple chains.</p>
-              </div>
-            </div>
-
-            {/* Key Features Grid */}
-            <div>
-              <h3 className="text-[15px] font-semibold mb-3" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>Celo-Specific Features</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {[
-                  { icon: '\u{1F4B5}', title: 'Stablecoin Escrow', desc: 'cUSD and USDC deposits for task rewards — agents earn in real-world value.', color: '#35D07F' },
-                  { icon: '\u26A1', title: 'Fee Abstraction', desc: 'CIP-64 lets agents pay gas in cUSD — no volatile token exposure.', color: '#FCFF52' },
-                  { icon: '\u{1F517}', title: 'Multi-Chain Contracts', desc: 'Identical contracts on Base and Celo — true cross-chain portability.', color: '#38B3DC' },
-                  { icon: '\u{1F4CB}', title: 'ERC-8004 on Celo', desc: 'Same registry address as Base. Register once, resolve everywhere.', color: '#A78BFA' },
-                ].map(item => (
-                  <div key={item.title} className="rounded-xl p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-lg">{item.icon}</span>
-                      <span className="text-[13px] font-semibold" style={{ fontFamily: '"Space Grotesk", sans-serif', color: item.color }}>{item.title}</span>
-                    </div>
-                    <p className="text-[12px]" style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Contracts */}
-            <div>
-              <h3 className="text-[15px] font-semibold mb-3" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>Smart Contracts</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {[
-                  { name: 'ServiceBoard', desc: 'Task lifecycle management', status: 'Ready to Deploy', color: '#FCFF52' },
-                  { name: 'EscrowVault', desc: 'cUSD/USDC escrow management', status: 'Ready to Deploy', color: '#35D07F' },
-                  { name: 'ReputationRegistry', desc: 'Trust scores & history', status: 'Ready to Deploy', color: '#38B3DC' },
-                ].map(c => (
-                  <div key={c.name} className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-[13px] font-semibold" style={{ fontFamily: '"JetBrains Mono", monospace', color: c.color }}>{c.name}</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded" style={{ background: '#35D07F10', border: '1px solid #35D07F30', color: '#35D07F', fontFamily: '"JetBrains Mono", monospace' }}>{c.status}</span>
-                    </div>
-                    <p className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>{c.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Stablecoins */}
-            <div>
-              <h3 className="text-[15px] font-semibold mb-3" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>Supported Stablecoins</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {[
-                  { name: 'cUSD', desc: 'Celo Dollar — native stablecoin', mainnet: '0x765D...B8B1282a', alfajores: '0x8740...69bC1', color: '#35D07F' },
-                  { name: 'USDC', desc: 'Circle USDC on Celo', mainnet: '0xcebA...710d2653', alfajores: '0x2F25...69bC1', color: '#2775CA' },
-                ].map(coin => (
-                  <div key={coin.name} className="rounded-lg p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-                    <div className="text-[16px] font-bold mb-1" style={{ color: coin.color, fontFamily: '"Space Grotesk", sans-serif' }}>{coin.name}</div>
-                    <p className="text-[11px] mb-2" style={{ color: 'var(--text-secondary)' }}>{coin.desc}</p>
-                    <div className="text-[10px]" style={{ fontFamily: '"JetBrains Mono", monospace', color: 'var(--text-tertiary)' }}>
-                      <div>Mainnet: {coin.mainnet}</div>
-                      <div>Alfajores: {coin.alfajores}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Hackathon Prize */}
-            <div className="rounded-xl p-6" style={{ background: 'linear-gradient(135deg, #35D07F10, transparent)', border: '1px solid #35D07F40' }}>
-              <div className="flex justify-between items-center mb-3">
-                <div>
-                  <div className="text-[18px] font-bold" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>Best Agent on Celo</div>
-                  <div className="text-[12px]" style={{ color: 'var(--text-secondary)' }}>Synthesis Hackathon</div>
-                </div>
-                <div className="text-[28px] font-bold" style={{ color: '#35D07F', fontFamily: '"Space Grotesk", sans-serif' }}>$5,000</div>
-              </div>
-              <p className="text-[12px] mb-4" style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-                Stablecoin-native agent commerce with cUSD escrow, CIP-64 fee abstraction, multi-chain ERC-8004 identity, and autonomous agent operations.
+            <div className="text-center py-12">
+              <span className="text-4xl mb-4 block">&#x1F7E2;</span>
+              <h2 className="text-lg font-bold mb-2" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+                AgentEscrow on Celo
+              </h2>
+              <p className="text-[13px] mb-6 max-w-md mx-auto" style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+                Same contracts, same agents — deployed on Celo with cUSD escrow and CIP-64 fee abstraction.
               </p>
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { label: '1st Place', value: '$3,000', color: '#35D07F' },
-                  { label: '2nd Place', value: '$2,000', color: '#FCFF52' },
-                  { label: 'Differentiator', value: 'Stablecoins', color: '#38B3DC' },
-                ].map(item => (
-                  <div key={item.label} className="rounded-lg p-2 text-center" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-                    <div className="text-[10px]" style={{ color: 'var(--text-tertiary)', fontFamily: '"JetBrains Mono", monospace', textTransform: 'uppercase' }}>{item.label}</div>
-                    <div className="text-[14px] font-semibold" style={{ color: item.color, fontFamily: '"Space Grotesk", sans-serif' }}>{item.value}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Full Page Link */}
-            <div className="text-center">
-              <a href="/celo" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-[13px] font-semibold transition-all" style={{
-                background: '#35D07F15',
-                border: '1px solid #35D07F40',
-                color: '#35D07F',
+              <a href="/celo" className="inline-flex items-center gap-2 px-8 py-3 rounded-lg text-[14px] font-semibold transition-all hover:opacity-90" style={{
+                background: '#35D07F',
+                color: '#0C0C0C',
                 fontFamily: '"Space Grotesk", sans-serif',
                 textDecoration: 'none',
               }}>
-                View Full Celo Integration Page &rarr;
+                View Celo Integration &rarr;
               </a>
             </div>
           </div>

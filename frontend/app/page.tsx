@@ -2523,7 +2523,7 @@ export default function Dashboard() {
                   { track: 'Base: Agent Services', fit: 5, status: 'x402 Done', desc: 'Discoverable agent services on Base accepting payments via x402.' },
                   { track: 'OpenServ Build Story', fit: 5, status: 'Draft Ready', desc: 'Build log of our OpenServ integration journey.' },
                   { track: 'OpenServ Full', fit: 5, status: 'Integrated', desc: 'Full OpenServ SDK integration with 6 capabilities.' },
-                  { track: 'Venice: Private Agents', fit: 5, status: 'Integrated', desc: 'TEE private cognition with attestation proofs. Targeting all 3 placements (2,000 VVV / ~$11.5K).' },
+                  { track: 'Venice', fit: 5, status: 'Integrated', desc: 'TEE private cognition with attestation proofs.' },
                   { track: 'ENS Identity', fit: 5, status: 'Registered', desc: 'Agent identity via ENS subdomains + text records.' },
                   { track: 'ENS Communication', fit: 5, status: 'Built', desc: 'XMTP encrypted agent messaging via ENS.' },
                   { track: 'MetaMask Delegation', fit: 5, status: 'Integrated', desc: 'Smart account delegation for agent spending authority.' },

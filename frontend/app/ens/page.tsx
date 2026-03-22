@@ -104,27 +104,6 @@ const TEXT_RECORDS = [
   { key: 'agent-registration[0x8004...][2194]', description: 'ENSIP-25 forward link', example: 'true' },
 ];
 
-const PRIZE_TRACKS = [
-  {
-    name: 'ENS Identity',
-    description: 'Best use of ENS for AI agent identity. Agent subdomains, rich text records, ENSIP-25 bidirectional verification, forward + reverse resolution.',
-    strength: 'HIGH',
-    color: ENS_BLUE,
-  },
-  {
-    name: 'ENS Communication',
-    description: 'Best use of ENS for agent communication. XMTP messaging by ENS name, task negotiation protocol, payment resolution via ENS, capability discovery.',
-    strength: 'MEDIUM-HIGH',
-    color: ENS_PURPLE,
-  },
-  {
-    name: 'ENS Open Integration',
-    description: 'Best overall ENS integration. ENS as core identity layer (not an afterthought), cross-protocol bridge ENS ↔ ERC-8004, organizational subdomains.',
-    strength: 'HIGH',
-    color: ENS_GREEN,
-  },
-];
-
 const ON_CHAIN_FACTS = [
   { label: 'Parent Domain', value: 'agentescrow.eth', detail: 'Registered on Sepolia' },
   { label: 'Buyer Agent', value: 'buyer.agentescrow.eth', detail: 'Subdomain + 16 records' },
@@ -216,7 +195,7 @@ DEPLOYER_PRIVATE_KEY=0x... node agents/src/ens/setup-ens.js agentescrow
   {
     name: 'ENS Demo',
     file: 'agents/src/ens/demo.js',
-    description: 'Full demo covering all 3 ENS prize tracks: Identity, Communication, and Open Integration.',
+    description: 'Full demo covering ENS Identity, Communication, and Open Integration capabilities.',
     usage: `# Simulation mode (no network needed)
 node agents/src/ens/demo.js
 
@@ -561,7 +540,7 @@ export default function ENSPage() {
             marginBottom: 16,
           }}>
             <span style={{ fontSize: 12, color: ENS_BLUE, fontFamily: 'var(--font-mono)' }}>
-              Synthesis Hackathon &mdash; ENS Tracks
+              Synthesis Hackathon &mdash; ENS Integration
             </span>
           </div>
 
@@ -1164,56 +1143,6 @@ export default function ENSPage() {
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
             {SDK_DETAILS.map(component => (
               <SdkCard key={component.name} component={component} />
-            ))}
-          </div>
-        </section>
-
-        {/* Prize Tracks */}
-        <section style={{ marginBottom: 48 }}>
-          <SectionHeader title="Tracks" subtitle="Three ENS tracks at Synthesis Hackathon" />
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: 12,
-          }}>
-            {PRIZE_TRACKS.map(track => (
-              <div key={track.name} style={{
-                padding: 20,
-                background: `linear-gradient(135deg, ${track.color}10, transparent)`,
-                border: `1px solid ${track.color}40`,
-                borderRadius: 12,
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <div style={{
-                    fontFamily: 'var(--font-display)',
-                    fontWeight: 600,
-                    fontSize: 15,
-                    color: track.color,
-                  }}>
-                    {track.name}
-                  </div>
-                  <span style={{
-                    fontSize: 10,
-                    fontFamily: 'var(--font-mono)',
-                    color: track.strength === 'HIGH' ? ENS_GREEN : '#F59E0B',
-                    padding: '2px 8px',
-                    border: `1px solid ${track.strength === 'HIGH' ? ENS_GREEN : '#F59E0B'}30`,
-                    borderRadius: 4,
-                    background: `${track.strength === 'HIGH' ? ENS_GREEN : '#F59E0B'}10`,
-                  }}>
-                    {track.strength}
-                  </span>
-                </div>
-                <div style={{ marginBottom: 10 }} />
-                <p style={{
-                  fontSize: 12,
-                  color: 'var(--text-secondary)',
-                  lineHeight: 1.6,
-                  margin: 0,
-                }}>
-                  {track.description}
-                </p>
-              </div>
             ))}
           </div>
         </section>

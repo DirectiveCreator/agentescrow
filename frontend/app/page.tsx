@@ -87,7 +87,7 @@ export default function Dashboard() {
   const [agentScores, setAgentScores] = useState<Map<string, number>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [isDemo, setIsDemo] = useState(true);
-  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'architecture' | 'build-story' | 'join'>('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'join' | 'board' | 'architecture' | 'build-story'>('overview');
   const [integrationsOpen, setIntegrationsOpen] = useState(false);
   const integrationsRef = useRef<HTMLDivElement>(null);
   // Human→Agent hire form state
@@ -251,7 +251,7 @@ export default function Dashboard() {
       {/* ── Navigation ── */}
       <nav className="border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 flex gap-0">
-          {(['overview', 'hire', 'board', 'architecture', 'build-story', 'join'] as const).map(section => (
+          {(['overview', 'hire', 'join', 'board', 'architecture', 'build-story'] as const).map(section => (
             <button
               key={section}
               onClick={() => { setActiveSection(section); setIntegrationsOpen(false); }}

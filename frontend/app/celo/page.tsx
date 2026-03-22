@@ -1641,6 +1641,347 @@ export default function CeloPage() {
           </div>
         </section>
 
+        {/* ENS & ERC-8004 Agent Identity Standards */}
+        <section style={{ marginBottom: 48 }}>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '3px 12px',
+              border: `1px solid #5298FF40`,
+              borderRadius: 16,
+              background: '#5298FF08',
+              marginBottom: 12,
+            }}>
+              <span style={{ fontSize: 11, color: '#5298FF', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
+                ADDITIONAL BOUNTY OPPORTUNITY
+              </span>
+            </div>
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 22,
+              fontWeight: 600,
+              color: 'var(--text-primary)',
+              marginBottom: 8,
+            }}>
+              ENS Bounty &amp; ERC-8004 Agent Identity
+            </h2>
+            <p style={{
+              fontSize: 13,
+              color: 'var(--text-secondary)',
+              lineHeight: 1.6,
+              maxWidth: 700,
+            }}>
+              The ENS bounty is <span style={{ color: '#5298FF', fontWeight: 600 }}>separate from the main Celo prize pool</span> &mdash;
+              an additional prize opportunity for projects that integrate ENS with agent identity.
+              Combined with ERC-8004 and the Agentscan registry, this creates a complete agent identity stack.
+            </p>
+          </div>
+
+          {/* Three pillars */}
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 14 }}>
+            {/* ENS Bounty */}
+            <div style={{
+              padding: 24,
+              background: 'var(--bg-card)',
+              border: '1px solid #5298FF20',
+              borderRadius: 14,
+              borderLeft: '3px solid #5298FF60',
+            }}>
+              <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                <div style={{
+                  fontSize: 28,
+                  width: 52,
+                  height: 52,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: '#5298FF10',
+                  borderRadius: 12,
+                  border: '1px solid #5298FF20',
+                  flexShrink: 0,
+                }}>
+                  &#x1F3F7;&#xFE0F;
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                    <span style={{
+                      fontFamily: 'var(--font-display)',
+                      fontWeight: 700,
+                      fontSize: 16,
+                      color: 'var(--text-primary)',
+                    }}>
+                      ENS Bounty (Separate Prize)
+                    </span>
+                    <span style={{
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono)',
+                      color: '#5298FF',
+                      padding: '2px 8px',
+                      background: '#5298FF10',
+                      border: '1px solid #5298FF20',
+                      borderRadius: 4,
+                    }}>
+                      $1,500 ACROSS 3 TRACKS
+                    </span>
+                  </div>
+                  <p style={{
+                    fontSize: 12,
+                    color: 'var(--text-secondary)',
+                    lineHeight: 1.7,
+                    margin: '0 0 12px',
+                  }}>
+                    ENS provides human-readable naming for agent identities &mdash; turning opaque wallet addresses into
+                    discoverable names like <span style={{ fontFamily: 'var(--font-mono)', color: '#5298FF' }}>buyer.agentescrow.eth</span> and{' '}
+                    <span style={{ fontFamily: 'var(--font-mono)', color: '#5298FF' }}>seller.agentescrow.eth</span>.
+                    This bounty is <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>not part of the main Celo prize pool</span> &mdash;
+                    it&apos;s an additional opportunity that stacks on top.
+                  </p>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: 6,
+                    marginBottom: 12,
+                  }}>
+                    {[
+                      'ENS Identity Track ($600)',
+                      'ENS Communication Track ($600)',
+                      'ENS Open Integration ($300)',
+                      'agentescrow.eth registered on Sepolia',
+                      '16 custom text records per agent',
+                      'ENSIP-25 bidirectional verification',
+                    ].map(cap => (
+                      <div key={cap} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        fontSize: 11,
+                        fontFamily: 'var(--font-mono)',
+                        color: 'var(--text-tertiary)',
+                      }}>
+                        <span style={{ color: '#5298FF', fontSize: 8 }}>●</span>
+                        {cap}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ERC-8004 */}
+            <div style={{
+              padding: 24,
+              background: 'var(--bg-card)',
+              border: '1px solid #A78BFA20',
+              borderRadius: 14,
+              borderLeft: '3px solid #A78BFA60',
+            }}>
+              <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                <div style={{
+                  fontSize: 28,
+                  width: 52,
+                  height: 52,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: '#A78BFA10',
+                  borderRadius: 12,
+                  border: '1px solid #A78BFA20',
+                  flexShrink: 0,
+                }}>
+                  &#x1F4CB;
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                    <span style={{
+                      fontFamily: 'var(--font-display)',
+                      fontWeight: 700,
+                      fontSize: 16,
+                      color: 'var(--text-primary)',
+                    }}>
+                      ERC-8004: The Agent Identity Standard
+                    </span>
+                    <span style={{
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono)',
+                      color: '#A78BFA',
+                      padding: '2px 8px',
+                      background: '#A78BFA10',
+                      border: '1px solid #A78BFA20',
+                      borderRadius: 4,
+                    }}>
+                      CELO-PROMOTED STANDARD
+                    </span>
+                  </div>
+                  <p style={{
+                    fontSize: 12,
+                    color: 'var(--text-secondary)',
+                    lineHeight: 1.7,
+                    margin: '0 0 12px',
+                  }}>
+                    ERC-8004 is the agent identity standard that Celo is actively promoting for on-chain AI agents.
+                    Each agent mints an ERC-721 NFT that carries metadata &mdash; capabilities, avatar, description,
+                    and contract endpoints. This creates a <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>verifiable,
+                    portable identity</span> that works across chains and platforms.
+                  </p>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: 6,
+                    marginBottom: 12,
+                  }}>
+                    {[
+                      'NFT-based agent identity (ERC-721)',
+                      'Rich metadata: capabilities, avatar, endpoints',
+                      'Multi-chain: same identity on Base + Celo',
+                      'Buyer Agent #2194 registered',
+                      'Seller Agent #2195 registered',
+                      'On-chain reputation scoring linked to identity',
+                    ].map(cap => (
+                      <div key={cap} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        fontSize: 11,
+                        fontFamily: 'var(--font-mono)',
+                        color: 'var(--text-tertiary)',
+                      }}>
+                        <span style={{ color: '#A78BFA', fontSize: 8 }}>●</span>
+                        {cap}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Agentscan Registry */}
+            <div style={{
+              padding: 24,
+              background: 'var(--bg-card)',
+              border: `1px solid ${CELO_GREEN}20`,
+              borderRadius: 14,
+              borderLeft: `3px solid ${CELO_GREEN}60`,
+            }}>
+              <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                <div style={{
+                  fontSize: 28,
+                  width: 52,
+                  height: 52,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: `${CELO_GREEN}10`,
+                  borderRadius: 12,
+                  border: `1px solid ${CELO_GREEN}20`,
+                  flexShrink: 0,
+                }}>
+                  &#x1F50D;
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                    <span style={{
+                      fontFamily: 'var(--font-display)',
+                      fontWeight: 700,
+                      fontSize: 16,
+                      color: 'var(--text-primary)',
+                    }}>
+                      Agentscan Registry
+                    </span>
+                    <span style={{
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono)',
+                      color: CELO_GREEN,
+                      padding: '2px 8px',
+                      background: `${CELO_GREEN}10`,
+                      border: `1px solid ${CELO_GREEN}20`,
+                      borderRadius: 4,
+                    }}>
+                      ERC-8004 POWERED
+                    </span>
+                  </div>
+                  <p style={{
+                    fontSize: 12,
+                    color: 'var(--text-secondary)',
+                    lineHeight: 1.7,
+                    margin: '0 0 12px',
+                  }}>
+                    Agentscan is the discovery layer built on top of ERC-8004 &mdash; a registry where agents are indexed,
+                    searchable, and verifiable. When an agent registers via ERC-8004, it becomes discoverable through Agentscan,
+                    enabling <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>any marketplace or platform to find and verify agents</span> without
+                    relying on centralized directories.
+                  </p>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: 6,
+                    marginBottom: 12,
+                  }}>
+                    {[
+                      'Agent discovery via on-chain registry',
+                      'Verification of agent capabilities',
+                      'Cross-platform agent lookup',
+                      'Decentralized alternative to centralized directories',
+                    ].map(cap => (
+                      <div key={cap} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        fontSize: 11,
+                        fontFamily: 'var(--font-mono)',
+                        color: 'var(--text-tertiary)',
+                      }}>
+                        <span style={{ color: CELO_GREEN, fontSize: 8 }}>●</span>
+                        {cap}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Socialure alignment callout */}
+          <div style={{
+            marginTop: 20,
+            padding: 20,
+            background: `linear-gradient(135deg, #5298FF06, #A78BFA06, ${CELO_GREEN}06)`,
+            border: '1px solid #A78BFA25',
+            borderRadius: 12,
+            display: 'flex',
+            gap: 16,
+            alignItems: 'flex-start',
+          }}>
+            <span style={{ fontSize: 24, flexShrink: 0 }}>&#x1F91D;</span>
+            <div>
+              <div style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 600,
+                fontSize: 14,
+                color: 'var(--text-primary)',
+                marginBottom: 6,
+              }}>
+                Socialure&apos;s Identity Stack &mdash; Already Aligned
+              </div>
+              <p style={{
+                fontSize: 12,
+                color: 'var(--text-secondary)',
+                lineHeight: 1.7,
+                margin: 0,
+              }}>
+                Socialure&apos;s agent identity approach was built on the same primitives Celo is promoting.
+                Our agents are registered via ERC-8004, discoverable through ENS subdomains, and verified
+                with ENSIP-25 bidirectional links between ENS names and ERC-8004 IDs. The Agentscan registry
+                makes our agents discoverable beyond our own platform &mdash; any service can look up{' '}
+                <span style={{ fontFamily: 'var(--font-mono)', color: '#5298FF', fontSize: 11 }}>buyer.agentescrow.eth</span>,
+                resolve its ERC-8004 identity, and verify capabilities, reputation, and contract endpoints on-chain.
+                This isn&apos;t theoretical alignment &mdash; it&apos;s deployed and working today.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Code & SDK */}
         <section style={{ marginBottom: 48 }}>
           <SectionHeader

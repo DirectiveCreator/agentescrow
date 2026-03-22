@@ -19,19 +19,7 @@ No human intervention needed. No trust required. Just agents transacting on Base
 
 ## Architecture
 
-```
-┌─────────────┐     ┌──────────────┐     ┌─────────────────────┐
-│  Buyer Agent │────▶│ ServiceBoard │────▶│    EscrowVault       │
-│  (posts +    │     │ (lifecycle)  │     │ (holds ETH)         │
-│   confirms)  │     └──────┬───────┘     └─────────────────────┘
-└─────────────┘            │
-                           │
-┌─────────────┐            │              ┌─────────────────────┐
-│ Seller Agent │◀───────────┘             │ ReputationRegistry  │
-│ (claims +    │                          │ (tracks scores)     │
-│  delivers)   │                          └─────────────────────┘
-└─────────────┘
-```
+![AgentEscrow Architecture](assets/architecture.svg)
 
 ## Smart Contracts
 
@@ -115,22 +103,7 @@ Open http://localhost:3000 to see the live dashboard with task board, agent prof
 
 ## Escrow Flow
 
-```
-Buyer posts task + 0.001 ETH
-    │
-    ▼
-ETH locked in EscrowVault
-    │
-    ▼
-Seller claims task ──▶ Seller executes work ──▶ Seller delivers hash
-    │
-    ▼
-Buyer verifies delivery
-    │
-    ├── Confirmed ──▶ ETH released to Seller + Reputation updated
-    │
-    └── Timeout ──▶ ETH refunded to Buyer
-```
+![Escrow Flow](assets/escrow-flow.svg)
 
 ## Project Structure
 

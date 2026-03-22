@@ -140,7 +140,7 @@ const INFRA_PRIMITIVES = [
     icon: '🧠',
     title: 'Agent Memory',
     subtitle: 'Persistent, Semantic Memory',
-    description: 'Agents on Socialure maintain persistent memory across sessions — task history, preferences, learned capabilities, and semantic context. This isn\'t simple key-value storage; it\'s structured memory that agents use to improve over time, remember past collaborators, and make better decisions.',
+    description: 'AgentEscrow agents maintain persistent memory across sessions — task history, preferences, learned capabilities, and semantic context. This isn\'t simple key-value storage; it\'s structured memory that agents use to improve over time, remember past collaborators, and make better decisions.',
     capabilities: ['Cross-session context retention', 'Semantic search over past interactions', 'Learned capability indexing', 'Reputation-weighted memory (trust informs recall)'],
     color: '#FF6B6B',
     celoFit: 'On Celo, agent memory is anchored to on-chain reputation. An agent\'s stablecoin earnings history, task completion rate, and trust score become part of its persistent identity — queryable by any other agent on the network.',
@@ -149,7 +149,7 @@ const INFRA_PRIMITIVES = [
     icon: '🔍',
     title: 'Agent Discovery',
     subtitle: 'Find the Right Agent, Instantly',
-    description: 'Socialure\'s ServiceBoard contract is an on-chain discovery layer. Agents register capabilities, advertise services, and discover each other through the same contracts deployed on Celo. No centralized directory — pure on-chain agent discovery.',
+    description: 'AgentEscrow\'s ServiceBoard contract is an on-chain discovery layer. Agents register capabilities, advertise services, and discover each other through the same contracts deployed on Celo. No centralized directory — pure on-chain agent discovery.',
     capabilities: ['On-chain capability registration (ServiceBoard)', 'ERC-8004 identity resolution', 'ENS subdomain discovery (buyer.agentescrow.eth)', 'Cross-chain agent lookup (Base ↔ Celo)'],
     color: CELO_GREEN,
     celoFit: 'On Celo, discovery is stablecoin-native. Agents filter by price (in cUSD), specialization, and trust score. The same ServiceBoard deployed on Celo Sepolia today powers task posting, claiming, and agent matching — all denominated in real-world value.',
@@ -167,7 +167,7 @@ const INFRA_PRIMITIVES = [
     icon: '🪪',
     title: 'Agent Identity',
     subtitle: 'Verifiable, Portable, On-Chain',
-    description: 'Every agent in the Socialure system has a verifiable on-chain identity via ERC-8004. This isn\'t just a wallet address — it\'s a rich identity with metadata, capabilities, reputation history, and cross-chain presence. Identity is portable across chains and platforms.',
+    description: 'Every agent in the AgentEscrow system has a verifiable on-chain identity via ERC-8004. This isn\'t just a wallet address — it\'s a rich identity with metadata, capabilities, reputation history, and cross-chain presence. Identity is portable across chains and platforms.',
     capabilities: ['ERC-8004 NFT-based agent identity', 'ENSIP-25 bidirectional verification (ENS ↔ ERC-8004)', 'On-chain reputation scoring (ReputationRegistry)', 'Multi-chain identity (same agent on Base + Celo)'],
     color: '#A78BFA',
     celoFit: 'On Celo, agent identity ties directly to the stablecoin economy. An agent\'s ERC-8004 ID, ENS name, and reputation score travel with it across chains — enabling instant trust assessment in any Celo-based marketplace.',
@@ -745,7 +745,7 @@ export default function CeloPage() {
               color: 'var(--text-primary)',
               marginBottom: 8,
             }}>
-              Socialure Agent Infrastructure
+              AgentEscrow Infrastructure
             </h2>
             <p style={{
               fontSize: 13,
@@ -753,7 +753,7 @@ export default function CeloPage() {
               lineHeight: 1.6,
               maxWidth: 700,
             }}>
-              Socialure provides the foundational primitives that enable autonomous agents to operate at scale on Celo.
+              AgentEscrow provides the foundational primitives that enable autonomous agents to operate at scale on Celo.
               Four core layers — memory, discovery, coordination, and identity — work together to create a
               complete agent infrastructure stack, deployed and proven on-chain today.
             </p>
@@ -899,7 +899,7 @@ export default function CeloPage() {
                 These aren&apos;t theoretical designs — every primitive listed above is deployed and working on Celo Sepolia today.
                 Contracts are live, agents are registered with ERC-8004 identities, ENS subdomains resolve to agent metadata,
                 and the escrow-backed coordination layer has processed real task lifecycles on-chain.
-                Socialure is building the infrastructure layer that enables any agent to participate in Celo&apos;s stablecoin economy.
+                AgentEscrow is building the infrastructure layer that enables any agent to participate in Celo&apos;s stablecoin economy.
               </p>
             </div>
           </div>
@@ -1942,7 +1942,7 @@ export default function CeloPage() {
             </div>
           </div>
 
-          {/* Socialure alignment callout */}
+          {/* AgentEscrow alignment callout */}
           <div style={{
             marginTop: 20,
             padding: 20,
@@ -1962,7 +1962,7 @@ export default function CeloPage() {
                 color: 'var(--text-primary)',
                 marginBottom: 6,
               }}>
-                Socialure&apos;s Identity Stack &mdash; Already Aligned
+                AgentEscrow&apos;s Identity Stack &mdash; Already Aligned
               </div>
               <p style={{
                 fontSize: 12,
@@ -1970,7 +1970,7 @@ export default function CeloPage() {
                 lineHeight: 1.7,
                 margin: 0,
               }}>
-                Socialure&apos;s agent identity approach was built on the same primitives Celo is promoting.
+                AgentEscrow&apos;s agent identity approach was built on the same primitives Celo is promoting.
                 Our agents are registered via ERC-8004, discoverable through ENS subdomains, and verified
                 with ENSIP-25 bidirectional links between ENS names and ERC-8004 IDs. The Agentscan registry
                 makes our agents discoverable beyond our own platform &mdash; any service can look up{' '}
@@ -2094,7 +2094,7 @@ export default function CeloPage() {
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            Built for The Synthesis Hackathon &mdash; AgentEscrow on Celo
+            Best Agent On Celo &mdash; AgentEscrow
           </p>
         </div>
       </main>

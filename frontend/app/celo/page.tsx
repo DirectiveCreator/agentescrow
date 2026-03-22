@@ -122,7 +122,82 @@ const DEPLOYED_CONTRACTS = {
   chain: 'Celo Sepolia',
   chainId: 11142220,
   explorer: 'https://celo-sepolia.blockscout.com',
+  compiler: 'Solidity v0.8.33+commit.64118f21',
+  sourceRepo: 'https://github.com/DirectiveCreator/agentescrow/tree/main/contracts/src',
 };
+
+const AUDIT_FINDINGS = [
+  {
+    severity: 'HIGH',
+    id: 'H-1',
+    title: 'Buyer Griefing — No Timeout for Delivered Tasks',
+    description: 'After a seller delivers, only the buyer can confirm. If the buyer refuses, funds stay locked. Mitigation: auto-release timer or arbitration planned for v2.',
+    color: '#EF4444',
+  },
+  {
+    severity: 'HIGH',
+    id: 'H-2',
+    title: 'No Address Cross-Validation in EscrowVault',
+    description: 'release() and refund() accept address params from ServiceBoard without verifying against stored escrow data. Defense-in-depth improvement for v2.',
+    color: '#EF4444',
+  },
+  {
+    severity: 'HIGH',
+    id: 'H-3',
+    title: 'Unbounded Loop in getOpenTasks()',
+    description: 'Iterates all tasks — will exceed gas limit at scale. View function only, safe for off-chain reads. Pagination planned for v2.',
+    color: '#EF4444',
+  },
+  {
+    severity: 'MEDIUM',
+    id: 'M-1',
+    title: 'Missing address(0) Checks in Constructors',
+    description: 'setServiceBoard() could be called with zero address, permanently bricking the contract. Simple require() fix for v2.',
+    color: '#F59E0B',
+  },
+  {
+    severity: 'MEDIUM',
+    id: 'M-2',
+    title: 'No Deadline Upper Bound',
+    description: 'Tasks can have arbitrarily far deadlines, extending griefing windows. Max deadline cap planned.',
+    color: '#F59E0B',
+  },
+  {
+    severity: 'MEDIUM',
+    id: 'M-3',
+    title: 'Untracked ETH via receive()',
+    description: 'Direct ETH sends to EscrowVault are unrecoverable. Recovery function or receive() removal for v2.',
+    color: '#F59E0B',
+  },
+  {
+    severity: 'MEDIUM',
+    id: 'M-4',
+    title: 'recordFailure() Never Called',
+    description: 'ReputationRegistry tracks failures but ServiceBoard never reports them. Trust scores are always 50 or 100.',
+    color: '#F59E0B',
+  },
+  {
+    severity: 'LOW',
+    id: 'L-1',
+    title: 'Front-running on claimTask()',
+    description: 'Open claim model allows mempool sniping. Accepted design tradeoff for simplicity.',
+    color: '#3B82F6',
+  },
+  {
+    severity: 'INFO',
+    id: 'I-1',
+    title: 'Solidity ^0.8.20 — Overflow Protected',
+    description: 'All arithmetic is safe by default. No unchecked blocks used.',
+    color: '#6B7280',
+  },
+  {
+    severity: 'INFO',
+    id: 'I-2',
+    title: 'No Critical Vulnerabilities Found',
+    description: 'No reentrancy exploits, no fund theft vectors, no privilege escalation. All high findings are griefing/DoS — not loss-of-funds.',
+    color: '#10B981',
+  },
+];
 
 const CELO_ADDRESSES = {
   identityRegistry: {
@@ -1526,20 +1601,20 @@ export default function CeloPage() {
               <span style={{ fontSize: 24 }}>✅</span>
               <div>
                 <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, color: CELO_GREEN }}>
-                  DEPLOYED TO CELO SEPOLIA
+                  DEPLOYED &amp; VERIFIED ON CELO SEPOLIA
                 </div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-tertiary)' }}>
-                  Chain ID: {DEPLOYED_CONTRACTS.chainId} • All contracts verified and wired up
+                  Chain ID: {DEPLOYED_CONTRACTS.chainId} • {DEPLOYED_CONTRACTS.compiler} • Source verified on Blockscout
                 </div>
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 8 }}>
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 8, marginBottom: 16 }}>
               {[
-                { name: 'ServiceBoard', addr: DEPLOYED_CONTRACTS.serviceBoard },
-                { name: 'EscrowVault', addr: DEPLOYED_CONTRACTS.escrowVault },
-                { name: 'ReputationRegistry', addr: DEPLOYED_CONTRACTS.reputationRegistry },
+                { name: 'ServiceBoard', addr: DEPLOYED_CONTRACTS.serviceBoard, src: 'ServiceBoard.sol' },
+                { name: 'EscrowVault', addr: DEPLOYED_CONTRACTS.escrowVault, src: 'EscrowVault.sol' },
+                { name: 'ReputationRegistry', addr: DEPLOYED_CONTRACTS.reputationRegistry, src: 'ReputationRegistry.sol' },
               ].map(c => (
-                <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' as const }}>
                   <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 12, color: CELO_COLOR, minWidth: 160 }}>
                     {c.name}
                   </span>
@@ -1556,9 +1631,177 @@ export default function CeloPage() {
                   >
                     {c.addr} ↗
                   </a>
+                  <a
+                    href={`${DEPLOYED_CONTRACTS.explorer}/address/${c.addr}?tab=contract`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 10,
+                      color: CELO_GREEN,
+                      textDecoration: 'none',
+                      padding: '2px 8px',
+                      border: `1px solid ${CELO_GREEN}40`,
+                      borderRadius: 4,
+                      background: `${CELO_GREEN}10`,
+                    }}
+                  >
+                    Verified Source ✓
+                  </a>
                 </div>
               ))}
             </div>
+            {/* Source & Verification Links */}
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap' as const,
+              gap: 10,
+              paddingTop: 12,
+              borderTop: `1px solid ${CELO_GREEN}20`,
+            }}>
+              <a
+                href={DEPLOYED_CONTRACTS.sourceRepo}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  color: 'var(--text-secondary)',
+                  textDecoration: 'none',
+                  padding: '4px 12px',
+                  border: '1px solid var(--border)',
+                  borderRadius: 6,
+                  background: 'var(--bg-card)',
+                }}
+              >
+                View Source on GitHub ↗
+              </a>
+              <a
+                href={`${DEPLOYED_CONTRACTS.explorer}/address/${DEPLOYED_CONTRACTS.deployer}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  color: 'var(--text-secondary)',
+                  textDecoration: 'none',
+                  padding: '4px 12px',
+                  border: '1px solid var(--border)',
+                  borderRadius: 6,
+                  background: 'var(--bg-card)',
+                }}
+              >
+                Deployer Wallet ↗
+              </a>
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                color: 'var(--text-quaternary)',
+                padding: '4px 12px',
+                border: '1px solid var(--border)',
+                borderRadius: 6,
+                background: 'var(--bg-card)',
+              }}>
+                Audited — 0 Critical • 3 High (griefing, no fund loss) • 4 Medium
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* SECURITY AUDIT SECTION */}
+        <section style={{ marginBottom: 48 }}>
+          <SectionHeader
+            title="Security Audit"
+            subtitle="Automated Solidity audit performed by AI auditor. All contracts compiled with Solidity v0.8.33 (overflow-safe). No critical or fund-loss vulnerabilities found."
+          />
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap' as const,
+            gap: 8,
+            marginBottom: 16,
+          }}>
+            {[
+              { label: 'Critical', count: 0, color: '#DC2626', bg: '#DC262620' },
+              { label: 'High', count: 3, color: '#EF4444', bg: '#EF444420' },
+              { label: 'Medium', count: 4, color: '#F59E0B', bg: '#F59E0B20' },
+              { label: 'Low', count: 1, color: '#3B82F6', bg: '#3B82F620' },
+              { label: 'Info', count: 2, color: '#6B7280', bg: '#6B728020' },
+            ].map(s => (
+              <div key={s.label} style={{
+                padding: '6px 14px',
+                borderRadius: 8,
+                border: `1px solid ${s.color}40`,
+                background: s.bg,
+                fontFamily: 'var(--font-mono)',
+                fontSize: 12,
+                color: s.color,
+                fontWeight: 600,
+              }}>
+                {s.count} {s.label}
+              </div>
+            ))}
+          </div>
+          <div style={{
+            padding: 16,
+            background: `${CELO_GREEN}08`,
+            border: `1px solid ${CELO_GREEN}30`,
+            borderRadius: 10,
+            marginBottom: 16,
+            fontFamily: 'var(--font-mono)',
+            fontSize: 12,
+            color: CELO_GREEN,
+            lineHeight: 1.6,
+          }}>
+            No reentrancy exploits, no fund theft vectors, no privilege escalation. All HIGH findings are griefing/DoS class — not loss-of-funds. Solidity ^0.8.20 provides built-in integer overflow protection. Contracts follow checks-effects-interactions pattern.
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 6 }}>
+            {AUDIT_FINDINGS.map(f => (
+              <div key={f.id} style={{
+                padding: '10px 14px',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 8,
+                borderLeft: `3px solid ${f.color}`,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: f.color,
+                    padding: '1px 6px',
+                    border: `1px solid ${f.color}40`,
+                    borderRadius: 4,
+                    background: `${f.color}15`,
+                  }}>
+                    {f.severity}
+                  </span>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    color: 'var(--text-quaternary)',
+                  }}>
+                    {f.id}
+                  </span>
+                  <span style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: 'var(--text-primary)',
+                  }}>
+                    {f.title}
+                  </span>
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  color: 'var(--text-tertiary)',
+                  lineHeight: 1.5,
+                }}>
+                  {f.description}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 

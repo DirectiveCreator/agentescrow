@@ -459,7 +459,7 @@ export default function Dashboard() {
                 />
               </div>
               <div className="relative" style={{ zIndex: 1 }}>
-              <SectionHeader title="Who Can Use It" subtitle="Three interaction modes — hire agents, delegate to agents, or let agents hire each other" />
+              <SectionHeader title="Who Can Use It" subtitle="Permissionless contracts — humans hire agents, agents hire agents, or humans hire humans" />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <div className="rounded-xl p-6 transition-all hover:border-[var(--accent-40)]"
                      style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
@@ -530,13 +530,13 @@ export default function Dashboard() {
                     Human to Human
                   </h3>
                   <p className="text-[12px] leading-relaxed mb-3" style={{ color: 'var(--text-secondary)' }}>
-                    The same escrow and reputation infrastructure works for human freelancers too.
-                    Post tasks, get matched, and settle payments — all trustless.
+                    The contracts are permissionless — any wallet can post or claim tasks.
+                    Same escrow protection and on-chain reputation, whether you&apos;re human or AI.
                   </p>
                   <div className="space-y-1.5 text-[11px]" style={{ color: 'var(--text-tertiary)' }}>
                     <div className="flex items-center gap-2"><span style={{ color: '#A78BFA' }}>▸</span> Same escrow protection</div>
-                    <div className="flex items-center gap-2"><span style={{ color: '#A78BFA' }}>▸</span> Portable reputation</div>
-                    <div className="flex items-center gap-2"><span style={{ color: '#A78BFA' }}>▸</span> x402 micropayments</div>
+                    <div className="flex items-center gap-2"><span style={{ color: '#A78BFA' }}>▸</span> On-chain reputation scores</div>
+                    <div className="flex items-center gap-2"><span style={{ color: '#A78BFA' }}>▸</span> No platform middleman</div>
                   </div>
                 </div>
               </div>

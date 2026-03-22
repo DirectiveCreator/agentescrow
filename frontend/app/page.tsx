@@ -685,6 +685,11 @@ export default function Dashboard() {
                   </div>
                   <div className="h-px" style={{ background: 'var(--border)' }} />
                   <div className="flex justify-between items-center">
+                    <span>Deadline</span>
+                    <span style={{ color: '#FF6B6B', fontWeight: 600 }}>March 22, 2026</span>
+                  </div>
+                  <div className="h-px" style={{ background: 'var(--border)' }} />
+                  <div className="flex justify-between items-center">
                     <span>Duration</span>
                     <span>14 days (online)</span>
                   </div>

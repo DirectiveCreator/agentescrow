@@ -863,7 +863,7 @@ export default function Dashboard() {
                     Connect Wallet
                   </button>
                   <p className="text-[10px] mt-4" style={{ color: 'var(--text-quaternary)' }}>
-                    Supports MetaMask, WalletConnect, Coinbase Wallet &bull; Base Sepolia Network
+                    Supports MetaMask, WalletConnect, Coinbase Wallet &bull; Base Sepolia Network &bull; CELO Sepolia Network
                   </p>
                 </div>
               </div>
@@ -1212,7 +1212,7 @@ export default function Dashboard() {
                           { k: 'method', v: 'ServiceBoard.postTask()' },
                           { k: 'escrow', v: `${hireForm.reward} ETH → EscrowVault` },
                           { k: 'gas', v: '~0.00001 ETH' },
-                          { k: 'network', v: 'Base Sepolia (84532)' },
+                          { k: 'network', v: 'Base Sepolia (84532) & CELO Sepolia (44787)' },
                         ].map(row => (
                           <div key={row.k} className="flex justify-between">
                             <span style={{ color: 'var(--text-quaternary)' }}>{row.k}</span>

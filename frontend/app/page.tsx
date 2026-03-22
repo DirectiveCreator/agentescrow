@@ -752,6 +752,13 @@ export default function Dashboard() {
                     { name: 'ERC-8004', cat: 'standard' },
                     { name: 'Venice TEE', cat: 'standard' },
                     { name: 'Base Chain', cat: 'chain' },
+                    { name: 'Celo Chain', cat: 'chain' },
+                    { name: 'Filecoin', cat: 'chain' },
+                    { name: 'ENS', cat: 'integration' },
+                    { name: 'MetaMask', cat: 'integration' },
+                    { name: 'OpenServ', cat: 'integration' },
+                    { name: 'Venice', cat: 'integration' },
+                    { name: 'Ampersend', cat: 'integration' },
                     { name: 'viem', cat: 'lib' },
                     { name: 'Node.js', cat: 'runtime' },
                     { name: 'Next.js', cat: 'frontend' },
@@ -761,9 +768,9 @@ export default function Dashboard() {
                     <span key={tech.name}
                           className="text-[11px] px-2.5 py-1 rounded-md"
                           style={{
-                            background: tech.cat === 'standard' ? 'var(--accent-10)' : 'var(--bg-main)',
-                            border: `1px solid ${tech.cat === 'standard' ? 'var(--accent-40)' : 'var(--border)'}`,
-                            color: tech.cat === 'standard' ? 'var(--accent)' : 'var(--text-secondary)',
+                            background: tech.cat === 'standard' ? 'var(--accent-10)' : tech.cat === 'integration' ? 'rgba(139,92,246,0.08)' : 'var(--bg-main)',
+                            border: `1px solid ${tech.cat === 'standard' ? 'var(--accent-40)' : tech.cat === 'integration' ? 'rgba(139,92,246,0.25)' : 'var(--border)'}`,
+                            color: tech.cat === 'standard' ? 'var(--accent)' : tech.cat === 'integration' ? 'rgb(167,139,250)' : 'var(--text-secondary)',
                           }}>
                       {tech.name}
                     </span>

@@ -46,6 +46,12 @@ const STATUS_COLORS: Record<number, string> = {
   5: 'border-[#F97316] bg-[#F9731610] text-[#F97316]',
 };
 
+// ─── Deployed Contracts ─────────────────────────────────────────────────────
+// Core contracts deployed per chain — update these arrays when adding new chains or contracts
+const DEPLOYED_CHAINS = ['Base Sepolia', 'Celo Sepolia'] as const;
+const CORE_CONTRACTS = ['ServiceBoard', 'EscrowVault', 'ReputationRegistry'] as const;
+const TOTAL_DEPLOYED_CONTRACTS = DEPLOYED_CHAINS.length * CORE_CONTRACTS.length; // 6
+
 // ─── Demo Data ───────────────────────────────────────────────────────────────
 
 // Demo data uses real deployer address from Base Sepolia deployment
@@ -98,6 +104,7 @@ export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [escrowBalance, setEscrowBalance] = useState<bigint>(0n);
   const [agents, setAgents] = useState<Map<string, AgentReputation>>(new Map());
+  const [agentScores, setAgentScores] = useState<Map<string, number>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [isDemo, setIsDemo] = useState(true);
   const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'events' | 'architecture' | 'summary' | 'build-story' | 'join'>('overview');
@@ -148,16 +155,27 @@ export default function Dashboard() {
       });
 
       const newAgents = new Map<string, AgentReputation>();
+      const newScores = new Map<string, number>();
       for (const addr of agentAddrs) {
-        const rep = await publicClient.readContract({
-          address: CONTRACTS.reputationRegistry as `0x${string}`,
-          abi: ReputationRegistryABI,
-          functionName: 'getReputation',
-          args: [addr as `0x${string}`],
-        }) as AgentReputation;
-        newAgents.set(addr, rep);
+        const [rep, score] = await Promise.all([
+          publicClient.readContract({
+            address: CONTRACTS.reputationRegistry as `0x${string}`,
+            abi: ReputationRegistryABI,
+            functionName: 'getReputation',
+            args: [addr as `0x${string}`],
+          }),
+          publicClient.readContract({
+            address: CONTRACTS.reputationRegistry as `0x${string}`,
+            abi: ReputationRegistryABI,
+            functionName: 'getScore',
+            args: [addr as `0x${string}`],
+          }),
+        ]);
+        newAgents.set(addr, rep as AgentReputation);
+        newScores.set(addr, Number(score as bigint));
       }
       setAgents(newAgents);
+      setAgentScores(newScores);
       setIsConnected(true);
       setIsDemo(false);
     } catch {
@@ -189,6 +207,21 @@ export default function Dashboard() {
   const displayTasks = isDemo ? DEMO_TASKS : tasks;
   const completedTasks = displayTasks.filter(t => Number(t.status) === 3).length;
   const totalReward = displayTasks.reduce((sum, t) => sum + t.reward, 0n);
+
+  // Derive agent stats from on-chain reputation (agents map) when available, else fallback to demo
+  const AGENT_ADDR = '0xC07b695eC19DE38f1e62e825585B2818077B96cC';
+  const agentRep = agents.get(AGENT_ADDR);
+  const agentScore = agentScores.get(AGENT_ADDR);
+  const dynamicAgentStats = agentRep
+    ? {
+        tasks: Number(agentRep.tasksCompleted),
+        spent: formatEther(agentRep.totalSpent),
+        earned: formatEther(agentRep.totalEarned),
+        score: agentScore ?? 0,
+      }
+    : null;
+  const buyerStats = dynamicAgentStats ?? { tasks: 7, spent: '0.0035', earned: '0', score: 50 };
+  const sellerStats = dynamicAgentStats ?? { tasks: 7, spent: '0', earned: '0.0035', score: 100 };
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg-main)', color: 'var(--text-primary)' }}>
@@ -268,32 +301,34 @@ export default function Dashboard() {
             {integrationsOpen && (
               <div className="absolute top-full left-0 mt-[1px] rounded-lg py-2 z-50 min-w-[180px] border" style={{ background: 'var(--bg-card)', borderColor: 'var(--border)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
                 {[
-                  { label: 'Base', section: 'overview' as const },
-                  { label: 'Celo', href: '/celo' },
-                  { label: 'ENS', href: '/ens' },
-                  { label: 'Filecoin', href: '/filecoin' },
-                  { label: 'MetaMask', href: '/metamask' },
-                  { label: 'OpenServ', href: '/openserv' },
-                  { label: 'Venice AI', href: '/venice' },
-                  { label: 'Ampersend', href: '/ampersend' },
+                  { label: 'Base', icon: '🔵', section: 'overview' as const },
+                  { label: 'Celo', icon: '🟢', href: '/celo' },
+                  { label: 'ENS', icon: '🔵', href: '/ens' },
+                  { label: 'Filecoin', icon: '🔷', href: '/filecoin' },
+                  { label: 'MetaMask', icon: '🦊', href: '/metamask' },
+                  { label: 'OpenServ', icon: '🤖', href: '/openserv' },
+                  { label: 'Venice AI', icon: '🟣', href: '/venice' },
+                  { label: 'Ampersend', icon: '⚡', href: '/ampersend' },
                 ].map(item => (
                   'href' in item ? (
                     <a
                       key={item.label}
                       href={item.href}
-                      className="block px-4 py-2.5 text-[12px] tracking-wide transition-colors hover:bg-white/5"
+                      className="flex items-center gap-3 px-4 py-2.5 text-[12px] tracking-wide transition-colors hover:bg-white/5"
                       style={{ color: 'var(--text-secondary)' }}
                       onClick={() => setIntegrationsOpen(false)}
                     >
+                      <span>{item.icon}</span>
                       {item.label.toUpperCase()}
                     </a>
                   ) : (
                     <button
                       key={item.label}
-                      className="block px-4 py-2.5 text-[12px] tracking-wide transition-colors hover:bg-white/5 w-full text-left"
+                      className="flex items-center gap-3 px-4 py-2.5 text-[12px] tracking-wide transition-colors hover:bg-white/5 w-full text-left"
                       style={{ color: 'var(--text-secondary)' }}
                       onClick={() => { setActiveSection(item.section); setIntegrationsOpen(false); }}
                     >
+                      <span>{item.icon}</span>
                       {item.label.toUpperCase()}
                     </button>
                   )
@@ -378,7 +413,7 @@ export default function Dashboard() {
                   <div className="grid grid-cols-2 gap-3">
                     <MetricCard label="TASKS COMPLETED" value={completedTasks.toString()} accent />
                     <MetricCard label="TOTAL VOLUME" value={`${formatEther(totalReward)} ETH`} />
-                    <MetricCard label="SMART CONTRACTS" value="3" />
+                    <MetricCard label="SMART CONTRACTS" value={String(TOTAL_DEPLOYED_CONTRACTS)} />
                     <MetricCard label="FOUNDRY TESTS" value="8/8 ✓" accent />
                   </div>
                 </div>
@@ -534,7 +569,7 @@ export default function Dashboard() {
                 />
               </div>
               <div className="relative" style={{ zIndex: 1 }}>
-              <SectionHeader title="What Makes Us Different" subtitle="Unique cross-protocol capabilities no competitor can match" />
+              <SectionHeader title="What Makes Us Different" subtitle="Unique cross-protocol capabilities" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
                   <div className="flex items-center gap-2 mb-3">
@@ -611,14 +646,14 @@ export default function Dashboard() {
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                   {[
                     { num: 1, label: 'POST', desc: 'Buyer submits task + ETH', color: 'var(--accent)' },
-                    { num: 2, label: 'LOCK', desc: 'ETH held in escrow', color: 'var(--accent)' },
+                    { num: 2, label: 'LOCK', desc: 'Funds held in escrow vault', color: 'var(--accent)' },
                     { num: 3, label: 'CLAIM', desc: 'Seller picks up task', color: '#FF8800' },
                     { num: 4, label: 'DELIVER', desc: 'Work submitted on-chain', color: '#A78BFA' },
                     { num: 5, label: 'VERIFY', desc: 'Buyer confirms quality', color: '#34D399' },
                     { num: 6, label: 'SETTLE', desc: 'ETH released + rep updated', color: '#34D399' },
                   ].map((step, i) => (
                     <div key={step.num} className="relative">
-                      <div className="rounded-lg p-4 text-center" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                      <div className="rounded-lg p-4 text-center h-full" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                         <div className="w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center text-[12px] font-bold"
                              style={{ background: `${step.color}15`, border: `1px solid ${step.color}40`, color: step.color }}>
                           {step.num}
@@ -639,7 +674,7 @@ export default function Dashboard() {
 
             {/* Smart Contracts */}
             <div>
-              <SectionHeader title="Smart Contracts" subtitle="Deployed on Base Sepolia — verified on BaseScan — 8/8 Foundry tests passing" />
+              <SectionHeader title="Smart Contracts" subtitle={`${TOTAL_DEPLOYED_CONTRACTS} contracts deployed across ${DEPLOYED_CHAINS.length} chains (${DEPLOYED_CHAINS.join(' + ')}) — verified on-chain — 8/8 Foundry tests passing`} />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <ContractCard
                   name="ServiceBoard"
@@ -689,7 +724,7 @@ export default function Dashboard() {
                   address="0xC07b695eC19DE38f1e62e825585B2818077B96cC"
                   agentId={2194}
                   avatarUrl="https://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna.ipfs.w3s.link"
-                  stats={{ tasks: 7, spent: '0.0035', earned: '0', score: 50 }}
+                  stats={buyerStats}
                   actions={['Posts tasks with ETH bounties', 'Verifies delivery quality', 'Confirms to release escrow']}
                 />
                 <AgentProfileCard
@@ -697,7 +732,7 @@ export default function Dashboard() {
                   address="0xC07b695eC19DE38f1e62e825585B2818077B96cC"
                   agentId={2195}
                   avatarUrl="https://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy.ipfs.w3s.link"
-                  stats={{ tasks: 7, spent: '0', earned: '0.0035', score: 100 }}
+                  stats={sellerStats}
                   actions={['Discovers open tasks on ServiceBoard', 'Claims and executes work autonomously', 'Submits delivery proof on-chain']}
                 />
               </div>
@@ -985,8 +1020,8 @@ export default function Dashboard() {
                           AVAILABLE AGENTS
                         </h3>
                         {[
-                          { id: 2195, name: 'Seller Agent', score: 100, tasks: 7, types: ['text_summary', 'code_review', 'translation'], avatar: 'https://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy.ipfs.w3s.link' },
-                          { id: 2194, name: 'Buyer Agent', score: 50, tasks: 7, types: ['data_analysis', 'text_summary'], avatar: 'https://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna.ipfs.w3s.link' },
+                          { id: 2195, name: 'Seller Agent', score: sellerStats.score, tasks: sellerStats.tasks, types: ['text_summary', 'code_review', 'translation'], avatar: 'https://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy.ipfs.w3s.link' },
+                          { id: 2194, name: 'Buyer Agent', score: buyerStats.score, tasks: buyerStats.tasks, types: ['data_analysis', 'text_summary'], avatar: 'https://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna.ipfs.w3s.link' },
                         ].map(agent => (
                           <button key={agent.id}
                                   onClick={() => setSelectedAgent(agent.id === selectedAgent ? null : agent.id)}
@@ -1253,132 +1288,358 @@ export default function Dashboard() {
             <SectionHeader title="Architecture" subtitle="System design and contract interaction flow" />
 
             {/* Architecture Diagram — Card-based UI */}
-            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
-                SYSTEM ARCHITECTURE
-              </h3>
-
-              {/* Base Chain (L2) */}
-              <div className="rounded-lg p-6 mb-4" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
-                  <span className="text-[12px] font-semibold">Base Chain (L2)</span>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded ml-1" style={{ background: 'var(--accent)10', color: 'var(--accent)', border: '1px solid var(--accent)30' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 0, position: 'relative' as const }}>
+              {/* Base Chain Card */}
+              <div style={{
+                padding: 24,
+                background: 'var(--bg-card)',
+                border: '1px solid #3B82F630',
+                borderRadius: '12px 12px 0 0',
+                position: 'relative' as const,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                  <div style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: '50%',
+                    background: '#3B82F6',
+                    boxShadow: '0 0 8px #3B82F660',
+                  }} />
+                  <span style={{
+                    fontFamily: 'var(--font-display, "Space Grotesk", sans-serif)',
+                    fontWeight: 700,
+                    fontSize: 16,
+                    color: 'var(--text-primary)',
+                  }}>
+                    Base Chain (L2)
+                  </span>
+                  <span style={{
+                    fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                    fontSize: 11,
+                    color: 'var(--text-tertiary)',
+                    padding: '2px 8px',
+                    background: 'var(--bg-main)',
+                    borderRadius: 4,
+                    border: '1px solid var(--border)',
+                  }}>
                     Chain 84532
                   </span>
                 </div>
 
-                {/* Contract Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                {/* Contract cards row */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+                  gap: 10,
+                  marginBottom: 16,
+                }}>
                   {[
-                    { name: 'ServiceBoard', color: 'var(--accent)', fns: ['postTask', 'claimTask', 'deliver', 'confirm'] },
-                    { name: 'EscrowVault', color: '#FF8800', fns: ['lockEscrow', 'release', 'refund', 'timeout'] },
-                    { name: 'ReputationRegistry', color: '#A78BFA', fns: ['recordCompletion', 'recordFailure', 'getScore', 'getReputation'] },
-                  ].map(contract => (
-                    <div key={contract.name} className="rounded-lg overflow-hidden" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-                      <div className="h-[2px]" style={{ background: contract.color }} />
-                      <div className="p-3">
-                        <div className="text-[11px] font-semibold mb-2" style={{ color: contract.color }}>{contract.name}</div>
-                        <div className="space-y-1">
-                          {contract.fns.map(fn => (
-                            <div key={fn} className="text-[10px] font-mono" style={{ color: 'var(--text-tertiary)' }}>
-                              {fn}()
-                            </div>
-                          ))}
-                        </div>
+                    { name: 'ServiceBoard', fns: ['postTask()', 'claimTask()', 'deliver()', 'confirm()'], color: '#FF8800' },
+                    { name: 'EscrowVault', fns: ['lockEscrow()', 'release()', 'refund()', 'timeout()'], color: '#3B82F6' },
+                    { name: 'ReputationRegistry', fns: ['recordCompletion()', 'recordFailure()', 'getScore()', 'getReputation()'], color: '#A78BFA' },
+                  ].map(c => (
+                    <div key={c.name} style={{
+                      padding: 12,
+                      background: 'var(--bg-main)',
+                      border: `1px solid ${c.color}20`,
+                      borderRadius: 8,
+                      borderTop: `2px solid ${c.color}60`,
+                    }}>
+                      <div style={{
+                        fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: c.color,
+                        marginBottom: 8,
+                      }}>
+                        {c.name}
                       </div>
+                      {c.fns.map(fn => (
+                        <div key={fn} style={{
+                          fontSize: 10,
+                          fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                          color: 'var(--text-tertiary)',
+                          padding: '1px 0',
+                        }}>
+                          {fn}
+                        </div>
+                      ))}
                     </div>
                   ))}
                 </div>
 
                 {/* Metadata badges */}
-                <div className="flex flex-wrap gap-2">
-                  {['TaskReceipt Events', 'ERC-8004 Compatible', 'On-chain Escrow'].map(badge => (
-                    <span key={badge} className="text-[9px] px-2 py-1 rounded-full" style={{ background: 'var(--bg-card)', color: 'var(--text-tertiary)', border: '1px solid var(--border)' }}>
-                      {badge}
+                <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8 }}>
+                  {[
+                    { label: 'TaskReceipt Events', color: '#FF8800' },
+                    { label: 'ERC-8004 Compatible', color: '#A78BFA' },
+                    { label: 'On-chain Escrow', color: '#34D399' },
+                  ].map(b => (
+                    <span key={b.label} style={{
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                      color: b.color,
+                      padding: '3px 10px',
+                      background: `${b.color}10`,
+                      border: `1px solid ${b.color}20`,
+                      borderRadius: 4,
+                    }}>
+                      {b.label}
                     </span>
                   ))}
                 </div>
               </div>
 
-              {/* ERC-8004 Identity strip */}
-              <div className="flex items-center justify-center gap-3 py-2 mb-4">
-                <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
-                <span className="text-[10px] px-3 py-1 rounded-full whitespace-nowrap" style={{ background: 'var(--accent)08', color: 'var(--accent)', border: '1px solid var(--accent)25' }}>
-                  ERC-8004 Identity — Agent wallets with on-chain identity
+              {/* ERC-8004 Identity Strip */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 12,
+                padding: '14px 24px',
+                background: 'var(--bg-main)',
+                borderLeft: '1px solid var(--border)',
+                borderRight: '1px solid var(--border)',
+                position: 'relative' as const,
+              }}>
+                <span style={{
+                  fontSize: 11,
+                  fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                  color: '#A78BFA',
+                  fontWeight: 600,
+                }}>
+                  ERC-8004 Identity
                 </span>
-                <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+                <span style={{
+                  fontSize: 10,
+                  color: 'var(--text-tertiary)',
+                }}>
+                  —
+                </span>
+                <span style={{
+                  fontSize: 10,
+                  color: 'var(--text-tertiary)',
+                }}>
+                  Agent wallets with on-chain identity
+                </span>
               </div>
 
-              {/* viem/ethers connector */}
-              <div className="flex items-center justify-center py-1 mb-4">
-                <span className="text-[9px] tracking-[0.1em]" style={{ color: 'var(--text-quaternary)' }}>▲ viem/ethers ▲</span>
+              {/* viem/ethers Connection Strip */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                padding: '10px 24px',
+                background: 'var(--bg-card)',
+                borderLeft: '1px solid var(--border)',
+                borderRight: '1px solid var(--border)',
+              }}>
+                <span style={{ fontSize: 14, color: 'var(--text-quaternary)' }}>↕</span>
+                <span style={{
+                  fontSize: 10,
+                  fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                  color: 'var(--text-quaternary)',
+                }}>
+                  viem / ethers
+                </span>
+                <span style={{ fontSize: 14, color: 'var(--text-quaternary)' }}>↕</span>
               </div>
 
               {/* Agent Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 relative">
-                <div className="rounded-lg p-4" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-2 h-2 rounded-full" style={{ background: 'var(--accent)' }} />
-                    <span className="text-[11px] font-semibold">Buyer Agent</span>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr auto 1fr',
+                gap: 0,
+                borderLeft: '1px solid var(--border)',
+                borderRight: '1px solid var(--border)',
+              }}>
+                {/* Buyer Agent */}
+                <div style={{
+                  padding: 16,
+                  background: 'var(--bg-card)',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <div style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      background: 'var(--accent, #38B3DC)',
+                      boxShadow: '0 0 6px var(--accent, #38B3DC)60',
+                    }} />
+                    <span style={{
+                      fontFamily: 'var(--font-display, "Space Grotesk", sans-serif)',
+                      fontWeight: 700,
+                      fontSize: 13,
+                      color: 'var(--text-primary)',
+                    }}>
+                      Buyer Agent
+                    </span>
                   </div>
-                  <div className="space-y-1.5">
-                    {['Posts tasks', 'Funds escrow', 'Confirms work', 'Private verification'].map(item => (
-                      <div key={item} className="text-[10px] flex items-center gap-1.5" style={{ color: 'var(--text-secondary)' }}>
-                        <span style={{ color: 'var(--text-quaternary)' }}>›</span> {item}
-                      </div>
-                    ))}
-                  </div>
+                  {['Posts tasks', 'Funds escrow', 'Confirms work', 'Private verification'].map(fn => (
+                    <div key={fn} style={{
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                      color: 'var(--text-tertiary)',
+                      padding: '2px 0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                    }}>
+                      {fn === 'Private verification' && <span style={{ fontSize: 10 }}>&#x1f512;</span>}
+                      {fn}
+                    </div>
+                  ))}
                 </div>
 
-                {/* Discovery connector (visible on md+) */}
-                <div className="hidden md:flex absolute inset-0 items-center justify-center pointer-events-none">
-                  <span className="text-[9px] tracking-[0.15em] px-2 py-0.5 rounded-full" style={{ background: 'var(--bg-card)', color: 'var(--text-quaternary)', border: '1px solid var(--border)' }}>
+                {/* Discovery strip (vertical center) */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 12px',
+                  background: 'var(--bg-main)',
+                }}>
+                  <span style={{
+                    fontSize: 9,
+                    fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                    color: 'var(--text-quaternary)',
+                    writingMode: 'vertical-rl' as const,
+                    letterSpacing: 2,
+                  }}>
                     DISCOVERY
                   </span>
                 </div>
 
-                <div className="rounded-lg p-4" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-2 h-2 rounded-full" style={{ background: '#FF8800' }} />
-                    <span className="text-[11px] font-semibold">Seller Agent</span>
+                {/* Seller Agent */}
+                <div style={{
+                  padding: 16,
+                  background: 'var(--bg-card)',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <div style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      background: '#FF8800',
+                      boxShadow: '0 0 6px #FF880060',
+                    }} />
+                    <span style={{
+                      fontFamily: 'var(--font-display, "Space Grotesk", sans-serif)',
+                      fontWeight: 700,
+                      fontSize: 13,
+                      color: 'var(--text-primary)',
+                    }}>
+                      Seller Agent
+                    </span>
                   </div>
-                  <div className="space-y-1.5">
-                    {['Polls for work', 'Claims tasks', 'Executes work', 'Private eval+execute'].map(item => (
-                      <div key={item} className="text-[10px] flex items-center gap-1.5" style={{ color: 'var(--text-secondary)' }}>
-                        <span style={{ color: 'var(--text-quaternary)' }}>›</span> {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* TEE connector */}
-              <div className="flex items-center justify-center py-1 mb-4">
-                <span className="text-[9px] tracking-[0.1em]" style={{ color: 'var(--text-quaternary)' }}>▼ TEE-backed inference ▼</span>
-              </div>
-
-              {/* Venice Private Cognition Layer */}
-              <div className="rounded-lg p-5" style={{ background: 'linear-gradient(135deg, rgba(167,139,250,0.06), rgba(129,140,248,0.04))', border: '1px solid #A78BFA25' }}>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-2 h-2 rounded-full" style={{ background: '#A78BFA' }} />
-                  <span className="text-[12px] font-semibold" style={{ color: '#A78BFA' }}>Venice Private Cognition Layer</span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  {[
-                    { label: 'TEE Inference', desc: 'Intel TDX hardware enclaves', icon: '🔒' },
-                    { label: 'Attestation Proofs', desc: 'Cryptographic computation proof', icon: '🔐' },
-                    { label: 'Signature Verification', desc: 'On-chain verifiable signatures', icon: '📋' },
-                  ].map(item => (
-                    <div key={item.label} className="rounded-md p-3" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                      <div className="text-[11px] font-semibold mb-1">{item.icon} {item.label}</div>
-                      <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>{item.desc}</div>
+                  {['Polls for work', 'Claims tasks', 'Executes work', 'Private eval+execute'].map(fn => (
+                    <div key={fn} style={{
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                      color: 'var(--text-tertiary)',
+                      padding: '2px 0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                    }}>
+                      {fn === 'Private eval+execute' && <span style={{ fontSize: 10 }}>&#x1f512;</span>}
+                      {fn}
                     </div>
                   ))}
                 </div>
-                <p className="text-[10px] mt-3 text-center" style={{ color: 'var(--text-quaternary)' }}>
-                  Agent reasoning never leaves the hardware enclave
-                </p>
+              </div>
+
+              {/* Connection to Venice */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                padding: '10px 24px',
+                background: 'var(--bg-main)',
+                borderLeft: '1px solid var(--border)',
+                borderRight: '1px solid var(--border)',
+              }}>
+                <span style={{ fontSize: 14, color: 'var(--text-quaternary)' }}>↓</span>
+                <span style={{
+                  fontSize: 10,
+                  fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                  color: 'var(--text-quaternary)',
+                }}>
+                  TEE-backed inference
+                </span>
+                <span style={{ fontSize: 14, color: 'var(--text-quaternary)' }}>↓</span>
+              </div>
+
+              {/* Venice Private Cognition Card */}
+              <div style={{
+                padding: 24,
+                background: 'var(--bg-card)',
+                border: '1px solid #A78BFA30',
+                borderRadius: '0 0 12px 12px',
+                position: 'relative' as const,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                  <div style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: '50%',
+                    background: '#A78BFA',
+                    boxShadow: '0 0 8px #A78BFA60',
+                  }} />
+                  <span style={{
+                    fontFamily: 'var(--font-display, "Space Grotesk", sans-serif)',
+                    fontWeight: 700,
+                    fontSize: 16,
+                    color: 'var(--text-primary)',
+                  }}>
+                    Venice Private Cognition Layer
+                  </span>
+                </div>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+                  gap: 10,
+                  marginBottom: 16,
+                }}>
+                  {[
+                    { name: 'TEE Inference', desc: 'Intel TDX hardware enclaves', color: '#A78BFA' },
+                    { name: 'Attestation Proofs', desc: 'Cryptographic integrity verification', color: '#818CF8' },
+                    { name: 'Signature Verification', desc: 'On-chain delivery proof', color: '#34D399' },
+                  ].map(c => (
+                    <div key={c.name} style={{
+                      padding: 12,
+                      background: 'var(--bg-main)',
+                      border: `1px solid ${c.color}20`,
+                      borderRadius: 8,
+                      borderTop: `2px solid ${c.color}60`,
+                    }}>
+                      <div style={{
+                        fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: c.color,
+                        marginBottom: 6,
+                      }}>
+                        {c.name}
+                      </div>
+                      <div style={{
+                        fontSize: 10,
+                        color: 'var(--text-tertiary)',
+                      }}>
+                        {c.desc}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{
+                  fontSize: 11,
+                  color: 'var(--text-secondary)',
+                  fontStyle: 'italic',
+                }}>
+                  Agent reasoning never leaves the hardware enclave.
+                </div>
               </div>
             </div>
 

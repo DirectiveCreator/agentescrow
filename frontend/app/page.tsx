@@ -414,7 +414,7 @@ export default function Dashboard() {
                     <MetricCard label="TASKS COMPLETED" value={completedTasks.toString()} accent />
                     <MetricCard label="TOTAL VOLUME" value={`${formatEther(totalReward)} ETH`} />
                     <MetricCard label="SMART CONTRACTS" value={String(TOTAL_DEPLOYED_CONTRACTS)} />
-                    <MetricCard label="FOUNDRY TESTS" value="8/8 ✓" accent />
+                    <MetricCard label="FOUNDRY TESTS" value="40/40 ✓" accent />
                   </div>
                 </div>
               </div>
@@ -674,7 +674,7 @@ export default function Dashboard() {
 
             {/* Smart Contracts */}
             <div>
-              <SectionHeader title="Smart Contracts" subtitle={`${TOTAL_DEPLOYED_CONTRACTS} contracts deployed across ${DEPLOYED_CHAINS.length} chains (${DEPLOYED_CHAINS.join(' + ')}) — verified on-chain — 8/8 Foundry tests passing`} />
+              <SectionHeader title="Smart Contracts" subtitle={`${TOTAL_DEPLOYED_CONTRACTS} contracts deployed across ${DEPLOYED_CHAINS.length} chains (${DEPLOYED_CHAINS.join(' + ')}) — verified on-chain — 40/40 Foundry tests passing`} />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <ContractCard
                   name="ServiceBoard"
@@ -1799,7 +1799,8 @@ export default function Dashboard() {
 │   │   ├── EscrowVault.sol         # ETH escrow & release
 │   │   └── ReputationRegistry.sol  # Agent reputation scores
 │   ├── test/
-│   │   └── AgentEscrow.t.sol       # 8 comprehensive tests
+│   │   ├── AgentEscrow.t.sol       # 8 core tests
+│   │   └── AgentEscrowExtended.t.sol # 32 extended tests
 │   └── script/
 │       └── Deploy.s.sol            # Deployment automation
 │
@@ -1879,7 +1880,7 @@ export default function Dashboard() {
                     entries: [
                       'Started with a question: what if AI agents could hire each other trustlessly?',
                       'Designed 3 Solidity contracts — ServiceBoard (task marketplace), EscrowVault (trustless payments), ReputationRegistry (on-chain trust scores)',
-                      'Wrote 8 Foundry tests, all passing. Built a buyer + seller agent harness in Node.js.',
+                      'Wrote 40 Foundry tests, all passing. Built a buyer + seller agent harness in Node.js.',
                       'Ran 5 full task lifecycles on a local Anvil chain. The agents worked autonomously — posting tasks, claiming, executing, delivering, and settling payments without human intervention.',
                     ],
                   },

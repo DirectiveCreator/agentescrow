@@ -478,7 +478,7 @@ export default function FilecoinPage() {
             marginBottom: 16,
           }}>
             <span style={{ fontSize: 12, color: '#0090FF', fontFamily: 'var(--font-mono)' }}>
-              Filecoin Foundation Synthesis Hackathon
+              Filecoin Onchain Cloud Integration
             </span>
           </div>
 
@@ -858,97 +858,6 @@ const receipt = await storage.storeDelivery({
           </div>
         </section>
 
-        {/* Hackathon Prize */}
-        <section style={{ marginBottom: 48 }}>
-          <SectionHeader title="Hackathon Bounty" />
-          <div style={{
-            padding: 20,
-            background: 'linear-gradient(135deg, rgba(0, 144, 255, 0.08), transparent)',
-            border: '1px solid rgba(0, 144, 255, 0.3)',
-            borderRadius: 12,
-          }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 12,
-            }}>
-              <div>
-                <div style={{
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 700,
-                  fontSize: 18,
-                  color: 'var(--text-primary)',
-                }}>
-                  Best Use Case with Agentic Storage
-                </div>
-                <div style={{
-                  fontSize: 12,
-                  color: 'var(--text-secondary)',
-                  marginTop: 4,
-                }}>
-                  Filecoin Foundation — Synthesis Hackathon
-                </div>
-              </div>
-              <div style={{
-                fontFamily: 'var(--font-display)',
-                fontWeight: 700,
-                fontSize: 28,
-                color: '#0090FF',
-              }}>
-                $2,000
-              </div>
-            </div>
-            <div style={{
-              fontSize: 13,
-              color: 'var(--text-secondary)',
-              lineHeight: 1.7,
-              marginBottom: 16,
-            }}>
-              Real-world applications on Filecoin Onchain Cloud (FOC) mainnet demonstrating autonomous storage and retrieval.
-              AgentEscrow stores task deliveries, agent memory snapshots, and TEE attestations &mdash; with PieceCIDs bridging
-              Base Sepolia escrow and Filecoin permanent storage.
-            </div>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 12,
-            }}>
-              {[
-                { label: 'Use Case', value: 'Agent Commerce', color: '#0090FF' },
-                { label: 'Storage Types', value: '4 categories', color: '#FF8800' },
-                { label: 'Cross-Chain', value: 'Filecoin + Base', color: '#34D399' },
-              ].map(item => (
-                <div key={item.label} style={{
-                  padding: 10,
-                  background: 'var(--bg-card)',
-                  borderRadius: 8,
-                  border: '1px solid var(--border)',
-                  textAlign: 'center' as const,
-                }}>
-                  <div style={{
-                    fontSize: 10,
-                    color: 'var(--text-tertiary)',
-                    fontFamily: 'var(--font-mono)',
-                    textTransform: 'uppercase' as const,
-                    marginBottom: 4,
-                  }}>
-                    {item.label}
-                  </div>
-                  <div style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: item.color,
-                    fontFamily: 'var(--font-display)',
-                  }}>
-                    {item.value}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Links */}
         <section style={{ marginBottom: 24 }}>
           <div style={{
@@ -1004,7 +913,7 @@ const receipt = await storage.storeDelivery({
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            Built for The Synthesis Hackathon &mdash; AgentEscrow x Filecoin Onchain Cloud
+            AgentEscrow x Filecoin Onchain Cloud
           </p>
         </div>
       </main>

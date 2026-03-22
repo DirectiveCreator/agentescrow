@@ -21,11 +21,91 @@ export const SUPPORTED_CHAINS = [
   { id: 11142220, name: 'Celo Sepolia', chain: celoSepolia, explorer: 'https://celo-sepolia.blockscout.com', currency: 'CELO' },
 ] as const;
 
-// Contract addresses — deployed on both Base Sepolia and Celo Sepolia (same addresses)
+// === DEPLOYMENT HISTORY ===
+// V1 (Direct deploy, 2026-03-18): No proxies, no pause mechanism
+//   ServiceBoard:        0xDd04B859874947b9861d671DEEc8c39e5CD61c6C
+//   EscrowVault:         0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E
+//   ReputationRegistry:  0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c
+//
+// V2 (UUPS Proxy + Emergency Pause, 2026-03-22): Upgradeable, pausable, zero-address checks
+//   ServiceBoard proxy:        0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2
+//   EscrowVault proxy:         0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579
+//   ReputationRegistry proxy:  0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df
+//
+// Celo Sepolia (V1, unchanged): Same V1 addresses as Base Sepolia V1
+
+// Contract addresses — V2 UUPS Proxy deployment on Base Sepolia
+const BASE_SEPOLIA_CONTRACTS = {
+  serviceBoard: '0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2',
+  escrowVault: '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579',
+  reputationRegistry: '0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df',
+};
+
+// Celo Sepolia still uses V1 (direct deploy) addresses
+const CELO_SEPOLIA_CONTRACTS = {
+  serviceBoard: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C',
+  escrowVault: '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E',
+  reputationRegistry: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c',
+};
+
+// Active contracts — defaults to Base Sepolia V2
 const CONTRACTS = {
-  serviceBoard: process.env.NEXT_PUBLIC_SERVICE_BOARD_ADDRESS || '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C',
-  escrowVault: process.env.NEXT_PUBLIC_ESCROW_VAULT_ADDRESS || '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E',
-  reputationRegistry: process.env.NEXT_PUBLIC_REPUTATION_REGISTRY_ADDRESS || '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c',
+  serviceBoard: process.env.NEXT_PUBLIC_SERVICE_BOARD_ADDRESS || BASE_SEPOLIA_CONTRACTS.serviceBoard,
+  escrowVault: process.env.NEXT_PUBLIC_ESCROW_VAULT_ADDRESS || BASE_SEPOLIA_CONTRACTS.escrowVault,
+  reputationRegistry: process.env.NEXT_PUBLIC_REPUTATION_REGISTRY_ADDRESS || BASE_SEPOLIA_CONTRACTS.reputationRegistry,
+};
+
+// Export deployment history for UI display
+export const DEPLOYMENT_HISTORY = {
+  v1: {
+    version: 'V1',
+    date: '2026-03-18',
+    chain: 'Base Sepolia',
+    type: 'Direct Deploy',
+    features: ['Basic escrow lifecycle', 'Reputation tracking', 'On-chain task board'],
+    contracts: {
+      serviceBoard: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C',
+      escrowVault: '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E',
+      reputationRegistry: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c',
+    },
+    explorer: 'https://sepolia.basescan.org',
+  },
+  v2: {
+    version: 'V2',
+    date: '2026-03-22',
+    chain: 'Base Sepolia',
+    type: 'UUPS Proxy + Emergency Pause',
+    features: ['UUPS upgradeable proxies', 'Emergency pause mechanism', 'Zero-address validation', 'ERC-8183 compatible'],
+    contracts: {
+      serviceBoard: '0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2',
+      escrowVault: '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579',
+      reputationRegistry: '0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df',
+    },
+    implementations: {
+      serviceBoard: '0x8219C038bb46AAF2Cae4373f8da0b613A7e7d578',
+      escrowVault: '0x6E71Fa02D0Bdb857480F14a5b6B5ca80197Ab65A',
+      reputationRegistry: '0x277379d45Eb79A7Cdc96fC020847C3f3663C0E06',
+    },
+    explorer: 'https://sepolia.basescan.org',
+  },
+  celo: {
+    version: 'V1',
+    date: '2026-03-22',
+    chain: 'Celo Sepolia',
+    type: 'Direct Deploy',
+    features: ['Cross-chain deployment', 'Celo native support'],
+    contracts: CELO_SEPOLIA_CONTRACTS,
+    explorer: 'https://celo-sepolia.blockscout.com',
+  },
+  mainnet: {
+    version: 'V3 (Planned)',
+    date: 'TBD',
+    chain: 'Base Mainnet',
+    type: 'UUPS Proxy (Production)',
+    features: ['Production deployment', 'Battle-tested from testnet iterations'],
+    contracts: { serviceBoard: 'TBD', escrowVault: 'TBD', reputationRegistry: 'TBD' },
+    explorer: 'https://basescan.org',
+  },
 };
 
 const isLocal = process.env.NEXT_PUBLIC_CHAIN === 'local';
@@ -131,7 +211,13 @@ export const EscrowVaultABI = [
   { type: 'function', name: 'getBalance', inputs: [], outputs: [{ name: '', type: 'uint256' }], stateMutability: 'view' },
 ] as const;
 
-export { CONTRACTS, chain };
+// Get the correct contract addresses for a given chain
+export function getContractsForChain(chainId: number) {
+  if (chainId === 11142220) return CELO_SEPOLIA_CONTRACTS;
+  return BASE_SEPOLIA_CONTRACTS; // default
+}
+
+export { CONTRACTS, BASE_SEPOLIA_CONTRACTS, CELO_SEPOLIA_CONTRACTS, chain };
 
 // TypeScript declaration for window.ethereum
 declare global {

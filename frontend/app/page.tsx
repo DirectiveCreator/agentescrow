@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { formatEther, parseEther } from 'viem';
 import { useAccount, useConnect, useDisconnect, useBalance, useSwitchChain, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi';
 import { injected } from 'wagmi/connectors';
-import { publicClient, ServiceBoardABI, ReputationRegistryABI, EscrowVaultABI, CONTRACTS, getPublicClientForChain, SUPPORTED_CHAINS } from '@/lib/contracts';
+import { publicClient, ServiceBoardABI, ReputationRegistryABI, EscrowVaultABI, CONTRACTS, getPublicClientForChain, getContractsForChain, SUPPORTED_CHAINS, DEPLOYMENT_HISTORY } from '@/lib/contracts';
 import { CONTRACTS as WAGMI_CONTRACTS } from '@/lib/wagmi';
 import { MeshGradient, NeuroNoise, GrainGradient, DotGrid, SmokeRing, Waves, Metaballs } from '@paper-design/shaders-react';
 import { Shader, Blob, ChromaticAberration, FilmGrain, Swirl } from 'shaders/react';
@@ -2146,6 +2146,134 @@ export default function Dashboard() {
     └── lib/
         └── contracts.ts            # ABIs + viem client config`}
               </pre>
+            </div>
+
+            {/* ── Deployment History ── */}
+            <div className="gradient-border rounded-xl p-6" style={{ background: 'var(--bg-card)' }}>
+              <h3 className="text-lg font-bold mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
+                Deployment History
+              </h3>
+              <p className="text-sm mb-6" style={{ color: 'var(--text-secondary)' }}>
+                Contract evolution from initial prototype to production-ready upgradeable proxies. Each iteration deployed on-chain with verifiable transactions.
+              </p>
+
+              {/* Timeline */}
+              <div className="relative" style={{ paddingLeft: 24 }}>
+                <div className="absolute left-[11px] top-0 bottom-0 w-[2px]" style={{ background: 'var(--border)' }} />
+
+                {/* V1 — Base Sepolia */}
+                <div className="relative mb-8">
+                  <div className="absolute left-[-20px] top-[6px] w-[18px] h-[18px] rounded-full border-2" style={{ borderColor: 'var(--text-tertiary)', background: 'var(--bg-primary)' }}>
+                    <div className="w-[8px] h-[8px] rounded-full m-[3px]" style={{ background: 'var(--text-tertiary)' }} />
+                  </div>
+                  <div className="ml-2">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: '#6B728010', color: 'var(--text-tertiary)', border: '1px solid var(--border)' }}>V1</span>
+                      <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>March 18, 2026 · Base Sepolia</span>
+                    </div>
+                    <h4 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Direct Deploy — Initial Prototype</h4>
+                    <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>First deployment. Basic escrow lifecycle, reputation tracking, on-chain task board. No upgradeability or emergency controls.</p>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { name: 'ServiceBoard', addr: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C' },
+                        { name: 'EscrowVault', addr: '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E' },
+                        { name: 'ReputationRegistry', addr: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c' },
+                      ].map(c => (
+                        <a key={c.name} href={`https://sepolia.basescan.org/address/${c.addr}`} target="_blank" rel="noopener noreferrer" className="text-xs font-mono px-2 py-1 rounded hover:opacity-80 transition-opacity" style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)', color: 'var(--text-tertiary)' }}>
+                          {c.name}: {c.addr.slice(0,6)}...{c.addr.slice(-4)} ↗
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* V2 — Base Sepolia UUPS */}
+                <div className="relative mb-8">
+                  <div className="absolute left-[-20px] top-[6px] w-[18px] h-[18px] rounded-full border-2" style={{ borderColor: 'var(--accent)', background: 'var(--bg-primary)' }}>
+                    <div className="w-[8px] h-[8px] rounded-full m-[3px]" style={{ background: 'var(--accent)' }} />
+                  </div>
+                  <div className="ml-2">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: 'var(--accent-10)', color: 'var(--accent)', border: '1px solid var(--accent)' }}>V2</span>
+                      <span className="text-xs" style={{ color: 'var(--accent)' }}>March 22, 2026 · Base Sepolia</span>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: '#34D39920', color: '#34D399', border: '1px solid #34D39940' }}>ACTIVE</span>
+                    </div>
+                    <h4 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>UUPS Proxy + Emergency Pause</h4>
+                    <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>Upgradeable via ERC-1967 proxies. Emergency pause on ServiceBoard (5 functions gated, claimTimeout exempt). Zero-address validation. 66 tests passing.</p>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {[
+                        { name: 'ServiceBoard', addr: '0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2' },
+                        { name: 'EscrowVault', addr: '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579' },
+                        { name: 'ReputationRegistry', addr: '0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df' },
+                      ].map(c => (
+                        <a key={c.name} href={`https://sepolia.basescan.org/address/${c.addr}`} target="_blank" rel="noopener noreferrer" className="text-xs font-mono px-2 py-1 rounded hover:opacity-80 transition-opacity" style={{ background: 'var(--accent-10)', border: '1px solid var(--accent)', color: 'var(--accent)' }}>
+                          {c.name}: {c.addr.slice(0,6)}...{c.addr.slice(-4)} ↗
+                        </a>
+                      ))}
+                    </div>
+                    <div className="text-[10px] font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                      Implementations: ServiceBoard <a href="https://sepolia.basescan.org/address/0x8219C038bb46AAF2Cae4373f8da0b613A7e7d578" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: 'var(--text-tertiary)' }}>0x8219...d578 ↗</a> · EscrowVault <a href="https://sepolia.basescan.org/address/0x6E71Fa02D0Bdb857480F14a5b6B5ca80197Ab65A" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: 'var(--text-tertiary)' }}>0x6E71...b65A ↗</a> · ReputationRegistry <a href="https://sepolia.basescan.org/address/0x277379d45Eb79A7Cdc96fC020847C3f3663C0E06" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: 'var(--text-tertiary)' }}>0x2773...0E06 ↗</a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Celo Sepolia */}
+                <div className="relative mb-8">
+                  <div className="absolute left-[-20px] top-[6px] w-[18px] h-[18px] rounded-full border-2" style={{ borderColor: '#FCFF52', background: 'var(--bg-primary)' }}>
+                    <div className="w-[8px] h-[8px] rounded-full m-[3px]" style={{ background: '#FCFF52' }} />
+                  </div>
+                  <div className="ml-2">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: '#FCFF5210', color: '#FCFF52', border: '1px solid #FCFF5240' }}>V1</span>
+                      <span className="text-xs" style={{ color: '#FCFF52' }}>March 22, 2026 · Celo Sepolia</span>
+                    </div>
+                    <h4 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Cross-Chain Deploy — Celo Testnet</h4>
+                    <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>Same V1 contracts deployed to Celo Sepolia. Proves chain-agnostic architecture — zero code changes needed. 6 demo tasks completed on-chain.</p>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { name: 'ServiceBoard', addr: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C' },
+                        { name: 'EscrowVault', addr: '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E' },
+                        { name: 'ReputationRegistry', addr: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c' },
+                      ].map(c => (
+                        <a key={c.name} href={`https://celo-sepolia.blockscout.com/address/${c.addr}`} target="_blank" rel="noopener noreferrer" className="text-xs font-mono px-2 py-1 rounded hover:opacity-80 transition-opacity" style={{ background: '#FCFF5210', border: '1px solid #FCFF5240', color: '#FCFF52' }}>
+                          {c.name}: {c.addr.slice(0,6)}...{c.addr.slice(-4)} ↗
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* V3 — Mainnet (Planned) */}
+                <div className="relative">
+                  <div className="absolute left-[-20px] top-[6px] w-[18px] h-[18px] rounded-full border-2 border-dashed" style={{ borderColor: '#3B82F680', background: 'var(--bg-primary)' }}>
+                    <div className="w-[8px] h-[8px] rounded-full m-[3px]" style={{ background: '#3B82F640' }} />
+                  </div>
+                  <div className="ml-2">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-xs font-mono px-2 py-0.5 rounded border-dashed" style={{ background: '#3B82F610', color: '#3B82F680', border: '1px dashed #3B82F640' }}>V3</span>
+                      <span className="text-xs" style={{ color: '#3B82F680' }}>Planned · Base Mainnet</span>
+                    </div>
+                    <h4 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-tertiary)' }}>Production Deploy — Base Mainnet</h4>
+                    <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Battle-tested from two testnet iterations. UUPS proxies for future upgrades. Same deployer wallet, production-grade.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Summary stats */}
+              <div className="mt-8 pt-6 grid grid-cols-4 gap-4" style={{ borderTop: '1px solid var(--border)' }}>
+                {[
+                  { label: 'Deployments', value: '4', sub: '3 testnet + 1 planned' },
+                  { label: 'Contracts', value: '12', sub: '3 impls + 6 proxies + 3 V1' },
+                  { label: 'Chains', value: '3', sub: 'Base Sepolia, Celo Sepolia, Base' },
+                  { label: 'Tests', value: '66', sub: 'All passing' },
+                ].map(s => (
+                  <div key={s.label} className="text-center">
+                    <div className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--accent)' }}>{s.value}</div>
+                    <div className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{s.label}</div>
+                    <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>{s.sub}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

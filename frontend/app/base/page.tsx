@@ -96,10 +96,11 @@ const ON_CHAIN_FACTS = [
   { label: 'Payment Protocol', value: 'x402', detail: 'USDC via facilitator' },
 ];
 
+// V2 UUPS Proxy addresses (deployed 2026-03-22)
 const DEPLOYED_CONTRACTS = {
-  ServiceBoard: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C',
-  EscrowVault: '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E',
-  ReputationRegistry: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c',
+  'ServiceBoard (proxy)': '0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2',
+  'EscrowVault (proxy)': '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579',
+  'ReputationRegistry (proxy)': '0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df',
   'ERC-8004 IdentityRegistry': '0x8004A818BFB912233c491871b3d84c89A494BD9e',
   Deployer: '0xC07b695eC19DE38f1e62e825585B2818077B96cC',
 };

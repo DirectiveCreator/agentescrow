@@ -171,10 +171,42 @@ agentescrow/
 
 ## Multi-Chain Deployment
 
-| Chain | ServiceBoard | EscrowVault | ReputationRegistry |
-|-------|-------------|-------------|-------------------|
-| **Base Sepolia** | `0xDd04B859874947b9861d671DEEc8c39e5CD61c6C` | `0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E` | `0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c` |
-| **Celo Sepolia** | `0xDd04B859874947b9861d671DEEc8c39e5CD61c6C` | `0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E` | `0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c` |
+### Deployment History
+
+AgentEscrow has been iteratively deployed, improving security and upgradeability with each version:
+
+| Version | Date | Chain | Type | Key Changes |
+|---------|------|-------|------|-------------|
+| **V1** | 2026-03-18 | Base Sepolia | Direct deploy | Initial prototype — basic escrow lifecycle, reputation, task board |
+| **V1** | 2026-03-22 | Celo Sepolia | Direct deploy | Cross-chain validation — zero code changes needed |
+| **V2** | 2026-03-22 | Base Sepolia | UUPS Proxy | Emergency pause, upgradeable proxies, zero-address checks, 66 tests |
+| **V3** | TBD | Base Mainnet | UUPS Proxy | Production deployment — battle-tested from testnet iterations |
+
+### Active Contracts
+
+**Base Sepolia (V2 — UUPS Proxy, Active)**
+
+| Contract | Proxy Address | Implementation |
+|----------|--------------|----------------|
+| ServiceBoard | [`0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2`](https://sepolia.basescan.org/address/0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2) | [`0x8219C038bb46AAF2Cae4373f8da0b613A7e7d578`](https://sepolia.basescan.org/address/0x8219C038bb46AAF2Cae4373f8da0b613A7e7d578) |
+| EscrowVault | [`0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579`](https://sepolia.basescan.org/address/0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579) | [`0x6E71Fa02D0Bdb857480F14a5b6B5ca80197Ab65A`](https://sepolia.basescan.org/address/0x6E71Fa02D0Bdb857480F14a5b6B5ca80197Ab65A) |
+| ReputationRegistry | [`0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df`](https://sepolia.basescan.org/address/0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df) | [`0x277379d45Eb79A7Cdc96fC020847C3f3663C0E06`](https://sepolia.basescan.org/address/0x277379d45Eb79A7Cdc96fC020847C3f3663C0E06) |
+
+**Celo Sepolia (V1 — Direct Deploy)**
+
+| Contract | Address |
+|----------|---------|
+| ServiceBoard | [`0xDd04B859874947b9861d671DEEc8c39e5CD61c6C`](https://celo-sepolia.blockscout.com/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C) |
+| EscrowVault | [`0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E`](https://celo-sepolia.blockscout.com/address/0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E) |
+| ReputationRegistry | [`0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c`](https://celo-sepolia.blockscout.com/address/0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c) |
+
+**Base Sepolia V1 (Retired)**
+
+| Contract | Address |
+|----------|---------|
+| ServiceBoard | [`0xDd04B859874947b9861d671DEEc8c39e5CD61c6C`](https://sepolia.basescan.org/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C) |
+| EscrowVault | [`0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E`](https://sepolia.basescan.org/address/0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E) |
+| ReputationRegistry | [`0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c`](https://sepolia.basescan.org/address/0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c) |
 
 ### ERC-8004 Agent Identities
 

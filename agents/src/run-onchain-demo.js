@@ -25,18 +25,18 @@ if (!DEPLOYER_KEY) {
   process.exit(1);
 }
 
-// Base Sepolia contract addresses
+// Base Sepolia V2 UUPS Proxy contract addresses (deployed 2026-03-22)
 const CONTRACTS = {
   serviceBoard: {
-    address: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C',
+    address: '0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2',
     abi: (await import('./abi/ServiceBoard.json', { with: { type: 'json' } })).default,
   },
   escrowVault: {
-    address: '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E',
+    address: '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579',
     abi: (await import('./abi/EscrowVault.json', { with: { type: 'json' } })).default,
   },
   reputationRegistry: {
-    address: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c',
+    address: '0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df',
     abi: (await import('./abi/ReputationRegistry.json', { with: { type: 'json' } })).default,
   },
 };

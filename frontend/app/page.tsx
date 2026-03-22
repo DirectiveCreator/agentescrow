@@ -509,58 +509,23 @@ export default function Dashboard() {
                       Human → Human
                     </span>
                   </div>
-                  {/* Copy for Agent — primary CTA with hero shader */}
-                  <button
-                    onClick={copySkillForAgent}
-                    className="w-full mb-4 py-3 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 relative overflow-hidden"
-                    style={{
-                      background: skillCopied ? '#34D399' : '#0C0C0C',
-                      color: skillCopied ? '#0C0C0C' : '#FFFFFF',
-                      border: 'none',
-                      cursor: 'pointer',
-                      boxShadow: '0 0 24px rgba(56,179,220,0.25)',
-                    }}
-                    onMouseEnter={e => { if (!skillCopied) { e.currentTarget.style.boxShadow = '0 0 32px rgba(56,179,220,0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(56,179,220,0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                  >
-                    {!skillCopied && (
-                      <div className="absolute inset-0" style={{ zIndex: 0 }}>
-                        <MeshGradient
-                          colors={['#38B3DC', '#A78BFA', '#0C0C0C', '#34D399']}
-                          speed={0.12}
-                          distortion={0.4}
-                          swirl={0.6}
-                          style={{ width: '100%', height: '100%' }}
-                        />
-                      </div>
-                    )}
-                    {!skillCopied && (
-                      <div className="absolute inset-0 opacity-30" style={{ zIndex: 0 }}>
-                        <SmokeRing
-                          colors={['#38B3DC', '#A78BFA']}
-                          colorBack="#0C0C0C"
-                          speed={0.15}
-                          noiseScale={1.4}
-                          thickness={0.45}
-                          style={{ width: '100%', height: '100%' }}
-                        />
-                      </div>
-                    )}
-                    <span className="relative flex items-center gap-2" style={{ zIndex: 1 }}>
-                    {skillCopied ? (
-                      <>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                        COPIED — PASTE TO YOUR AGENT
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                        COPY SKILL FOR YOUR AGENT
-                      </>
-                    )}
-                    </span>
-                  </button>
                   <div className="flex gap-3">
+                    <button
+                      onClick={copySkillForAgent}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[12px] font-medium transition-all hover:shadow-[0_0_20px_rgba(56,179,220,0.3)]"
+                      style={{ background: skillCopied ? '#34D399' : 'var(--accent)', color: '#0C0C0C', border: 'none', cursor: 'pointer' }}>
+                      {skillCopied ? (
+                        <>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                          COPIED — PASTE TO YOUR AGENT
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                          COPY SKILL FOR YOUR AGENT
+                        </>
+                      )}
+                    </button>
                     <a href="https://github.com/DirectiveCreator/agentescrow" target="_blank" rel="noopener noreferrer"
                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[12px] font-medium transition-all hover:shadow-[0_0_20px_rgba(56,179,220,0.3)]"
                        style={{ background: 'var(--accent)', color: '#0C0C0C' }}>
@@ -2826,44 +2791,11 @@ export default function Dashboard() {
                     agentescrow.directivecreator.com/skill.md
                   </a>
                 </p>
-                {/* Copy for Agent Button — with hero shader */}
+                {/* Copy for Agent Button — same style as VIEW SOURCE */}
                 <button
                   onClick={copySkillForAgent}
-                  className="w-full mb-4 py-3 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 relative overflow-hidden"
-                  style={{
-                    background: skillCopied ? '#34D399' : '#0C0C0C',
-                    color: skillCopied ? '#0C0C0C' : '#FFFFFF',
-                    border: 'none',
-                    cursor: 'pointer',
-                    boxShadow: '0 0 24px rgba(56,179,220,0.25)',
-                  }}
-                  onMouseEnter={e => { if (!skillCopied) { e.currentTarget.style.boxShadow = '0 0 32px rgba(56,179,220,0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
-                  onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 24px rgba(56,179,220,0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                >
-                  {!skillCopied && (
-                    <div className="absolute inset-0" style={{ zIndex: 0 }}>
-                      <MeshGradient
-                        colors={['#38B3DC', '#A78BFA', '#0C0C0C', '#34D399']}
-                        speed={0.12}
-                        distortion={0.4}
-                        swirl={0.6}
-                        style={{ width: '100%', height: '100%' }}
-                      />
-                    </div>
-                  )}
-                  {!skillCopied && (
-                    <div className="absolute inset-0 opacity-30" style={{ zIndex: 0 }}>
-                      <SmokeRing
-                        colors={['#38B3DC', '#A78BFA']}
-                        colorBack="#0C0C0C"
-                        speed={0.15}
-                        noiseScale={1.4}
-                        thickness={0.45}
-                        style={{ width: '100%', height: '100%' }}
-                      />
-                    </div>
-                  )}
-                  <span className="relative flex items-center gap-2" style={{ zIndex: 1 }}>
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[12px] font-medium transition-all hover:shadow-[0_0_20px_rgba(56,179,220,0.3)] mb-4"
+                  style={{ background: skillCopied ? '#34D399' : 'var(--accent)', color: '#0C0C0C', border: 'none', cursor: 'pointer' }}>
                   {skillCopied ? (
                     <>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
@@ -2875,7 +2807,6 @@ export default function Dashboard() {
                       COPY SKILL FOR YOUR AGENT
                     </>
                   )}
-                  </span>
                 </button>
                 <pre className="text-[10px] p-4 rounded-lg overflow-x-auto leading-relaxed"
                      style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontFamily: '"JetBrains Mono", monospace' }}>

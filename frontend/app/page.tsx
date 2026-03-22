@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { formatEther, parseEther, encodeFunctionData } from 'viem';
 import { publicClient, ServiceBoardABI, ReputationRegistryABI, EscrowVaultABI, CONTRACTS, connectWallet, switchChain, getWalletClient, getPublicClientForChain, SUPPORTED_CHAINS } from '@/lib/contracts';
 import { MeshGradient, NeuroNoise, GrainGradient, DotGrid, SmokeRing, Waves, Metaballs } from '@paper-design/shaders-react';
+import { Shader, Blob, ChromaticAberration, FilmGrain, Swirl } from 'shaders/react';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -443,25 +444,15 @@ export default function Dashboard() {
           <div className="space-y-8">
             {/* Hero */}
             <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
-              {/* Shader: Layered hero — MeshGradient + SmokeRing for depth */}
-              <div className="absolute inset-0 opacity-[0.18]" style={{ zIndex: 0 }}>
-                <MeshGradient
-                  colors={['#38B3DC', '#A78BFA', '#0C0C0C', '#34D399']}
-                  speed={0.12}
-                  distortion={0.4}
-                  swirl={0.6}
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </div>
-              <div className="absolute inset-0 opacity-[0.06]" style={{ zIndex: 0 }}>
-                <SmokeRing
-                  colors={['#38B3DC', '#A78BFA']}
-                  colorBack="#0C0C0C"
-                  speed={0.15}
-                  noiseScale={1.4}
-                  thickness={0.45}
-                  style={{ width: '100%', height: '100%' }}
-                />
+              {/* Shader: Light leaks hero — Swirl + Blobs + ChromaticAberration + FilmGrain */}
+              <div className="absolute inset-0" style={{ zIndex: 0 }}>
+                <Shader>
+                  <Swirl blend={40} colorA="#0a1628" colorB="#b54a98" colorSpace="oklch" detail={2.5} speed={0.5} />
+                  <Blob center={{ x: 0.32, y: 0.68 }} colorA="#01dcfe" colorB="#b7fba0" colorSpace="oklch" deformation={1.5} highlightColor="#ffffff" highlightIntensity={0.6} opacity={0.55} size={0.6} softness={3} speed={0.8} visible={true} />
+                  <Blob center={{ x: 0.7, y: 0.68 }} colorA="#91b75d" colorB="#d8f72b" colorSpace="oklch" deformation={1.8} highlightColor="#ffffff" highlightIntensity={0.7} opacity={0.95} softness={3.5} speed={0.7} visible={true} />
+                  <ChromaticAberration angle={45} blueOffset={1.5} redOffset={-1.5} strength={0.55} />
+                  <FilmGrain strength={0.08} />
+                </Shader>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative" style={{ zIndex: 1 }}>
                 <div>

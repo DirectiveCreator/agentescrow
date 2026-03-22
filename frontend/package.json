@@ -17,6 +17,7 @@
     "next": "16.1.7",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "shaders": "^2.4.78",
     "tailwindcss": "^4",
     "typescript": "^5",
     "viem": "^2.47.4"

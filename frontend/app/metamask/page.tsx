@@ -742,7 +742,7 @@ export default function MetaMaskDelegationPage() {
           }}>
             AgentEscrow uses MetaMask Delegation Toolkit to give AI agents scoped, time-limited spending
             authority on the ServiceBoard — without sharing private keys. Deployed and verified on both
-            Polia (Sepolia) and Callisto (CLO), proving true multi-chain delegation portability.
+            Base Sepolia and Celo Sepolia, proving true multi-chain delegation portability.
           </p>
 
           <div style={{
@@ -756,7 +756,7 @@ export default function MetaMaskDelegationPage() {
               { label: 'SDK', value: '@metamask/delegation-toolkit' },
               { label: 'Version', value: 'v0.13.0' },
               { label: 'Smart Accounts', value: 'HybridDeleGator' },
-              { label: 'Networks', value: 'Polia + CLO' },
+              { label: 'Networks', value: 'Base Sepolia + Celo Sepolia' },
             ].map(item => (
               <div key={item.label} style={{ textAlign: 'center' as const }}>
                 <div style={{
@@ -805,7 +805,7 @@ export default function MetaMaskDelegationPage() {
               <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>The key insight:</span> when a delegation is redeemed, the call comes <span style={{ color: '#34D399' }}>from the delegator&apos;s smart account</span> — so <code style={{ fontFamily: 'var(--font-mono)', color: '#F6851B', fontSize: 12 }}>msg.sender == human</code> at the ServiceBoard level. <span style={{ color: 'var(--text-primary)' }}>Our existing contracts required zero modifications.</span> Delegation sits as a permission layer on top.
             </p>
             <p style={{ margin: 0 }}>
-              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Multi-chain proven:</span> We deployed and tested delegation flows on both <span style={{ color: '#A78BFA' }}>Polia (Sepolia testnet)</span> and <span style={{ color: '#FBBF24' }}>Callisto (CLO)</span>. The DelegationManager and all 31 enforcer contracts work identically across chains — demonstrating that AgentEscrow&apos;s delegation layer is truly chain-agnostic.
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Multi-chain proven:</span> We deployed and tested delegation flows on both <span style={{ color: '#A78BFA' }}>Base Sepolia</span> and <span style={{ color: '#FBBF24' }}>Celo Sepolia</span>. The DelegationManager and all 31 enforcer contracts work identically across chains — demonstrating that AgentEscrow&apos;s delegation layer is truly chain-agnostic.
             </p>
           </div>
         </section>
@@ -1253,7 +1253,7 @@ export default function MetaMaskDelegationPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Multi-Chain Deployment"
-            subtitle="AgentEscrow delegation works across multiple EVM chains — proven on both Polia and Callisto."
+            subtitle="AgentEscrow delegation works across multiple EVM chains — proven on both Base Sepolia and Celo Sepolia."
           />
           <div style={{
             display: 'grid',
@@ -1262,7 +1262,7 @@ export default function MetaMaskDelegationPage() {
           }}>
             {[
               {
-                chain: 'Polia (Sepolia Testnet)',
+                chain: 'Base Sepolia',
                 color: '#A78BFA',
                 status: 'Primary Development Network',
                 details: [
@@ -1273,12 +1273,12 @@ export default function MetaMaskDelegationPage() {
                 ],
               },
               {
-                chain: 'Callisto (CLO)',
+                chain: 'Celo Sepolia',
                 color: '#FBBF24',
-                status: 'Cross-Chain Verification',
+                status: 'Cross-Chain Deployment',
                 details: [
-                  'Same contracts deployed with identical bytecode',
-                  'Delegation signing + redemption verified',
+                  'ServiceBoard, EscrowVault, ReputationRegistry deployed',
+                  'ERC-8004 agents registered (Buyer #225, Seller #226)',
                   'Proves chain-agnostic architecture',
                   'No code changes needed between chains',
                 ],
@@ -1386,7 +1386,7 @@ export default function MetaMaskDelegationPage() {
               letterSpacing: '0.1em',
               marginBottom: 4,
             }}>
-              Polia (Sepolia)
+              Base Sepolia
             </div>
             {[
               { label: 'DelegationManager', value: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3' },
@@ -1416,7 +1416,7 @@ export default function MetaMaskDelegationPage() {
               paddingTop: 8,
               borderTop: '1px solid var(--border)',
             }}>
-              Callisto (CLO)
+              Celo Sepolia
             </div>
             <div style={{
               display: 'flex',
@@ -1425,7 +1425,7 @@ export default function MetaMaskDelegationPage() {
               padding: '4px 0',
             }}>
               <span style={{ color: 'var(--text-secondary)' }}>Same contracts deployed</span>
-              <span style={{ color: '#FBBF24', fontSize: 11 }}>Identical bytecode, verified working</span>
+              <span style={{ color: '#FBBF24', fontSize: 11 }}>Identical bytecode on Celo Sepolia, verified working</span>
             </div>
           </div>
         </section>
@@ -1442,6 +1442,7 @@ export default function MetaMaskDelegationPage() {
               { label: 'Gator Docs', url: 'https://docs.gator.metamask.io', icon: '📚' },
               { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '🏗' },
               { label: 'Base Sepolia Explorer', url: 'https://sepolia.basescan.org/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C', icon: '🔍' },
+              { label: 'Celo Sepolia Explorer', url: 'https://celo-sepolia.blockscout.com/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C', icon: '🌿' },
             ].map(link => (
               <a
                 key={link.label}
@@ -1483,7 +1484,7 @@ export default function MetaMaskDelegationPage() {
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            Built for The Synthesis Hackathon — AgentEscrow x MetaMask Delegation Framework — Multi-chain: Polia + CLO
+            Built for The Synthesis Hackathon — AgentEscrow x MetaMask Delegation Framework — Multi-chain: Base Sepolia + Celo Sepolia
           </p>
         </div>
       </main>

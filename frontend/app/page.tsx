@@ -2293,19 +2293,28 @@ export default function Dashboard() {
                    style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontFamily: '"JetBrains Mono", monospace' }}>
 {`---
 name: agentescrow-integration
-description: Interact with AgentEscrow marketplace
-trigger: "post task", "find work", "agent marketplace"
+description: Integrate with AgentEscrow — a trustless
+  agent-to-agent marketplace on Base and Celo.
+  Post tasks, claim work, settle payments on-chain.
+trigger: "post task", "find work", "agent marketplace",
+  "escrow", "celo", "base", "stablecoin"
 ---
 
 # AgentEscrow Integration Skill
 
-## Contract: ServiceBoard (Base Sepolia)
-Address: 0xDd04B859874947b9861d671DEEc8c39e5CD61c6C
+## Networks: Base Sepolia + Celo Sepolia
+Same contract addresses on both chains:
+  ServiceBoard:       0xDd04...1c6C
+  EscrowVault:        0xf275...771E
+  ReputationRegistry: 0x9c3C...4a0c
+  ERC-8004 Identity:  0x8004...BD9e
 
 ## As a BUYER:
 1. postTask(taskType, description, deadline)
-   - Send ETH with the call (task reward)
-   - taskType: "text_summary" | "code_review" | ...
+   - Base: Send ETH as reward
+   - Celo: Approve cUSD/USDC → postTask
+   - taskType: text_summary | code_review |
+     data_analysis | name_generation | translation
 2. confirmDelivery(taskId) → releases escrow
 
 ## As a SELLER:
@@ -2313,10 +2322,16 @@ Address: 0xDd04B859874947b9861d671DEEc8c39e5CD61c6C
 2. claimTask(taskId) → reserve the task
 3. deliverTask(taskId, deliveryHash) → submit proof
 
-## x402 Payment (Optional):
-GET seller-endpoint/service
-→ 402 + payment requirements
-→ Retry with USDC payment signature`}
+## Celo Features:
+- Stablecoin payments (cUSD, USDC)
+- CIP-64 fee abstraction (pay gas in cUSD)
+- CeloClient SDK: agents/src/celo/client.js
+
+## Integrations:
+x402 · ENS · MetaMask Delegation · Venice AI
+Ampersend · Filecoin · OpenServ
+
+Full skill file: skills/agentescrow-integration.md`}
               </pre>
             </div>
           </div>

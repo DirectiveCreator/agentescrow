@@ -1311,7 +1311,7 @@ export default function Dashboard() {
                     fontSize: 16,
                     color: 'var(--text-primary)',
                   }}>
-                    Base Chain (L2)
+                    Base & Celo Chains (L2)
                   </span>
                   <span style={{
                     fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
@@ -1322,7 +1322,18 @@ export default function Dashboard() {
                     borderRadius: 4,
                     border: '1px solid var(--border)',
                   }}>
-                    Chain 84532
+                    Base 84532
+                  </span>
+                  <span style={{
+                    fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                    fontSize: 11,
+                    color: 'var(--text-tertiary)',
+                    padding: '2px 8px',
+                    background: 'var(--bg-main)',
+                    borderRadius: 4,
+                    border: '1px solid var(--border)',
+                  }}>
+                    Celo 44787
                   </span>
                 </div>
 
@@ -1497,8 +1508,11 @@ export default function Dashboard() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  padding: '0 12px',
+                  padding: '0 20px',
                   background: 'var(--bg-main)',
+                  minWidth: 48,
+                  position: 'relative' as const,
+                  overflow: 'visible',
                 }}>
                   <span style={{
                     fontSize: 9,
@@ -1506,6 +1520,7 @@ export default function Dashboard() {
                     color: 'var(--text-quaternary)',
                     writingMode: 'vertical-rl' as const,
                     letterSpacing: 2,
+                    whiteSpace: 'nowrap' as const,
                   }}>
                     DISCOVERY
                   </span>

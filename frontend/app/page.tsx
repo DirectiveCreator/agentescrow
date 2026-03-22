@@ -87,7 +87,7 @@ export default function Dashboard() {
   const [agentScores, setAgentScores] = useState<Map<string, number>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [isDemo, setIsDemo] = useState(true);
-  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'architecture' | 'summary' | 'build-story' | 'join'>('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'architecture' | 'build-story' | 'join'>('overview');
   const [integrationsOpen, setIntegrationsOpen] = useState(false);
   const integrationsRef = useRef<HTMLDivElement>(null);
   // Human→Agent hire form state
@@ -251,7 +251,7 @@ export default function Dashboard() {
       {/* ── Navigation ── */}
       <nav className="border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 flex gap-0">
-          {(['overview', 'hire', 'board', 'architecture', 'summary', 'build-story', 'join'] as const).map(section => (
+          {(['overview', 'hire', 'board', 'architecture', 'build-story', 'join'] as const).map(section => (
             <button
               key={section}
               onClick={() => { setActiveSection(section); setIntegrationsOpen(false); }}
@@ -1789,7 +1789,7 @@ export default function Dashboard() {
         {/* ── Build Story Section ── */}
         {activeSection === 'build-story' && (
           <div className="space-y-8">
-            <SectionHeader title="Build Story" subtitle="How we integrated OpenServ into AgentEscrow — the real developer experience, from npm install to Agent #3973 live on the platform" />
+            <SectionHeader title="Build Story" subtitle="The full story of building AgentEscrow — from smart contracts to a multi-chain agent marketplace with 8 integrations, shipped in 5 days" />
 
             {/* Hero narrative */}
             <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
@@ -1835,7 +1835,7 @@ export default function Dashboard() {
                     entries: [
                       'Started with a question: what if AI agents could hire each other trustlessly?',
                       'Designed 3 Solidity contracts — ServiceBoard (task marketplace), EscrowVault (trustless payments), ReputationRegistry (on-chain trust scores)',
-                      'Wrote 40 Foundry tests, all passing. Built a buyer + seller agent harness in Node.js.',
+                      'Wrote 8 Foundry tests, all passing. Built a buyer + seller agent harness in Node.js.',
                       'Ran 5 full task lifecycles on a local Anvil chain. The agents worked autonomously — posting tasks, claiming, executing, delivering, and settling payments without human intervention.',
                     ],
                   },
@@ -1860,6 +1860,27 @@ export default function Dashboard() {
                       'npm install @openserv-labs/sdk. Wrapped all 6 contract interactions as OpenServ capabilities with NLP-parsed chat handlers. Each capability maps 1:1 to a contract call — zero impedance mismatch.',
                       'Registered AgentEscrow as Agent #3973 via the OpenServ REST API. Generated API key, started tunnel, health = healthy. The marketplace is now open to every agent on the platform.',
                       'Integrated Venice AI for private cognition — seller evaluation and work execution run inside TEE enclaves. Attestation proofs anchor trust to chain. Full privacy stack: OpenServ routes → contracts settle → Venice thinks privately.',
+                    ],
+                  },
+                  {
+                    phase: 'Phase 4: Multi-Chain & Identity',
+                    date: 'Day 4 — Mar 20',
+                    color: '#34D399',
+                    entries: [
+                      'Registered agentescrow.eth on Sepolia ENS — buyer.agentescrow.eth and seller.agentescrow.eth subdomains with 32 text records and ENSIP-25 bidirectional verification linking ENS ↔ ERC-8004.',
+                      'Implemented MetaMask Delegation Toolkit (v0.13.0) — HybridDeleGator smart accounts with spending + confirmation authority chains, 6 enforcer contracts, and a full 4-phase delegation lifecycle demo.',
+                      'Built ENS client library for agent discovery: resolve names, read text records (capabilities, trust scores, ERC-8004 IDs), XMTP encrypted messaging between agents.',
+                    ],
+                  },
+                  {
+                    phase: 'Phase 5: Scaling Out',
+                    date: 'Day 5 — Mar 21',
+                    color: '#FF8800',
+                    entries: [
+                      'Deployed all 3 contracts to Celo Sepolia — same addresses, zero contract modifications. Registered ERC-8004 identities (Buyer #225, Seller #226) and ran 6 demo tasks on-chain.',
+                      'Integrated Filecoin Onchain Cloud — AgentStorage class with @filoz/synapse-sdk for permanent decentralized storage of task deliveries, agent memory, and TEE attestations.',
+                      'Consolidated frontend: migrated integration pages to dedicated routes (/base, /celo, /ens, /filecoin, /metamask, /openserv, /venice), added Integrations dropdown menu.',
+                      'Multi-agent coordination: The Front-End Designer, Founding Engineer, and Research Analyst all contributed autonomously — a real-time demonstration of the agent collaboration model we built.',
                     ],
                   },
                 ].map((phase, i) => (
@@ -1996,11 +2017,11 @@ export default function Dashboard() {
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="p-4 rounded-lg text-center" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                  <div className="text-2xl font-bold font-mono" style={{ color: 'var(--accent)' }}>3</div>
+                  <div className="text-2xl font-bold font-mono" style={{ color: 'var(--accent)' }}>5</div>
                   <div className="text-[10px] mt-1" style={{ color: 'var(--text-tertiary)' }}>DAYS OF BUILDING</div>
                 </div>
                 <div className="p-4 rounded-lg text-center" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                  <div className="text-2xl font-bold font-mono" style={{ color: '#34D399' }}>4</div>
+                  <div className="text-2xl font-bold font-mono" style={{ color: '#34D399' }}>8</div>
                   <div className="text-[10px] mt-1" style={{ color: 'var(--text-tertiary)' }}>INTEGRATIONS SHIPPED</div>
                 </div>
                 <div className="p-4 rounded-lg text-center" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
@@ -2032,6 +2053,134 @@ export default function Dashboard() {
                     <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{item.detail}</p>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* ── PRODUCT SUMMARY ── */}
+            <div className="mt-4 mb-2">
+              <h2 className="text-[13px] tracking-[0.2em] font-semibold text-center" style={{ color: 'var(--accent)' }}>
+                PRODUCT SUMMARY
+              </h2>
+              <p className="text-[11px] text-center mt-1" style={{ color: 'var(--text-tertiary)' }}>
+                Everything shipped during The Synthesis Hackathon
+              </p>
+            </div>
+
+            {/* Stats Overview */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <MetricCard label="CONTRACTS" value="3" accent />
+              <MetricCard label="TESTS PASSING" value="8/8" />
+              <MetricCard label="ON-CHAIN TASKS" value="14+" />
+              <MetricCard label="INTEGRATIONS" value="8" />
+              <MetricCard label="CHAINS" value="3" />
+            </div>
+
+            {/* What We Built */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                WHAT WE BUILT
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  { title: 'On-Chain Escrow', desc: 'Trustless ETH escrow that locks buyer funds on task creation and releases to seller on verified completion. Timeout refunds protect both parties.', status: 'DEPLOYED' },
+                  { title: 'Agent Marketplace', desc: 'ServiceBoard contract enables agents to discover, claim, and execute tasks autonomously. Full lifecycle from posting to settlement.', status: 'DEPLOYED' },
+                  { title: 'Reputation System', desc: 'On-chain trust scores computed from task history. Agents build verifiable reputation that persists across interactions.', status: 'DEPLOYED' },
+                  { title: 'ERC-8004 Identity', desc: 'Both agents have on-chain identity NFTs on Base Sepolia (#2194, #2195) and Celo Sepolia (#225, #226) with IPFS avatars and machine-readable metadata.', status: 'REGISTERED' },
+                  { title: 'x402 Payments', desc: 'Official @x402/* SDK. Seller exposes services behind HTTP 402 paywalls, Buyer auto-pays USDC on Base Sepolia via Coinbase facilitator. Real e2e payment verified.', status: 'INTEGRATED' },
+                  { title: 'OpenServ Agent', desc: 'Agent #3973 on OpenServ. 6 capabilities (discover, post, claim, deliver, confirm, reputation) for cross-agent collaboration via natural language.', status: 'INTEGRATED' },
+                  { title: 'Venice Private Cognition', desc: 'TEE-protected agent reasoning. Seller strategy, work execution, and buyer verification all run inside hardware enclaves with cryptographic attestation proofs.', status: 'INTEGRATED' },
+                  { title: 'ENS Identity', desc: 'agentescrow.eth registered with buyer/seller subdomains, 32 text records, ENSIP-25 bidirectional verification. ENS client for agent discovery and XMTP messaging.', status: 'REGISTERED' },
+                  { title: 'MetaMask Delegation', desc: 'HybridDeleGator smart accounts with spending + confirmation authority chains. 6 enforcer contracts. Human→Buyer→Mediator delegation lifecycle.', status: 'INTEGRATED' },
+                  { title: 'Celo Multi-Chain', desc: 'Same contracts deployed to Celo Sepolia — zero modifications. 6 demo tasks completed on-chain. Proves the chain-agnostic marketplace thesis.', status: 'DEPLOYED' },
+                  { title: 'Filecoin Storage', desc: 'AgentStorage class with @filoz/synapse-sdk. Permanent decentralized storage for task deliveries, agent memory, and TEE attestations.', status: 'INTEGRATED' },
+                  { title: 'Autonomous Agents', desc: 'Buyer and Seller agents operate fully autonomously — discovering tasks, executing work, and settling payments without human intervention.', status: 'RUNNING' },
+                ].map(item => (
+                  <div key={item.title} className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-[12px] font-semibold" style={{ color: 'var(--accent)' }}>{item.title}</h4>
+                      <span className="text-[9px] px-1.5 py-0.5 rounded font-semibold tracking-wider"
+                            style={{
+                              background: item.status === 'RUNNING' ? '#FF880015' : item.status === 'INTEGRATED' ? '#818CF815' : '#34D39915',
+                              color: item.status === 'RUNNING' ? '#FF8800' : item.status === 'INTEGRATED' ? '#818CF8' : '#34D399',
+                              border: `1px solid ${item.status === 'RUNNING' ? '#FF880040' : item.status === 'INTEGRATED' ? '#818CF840' : '#34D39940'}`,
+                            }}>
+                        {item.status}
+                      </span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Target Bounty Tracks */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                TARGET BOUNTY TRACKS
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { track: 'Open Track', prize: '$28,000', fit: 5, status: 'Draft Ready', desc: 'Community-funded pool. 1st $15K, 2nd $8K, 3rd $5K.' },
+                  { track: 'PL: Let the Agent Cook', prize: '$4,000', fit: 5, status: 'Strong Fit', desc: 'Fully autonomous agents: discover, plan, execute, verify, submit.' },
+                  { track: 'PL: Agents With Receipts', prize: '$4,000', fit: 5, status: 'ERC-8004 Done', desc: 'Trusted agent systems using ERC-8004 for identity, reputation & validation.' },
+                  { track: 'Base: Agent Services', prize: '$5,000', fit: 5, status: 'x402 Done', desc: 'Discoverable agent services on Base accepting payments via x402.' },
+                  { track: 'OpenServ Build Story', prize: '$500', fit: 5, status: 'Draft Ready', desc: 'Build log of our OpenServ integration journey.' },
+                  { track: 'OpenServ Full', prize: '$4,500', fit: 5, status: 'Integrated', desc: 'Full OpenServ SDK integration with 6 capabilities.' },
+                  { track: 'Venice AI', prize: '$11,500', fit: 5, status: 'Integrated', desc: 'TEE private cognition with attestation proofs.' },
+                  { track: 'ENS Identity', prize: '$600', fit: 5, status: 'Registered', desc: 'Agent identity via ENS subdomains + text records.' },
+                  { track: 'ENS Communication', prize: '$600', fit: 5, status: 'Built', desc: 'XMTP encrypted agent messaging via ENS.' },
+                  { track: 'MetaMask Delegation', prize: '$5,000', fit: 5, status: 'Integrated', desc: 'Smart account delegation for agent spending authority.' },
+                  { track: 'Celo: Best Agent', prize: '$5,000', fit: 5, status: 'Deployed', desc: 'Multi-chain deployment with on-chain demo tasks.' },
+                  { track: 'Filecoin FOC', prize: '$2,000', fit: 4, status: 'Built', desc: 'Decentralized storage for agent task data.' },
+                ].map(item => (
+                  <div key={item.track} className="flex flex-col gap-1 px-4 py-3 rounded-lg"
+                       style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1">
+                        <span className="text-[12px] font-semibold">{item.track}</span>
+                      </div>
+                      <span className="text-[12px] font-mono" style={{ color: '#34D399' }}>{item.prize}</span>
+                      <div className="flex gap-0.5">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i} className="text-[10px]" style={{ color: i < item.fit ? '#FF8800' : 'var(--text-quaternary)' }}>&#9733;</span>
+                        ))}
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+                        {item.status}
+                      </span>
+                    </div>
+                    {item.desc && (
+                      <span className="text-[10px] pl-1" style={{ color: 'var(--text-tertiary)' }}>{item.desc}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Deployed Contracts */}
+            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
+                ON-CHAIN DEPLOYMENTS
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <h4 className="text-[12px] font-semibold mb-3" style={{ color: 'var(--accent)' }}>Base Sepolia (84532)</h4>
+                  <div className="space-y-2 text-[10px] font-mono" style={{ color: 'var(--text-secondary)' }}>
+                    <div>ServiceBoard: <span style={{ color: 'var(--text-tertiary)' }}>0xDd04...1c6C</span></div>
+                    <div>EscrowVault: <span style={{ color: 'var(--text-tertiary)' }}>0xf275...771E</span></div>
+                    <div>ReputationRegistry: <span style={{ color: 'var(--text-tertiary)' }}>0x9c3C...4a0c</span></div>
+                    <div>ERC-8004: <span style={{ color: 'var(--text-tertiary)' }}>Buyer #2194, Seller #2195</span></div>
+                  </div>
+                </div>
+                <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
+                  <h4 className="text-[12px] font-semibold mb-3" style={{ color: '#34D399' }}>Celo Sepolia (11142220)</h4>
+                  <div className="space-y-2 text-[10px] font-mono" style={{ color: 'var(--text-secondary)' }}>
+                    <div>ServiceBoard: <span style={{ color: 'var(--text-tertiary)' }}>0xDd04...1c6C</span></div>
+                    <div>EscrowVault: <span style={{ color: 'var(--text-tertiary)' }}>0xf275...771E</span></div>
+                    <div>ReputationRegistry: <span style={{ color: 'var(--text-tertiary)' }}>0x9c3C...4a0c</span></div>
+                    <div>ERC-8004: <span style={{ color: 'var(--text-tertiary)' }}>Buyer #225, Seller #226</span></div>
+                  </div>
+                </div>
               </div>
             </div>
 

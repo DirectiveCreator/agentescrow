@@ -630,7 +630,7 @@ export default function CeloPage() {
             marginBottom: 16,
           }}>
             <span style={{ fontSize: 12, color: CELO_GREEN, fontFamily: 'var(--font-mono)' }}>
-              Synthesis Hackathon — Celo Track
+              Best Agent on Celo
             </span>
           </div>
 
@@ -642,7 +642,7 @@ export default function CeloPage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            Best Agent on <span style={{ color: CELO_GREEN }}>Celo</span>
+            AgentEscrow on <span style={{ color: CELO_GREEN }}>Celo</span>
           </h1>
           <p style={{
             fontSize: 15,

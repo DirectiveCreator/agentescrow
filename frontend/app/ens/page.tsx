@@ -573,7 +573,7 @@ export default function ENSPage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            Agent Identity on <span style={{ color: ENS_BLUE }}>ENS</span>
+            AgentEscrow on <span style={{ color: ENS_BLUE }}>ENS</span>
           </h1>
           <p style={{
             fontSize: 15,

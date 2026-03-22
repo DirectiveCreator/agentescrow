@@ -922,6 +922,260 @@ export default function CeloPage() {
           </div>
         </section>
 
+        {/* MetaMask Delegation — Agents with Guardrails */}
+        <section style={{ marginBottom: 48 }}>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '3px 12px',
+              border: '1px solid #F6851B40',
+              borderRadius: 16,
+              background: '#F6851B08',
+              marginBottom: 12,
+            }}>
+              <span style={{ fontSize: 11, color: '#F6851B', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
+                INTEGRATED &amp; WORKING
+              </span>
+            </div>
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 22,
+              fontWeight: 600,
+              color: 'var(--text-primary)',
+              marginBottom: 8,
+            }}>
+              MetaMask Delegation: Agents with Guardrails
+            </h2>
+            <p style={{
+              fontSize: 13,
+              color: 'var(--text-secondary)',
+              lineHeight: 1.6,
+              maxWidth: 700,
+            }}>
+              Programmatic spending permissions that let agents transact autonomously &mdash; but only within
+              human-defined boundaries. Already integrated via the MetaMask Delegation Toolkit (v0.13.0).
+            </p>
+          </div>
+
+          {/* Main explainer card */}
+          <div style={{
+            padding: 24,
+            background: 'var(--bg-card)',
+            border: '1px solid #F6851B25',
+            borderRadius: 14,
+            borderLeft: '3px solid #F6851B60',
+            marginBottom: 16,
+          }}>
+            <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+              <div style={{
+                fontSize: 28,
+                width: 52,
+                height: 52,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: '#F6851B10',
+                borderRadius: 12,
+                border: '1px solid #F6851B20',
+                flexShrink: 0,
+              }}>
+                &#x1F6E1;&#xFE0F;
+              </div>
+              <div style={{ flex: 1 }}>
+                <p style={{
+                  fontSize: 12,
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.7,
+                  margin: '0 0 14px',
+                }}>
+                  The core problem: AI agents need to spend money on-chain, but giving an agent a private key with
+                  unlimited access is dangerous. MetaMask Delegation solves this by wrapping agents in
+                  <span style={{ color: 'var(--text-primary)' }}> smart accounts with programmable permission boundaries</span>.
+                  Humans define exactly what agents can do &mdash; spend limits, allowed contracts, method restrictions,
+                  time windows &mdash; and the agent operates freely within those guardrails.
+                </p>
+
+                {/* Permission types grid */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                  gap: 8,
+                  marginBottom: 14,
+                }}>
+                  {[
+                    { label: 'Spending Limits', detail: 'Cap per-tx and total value an agent can move', color: '#F6851B' },
+                    { label: 'Allowed Targets', detail: 'Restrict which contracts the agent can call', color: CELO_GREEN },
+                    { label: 'Method Restrictions', detail: 'Limit to specific function selectors only', color: CELO_COLOR },
+                    { label: 'Time Windows', detail: 'Permissions expire after a deadline', color: '#38B3DC' },
+                    { label: 'Call Limits', detail: 'Cap total number of transactions', color: '#A78BFA' },
+                    { label: 'Delegation Chains', detail: 'Human &rarr; Buyer &rarr; Sub-agent cascading', color: '#FF6B6B' },
+                  ].map(perm => (
+                    <div key={perm.label} style={{
+                      padding: '10px 12px',
+                      background: 'var(--bg-main)',
+                      border: `1px solid ${perm.color}20`,
+                      borderRadius: 8,
+                    }}>
+                      <div style={{
+                        fontSize: 11,
+                        fontFamily: 'var(--font-mono)',
+                        fontWeight: 600,
+                        color: perm.color,
+                        marginBottom: 3,
+                      }}>
+                        {perm.label}
+                      </div>
+                      <div style={{
+                        fontSize: 10,
+                        color: 'var(--text-tertiary)',
+                        lineHeight: 1.5,
+                      }}>
+                        {perm.detail}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Celo fit callout */}
+                <div style={{
+                  padding: '10px 14px',
+                  background: `${CELO_GREEN}08`,
+                  border: `1px solid ${CELO_GREEN}20`,
+                  borderRadius: 8,
+                }}>
+                  <div style={{
+                    fontSize: 10,
+                    fontFamily: 'var(--font-mono)',
+                    color: CELO_GREEN,
+                    fontWeight: 600,
+                    marginBottom: 4,
+                    textTransform: 'uppercase' as const,
+                  }}>
+                    Why this matters on Celo
+                  </div>
+                  <p style={{
+                    fontSize: 11,
+                    color: 'var(--text-secondary)',
+                    lineHeight: 1.6,
+                    margin: 0,
+                  }}>
+                    On Celo, delegated agents transact in stablecoins with predictable costs. A human can delegate
+                    &ldquo;spend up to 50 cUSD on task escrow, only call ServiceBoard.postTask()&rdquo; &mdash; and the agent
+                    operates within those exact boundaries. Combined with CIP-64 fee abstraction, the entire
+                    agent lifecycle stays stablecoin-denominated from delegation to settlement.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Delegation lifecycle flow */}
+          <div style={{
+            padding: 20,
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
+            borderRadius: 12,
+            marginBottom: 16,
+          }}>
+            <div style={{
+              fontSize: 12,
+              fontFamily: 'var(--font-display)',
+              fontWeight: 600,
+              color: 'var(--text-primary)',
+              marginBottom: 14,
+            }}>
+              Delegation Lifecycle
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
+              {[
+                { step: '1', title: 'Create Smart Accounts', detail: 'Human and agent wallets wrapped as HybridDeleGator smart accounts via ERC-4337', color: '#F6851B' },
+                { step: '2', title: 'Define Permissions', detail: 'Human signs a delegation with typed caveats: spending cap, allowed contracts, method selectors, expiry', color: CELO_GREEN },
+                { step: '3', title: 'Agent Operates', detail: 'Agent transacts on-chain freely within permission boundaries — no human approval needed per-tx', color: CELO_COLOR },
+                { step: '4', title: 'On-Chain Enforcement', detail: '6 enforcer contracts validate every action. Violations are rejected at the protocol level, not by trust', color: '#38B3DC' },
+              ].map(s => (
+                <div key={s.step} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                  <div style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: '50%',
+                    background: `${s.color}15`,
+                    border: `1px solid ${s.color}30`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 12,
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 700,
+                    color: s.color,
+                    flexShrink: 0,
+                  }}>
+                    {s.step}
+                  </div>
+                  <div>
+                    <div style={{
+                      fontSize: 12,
+                      fontFamily: 'var(--font-display)',
+                      fontWeight: 600,
+                      color: 'var(--text-primary)',
+                      marginBottom: 2,
+                    }}>
+                      {s.title}
+                    </div>
+                    <div style={{
+                      fontSize: 11,
+                      color: 'var(--text-tertiary)',
+                      lineHeight: 1.5,
+                    }}>
+                      {s.detail}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Implementation status badge */}
+          <div style={{
+            padding: 16,
+            background: `linear-gradient(135deg, #F6851B08, ${CELO_GREEN}08)`,
+            border: '1px solid #F6851B25',
+            borderRadius: 12,
+            display: 'flex',
+            gap: 14,
+            alignItems: 'center',
+          }}>
+            <span style={{ fontSize: 20, flexShrink: 0 }}>&#x2705;</span>
+            <div>
+              <div style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 600,
+                fontSize: 13,
+                color: 'var(--text-primary)',
+                marginBottom: 3,
+              }}>
+                Already Integrated — Not a Proposal
+              </div>
+              <p style={{
+                fontSize: 11,
+                color: 'var(--text-secondary)',
+                lineHeight: 1.6,
+                margin: 0,
+              }}>
+                MetaMask Delegation Toolkit v0.13.0 is implemented in our codebase with a full 4-phase demo:
+                smart account creation, scoped delegation signing with 6 enforcer contracts (AllowedTargets,
+                AllowedMethods, ValueLte, NativeTokenTransferAmount, LimitedCalls, Timestamp), delegation
+                chains (Human &rarr; Buyer &rarr; Sub-agent), and simulated redemption. Run{' '}
+                <span style={{ fontFamily: 'var(--font-mono)', color: '#F6851B', fontSize: 10 }}>
+                  node agents/src/delegation/demo.js
+                </span>{' '}
+                to see the full lifecycle.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* How It Works */}
         <section style={{ marginBottom: 48 }}>
           <SectionHeader

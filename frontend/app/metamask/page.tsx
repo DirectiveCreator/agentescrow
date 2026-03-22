@@ -272,7 +272,7 @@ function NavBar() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <a
-            href="https://github.com/nicksmd/delegation-toolkit"
+            href="https://github.com/DirectiveCreator/agentescrow/tree/main/agents/src/delegation"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -285,7 +285,7 @@ function NavBar() {
               borderRadius: 6,
             }}
           >
-            Toolkit ↗
+            GitHub ↗
           </a>
           <a
             href="https://docs.gator.metamask.io"

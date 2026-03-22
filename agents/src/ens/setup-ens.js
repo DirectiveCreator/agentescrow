@@ -47,6 +47,18 @@ const CONTRACTS = {
 
 // ─── ABIs ─────────────────────────────────────────────────────────────────
 
+// Registration struct — Sepolia ENS V3 uses struct-based makeCommitment/register
+const REGISTRATION_COMPONENTS = [
+  { name: 'label', type: 'string' },
+  { name: 'owner', type: 'address' },
+  { name: 'duration', type: 'uint256' },
+  { name: 'secret', type: 'bytes32' },
+  { name: 'resolver', type: 'address' },
+  { name: 'data', type: 'bytes[]' },
+  { name: 'reverseRecord', type: 'uint8' },
+  { name: 'referrer', type: 'bytes32' },
+];
+
 const CONTROLLER_ABI = [
   {
     name: 'rentPrice',
@@ -71,16 +83,11 @@ const CONTROLLER_ABI = [
     name: 'makeCommitment',
     type: 'function',
     stateMutability: 'pure',
-    inputs: [
-      { name: 'name', type: 'string' },
-      { name: 'owner', type: 'address' },
-      { name: 'duration', type: 'uint256' },
-      { name: 'secret', type: 'bytes32' },
-      { name: 'resolver', type: 'address' },
-      { name: 'data', type: 'bytes[]' },
-      { name: 'reverseRecord', type: 'bool' },
-      { name: 'ownerControlledFuses', type: 'uint16' },
-    ],
+    inputs: [{
+      name: 'registration',
+      type: 'tuple',
+      components: REGISTRATION_COMPONENTS,
+    }],
     outputs: [{ name: '', type: 'bytes32' }],
   },
   {
@@ -94,16 +101,11 @@ const CONTROLLER_ABI = [
     name: 'register',
     type: 'function',
     stateMutability: 'payable',
-    inputs: [
-      { name: 'name', type: 'string' },
-      { name: 'owner', type: 'address' },
-      { name: 'duration', type: 'uint256' },
-      { name: 'secret', type: 'bytes32' },
-      { name: 'resolver', type: 'address' },
-      { name: 'data', type: 'bytes[]' },
-      { name: 'reverseRecord', type: 'bool' },
-      { name: 'ownerControlledFuses', type: 'uint16' },
-    ],
+    inputs: [{
+      name: 'registration',
+      type: 'tuple',
+      components: REGISTRATION_COMPONENTS,
+    }],
     outputs: [],
   },
   {
@@ -371,13 +373,25 @@ async function registerParentName(publicClient, walletClient, label, account) {
   const priceWithBuffer = (totalPrice * 120n) / 100n;
   console.log(`  Price: ${fmtETH(totalPrice)} (+ 20% buffer = ${fmtETH(priceWithBuffer)})`);
 
-  // Commit
+  // Build Registration struct (Sepolia ENS V3)
   const secret = `0x${randomBytes(32).toString('hex')}`;
+  const registration = {
+    label,
+    owner: account.address,
+    duration: DURATION,
+    secret,
+    resolver: CONTRACTS.publicResolver,
+    data: [],
+    reverseRecord: 1, // uint8: 1 = set reverse record
+    referrer: '0x' + '00'.repeat(32),
+  };
+
+  // Commit
   const commitment = await publicClient.readContract({
     address: CONTRACTS.ethRegistrarController,
     abi: CONTROLLER_ABI,
     functionName: 'makeCommitment',
-    args: [label, account.address, DURATION, secret, CONTRACTS.publicResolver, [], true, 0],
+    args: [registration],
   });
 
   console.log('  ⏳ Submitting commitment...');
@@ -410,7 +424,7 @@ async function registerParentName(publicClient, walletClient, label, account) {
     address: CONTRACTS.ethRegistrarController,
     abi: CONTROLLER_ABI,
     functionName: 'register',
-    args: [label, account.address, DURATION, secret, CONTRACTS.publicResolver, [], true, 0],
+    args: [registration],
     value: priceWithBuffer,
   });
   const receipt = await publicClient.waitForTransactionReceipt({ hash: registerTx });

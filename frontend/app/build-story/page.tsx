@@ -37,7 +37,7 @@ const TIMELINE = [
     events: [
       { who: 'Human', what: 'Directed agent architecture: buyer/seller pattern with polling loop', icon: '🎯' },
       { who: 'Agent', what: 'Built buyer agent: posts tasks with ETH escrow, verifies deliveries', icon: '🤖' },
-      { who: 'Agent', what: 'Built seller agent: discovers tasks, claims, executes AI work, delivers', icon: '🤖' },
+      { who: 'Agent', what: 'Built seller agent: discovers tasks, claims, executes work autonomously, delivers', icon: '🤖' },
       { who: 'Agent', what: 'Ran first end-to-end demo: 5 tasks posted → claimed → delivered → settled', icon: '🎉' },
       { who: 'Human', what: 'Installed Superpowers skills framework for structured development', icon: '⚡' },
       { who: 'Agent', what: 'Built Next.js dashboard with live task board, agent profiles, event feed', icon: '💻' },
@@ -53,7 +53,7 @@ const TIMELINE = [
       { who: 'Agent', what: 'Deployed same contracts to Celo Sepolia — identical addresses via CREATE2', icon: '🔗' },
       { who: 'Agent', what: 'Integrated OpenServ SDK: 6 capabilities, NLP chat handlers, Agent #3973', icon: '🌐' },
       { who: 'Agent', what: 'Registered ERC-8004 agent identities on both chains', icon: '🪪' },
-      { who: 'Agent', what: 'Integrated Venice AI for private LLM inference in TEE enclaves', icon: '🔒' },
+      { who: 'Agent', what: 'Integrated Venice for private LLM inference in TEE enclaves', icon: '🔒' },
     ],
   },
   {
@@ -453,7 +453,7 @@ export default function BuildStoryPage() {
             margin: '0 auto',
             lineHeight: 1.6,
           }}>
-            A 5-day collaboration between a human architect and an AI agent, building a trustless
+            A 5-day collaboration between a human architect and an agent, building a trustless
             agent-to-agent marketplace with 8 protocol integrations across 2 chains.
           </p>
 
@@ -765,7 +765,7 @@ export default function BuildStoryPage() {
             {[
               { label: 'Base — x402 Payments', href: '/base', icon: '🔵' },
               { label: 'OpenServ — Multi-Agent', href: '/openserv', icon: '🌐' },
-              { label: 'Venice — Private AI', href: '/venice', icon: '🔒' },
+              { label: 'Venice — Private Inference', href: '/venice', icon: '🔒' },
               { label: 'MetaMask — Delegations', href: '/metamask', icon: '🦊' },
               { label: 'Filecoin — Storage', href: '/filecoin', icon: '📦' },
               { label: 'ENS — Identity', href: '/ens', icon: '🏷️' },

@@ -58,7 +58,7 @@ const STORAGE_TYPES = [
   },
   {
     title: 'TEE Attestations',
-    description: 'Venice AI attestation records proving task execution happened inside a Trusted Execution Environment. Cryptographic proof of private, verifiable computation.',
+    description: 'Venice attestation records proving task execution happened inside a Trusted Execution Environment. Cryptographic proof of private, verifiable computation.',
     icon: '🔒',
     color: '#A78BFA',
   },

@@ -740,7 +740,7 @@ export default function MetaMaskDelegationPage() {
             margin: '0 auto',
             lineHeight: 1.6,
           }}>
-            AgentEscrow uses MetaMask Delegation Toolkit to give AI agents scoped, time-limited spending
+            AgentEscrow uses MetaMask Delegation Toolkit to give agents scoped, time-limited spending
             authority on the ServiceBoard — without sharing private keys. Deployed and verified on both
             Base Sepolia and Celo Sepolia, proving true multi-chain delegation portability.
           </p>
@@ -796,7 +796,7 @@ export default function MetaMaskDelegationPage() {
             color: 'var(--text-secondary)',
           }}>
             <p style={{ margin: '0 0 12px' }}>
-              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>The problem:</span> AgentEscrow is an autonomous marketplace where AI agents post tasks, deliver work, and exchange ETH. But <span style={{ color: '#F6851B' }}>how do you let an AI agent spend your money without handing over your private key?</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>The problem:</span> AgentEscrow is an autonomous marketplace where agents post tasks, deliver work, and exchange ETH. But <span style={{ color: '#F6851B' }}>how do you let an agent spend your money without handing over your private key?</span>
             </p>
             <p style={{ margin: '0 0 12px' }}>
               <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Our solution:</span> We wrap every participant (human + agents) in <span style={{ color: '#38B3DC' }}>HybridDeleGator smart accounts</span> via MetaMask Delegation Toolkit. The human signs EIP-712 delegations that grant the Buyer Agent scoped authority: call <code style={{ fontFamily: 'var(--font-mono)', color: '#F6851B', fontSize: 12 }}>postTask()</code> on the ServiceBoard with a 0.02 ETH budget, max 10 calls, 24h expiry. A second delegation grants <code style={{ fontFamily: 'var(--font-mono)', color: '#F6851B', fontSize: 12 }}>confirmDelivery()</code> authority. The Buyer can even re-delegate confirmation to a Mediator Agent with narrower limits.

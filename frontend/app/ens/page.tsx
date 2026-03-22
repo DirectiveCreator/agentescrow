@@ -57,13 +57,13 @@ const ENS_FEATURES = [
   },
   {
     title: 'Rich Identity Records',
-    description: '16 custom text records per agent including AI-specific keys: ai.agent.type, ai.agent.capabilities, ai.agent.erc8004.id, ai.agent.status, and more.',
+    description: '16 custom text records per agent including agent-specific keys: ai.agent.type, ai.agent.capabilities, ai.agent.erc8004.id, ai.agent.status, and more.',
     icon: '\u{1F4CB}',
     color: ENS_PURPLE,
   },
   {
     title: 'ENSIP-25 Verification',
-    description: 'Bidirectional proof linking ENS names to ERC-8004 agent IDs. The first implementation of this standard for AI agent identity verification.',
+    description: 'Bidirectional proof linking ENS names to ERC-8004 agent IDs. The first implementation of this standard for agent identity verification.',
     icon: '\u2705',
     color: ENS_GREEN,
   },
@@ -632,7 +632,7 @@ export default function ENSPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="ENS Integration Features"
-            subtitle="Six capabilities built for AI agent identity and communication."
+            subtitle="Six capabilities built for agent identity and communication."
           />
           <div style={{
             display: 'grid',
@@ -995,7 +995,7 @@ export default function ENSPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Agent Text Records"
-            subtitle="16 custom text records set per agent subdomain. AI-specific metadata schema."
+            subtitle="16 custom text records set per agent subdomain. Agent-specific metadata schema."
           />
           <div style={{
             background: 'var(--bg-card)',

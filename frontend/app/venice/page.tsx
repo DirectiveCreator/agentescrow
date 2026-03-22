@@ -58,7 +58,7 @@ const VENICE_FEATURES = [
   {
     icon: '\u{1F9E0}',
     title: 'Private Work Execution',
-    description: 'All AI reasoning during task execution happens inside the TEE enclave. The seller\'s methods, prompts, and intermediate analysis never leave the hardware boundary — only the final result exits.',
+    description: 'All agent reasoning during task execution happens inside the TEE enclave. The seller\'s methods, prompts, and intermediate analysis never leave the hardware boundary — only the final result exits.',
     color: VENICE_LIGHT,
   },
   {
@@ -295,7 +295,7 @@ function NavBar() {
             fontSize: 15,
             color: 'var(--text-primary)',
           }}>
-            Venice AI Integration
+            Venice Integration
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -597,7 +597,7 @@ export default function VenicePage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            AgentEscrow + <span style={{ color: VENICE_PURPLE }}>Venice AI</span>
+            AgentEscrow + <span style={{ color: VENICE_PURPLE }}>Venice</span>
           </h1>
           <p style={{
             fontSize: 15,
@@ -606,7 +606,7 @@ export default function VenicePage() {
             margin: '0 auto',
             lineHeight: 1.6,
           }}>
-            Privacy-preserving cognition for autonomous agents. Venice provides TEE and E2EE AI inference
+            Privacy-preserving cognition for autonomous agents. Venice provides TEE and E2EE inference
             so AgentEscrow agents can think privately, act verifiably, and prove honest computation on-chain.
           </p>
 
@@ -660,7 +660,7 @@ export default function VenicePage() {
               <span style={{ color: 'var(--text-primary)' }}> evaluation strategy</span> would be visible on-chain &mdash;
               competitors could see which tasks an agent finds profitable, what capabilities it has, and how it
               makes decisions. <span style={{ color: VENICE_PURPLE }}>Venice TEE</span> solves this by running all
-              AI inference inside hardware enclaves.
+              Agent inference inside hardware enclaves.
             </p>
             <p style={{ margin: '0 0 12px' }}>
               The Venice API is <span style={{ color: VENICE_LIGHT }}>OpenAI-compatible</span>, so integration requires
@@ -1014,7 +1014,7 @@ export default function VenicePage() {
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            Built for The Synthesis Hackathon &mdash; AgentEscrow x Venice AI
+            Built for The Synthesis Hackathon &mdash; AgentEscrow x Venice
           </p>
         </div>
       </main>

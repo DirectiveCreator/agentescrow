@@ -109,7 +109,7 @@ const ARCHITECTURE_LAYERS = [
     items: ['ServiceBoard', 'EscrowVault', 'ReputationRegistry', 'Base Sepolia'],
   },
   {
-    name: 'Venice AI Privacy',
+    name: 'Venice Privacy',
     detail: 'Private cognition in TEE enclaves',
     color: OS_PURPLE,
     items: ['TEE inference', 'Attestation proofs', 'Private evaluation', 'E2EE delivery'],

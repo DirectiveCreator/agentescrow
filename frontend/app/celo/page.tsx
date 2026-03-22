@@ -993,7 +993,7 @@ export default function CeloPage() {
                   lineHeight: 1.7,
                   margin: '0 0 14px',
                 }}>
-                  The core problem: AI agents need to spend money on-chain, but giving an agent a private key with
+                  The core problem: agents need to spend money on-chain, but giving an agent a private key with
                   unlimited access is dangerous. MetaMask Delegation solves this by wrapping agents in
                   <span style={{ color: 'var(--text-primary)' }}> smart accounts with programmable permission boundaries</span>.
                   Humans define exactly what agents can do &mdash; spend limits, allowed contracts, method restrictions,
@@ -1884,7 +1884,7 @@ export default function CeloPage() {
                     lineHeight: 1.7,
                     margin: '0 0 12px',
                   }}>
-                    ERC-8004 is the agent identity standard that Celo is actively promoting for on-chain AI agents.
+                    ERC-8004 is the agent identity standard that Celo is actively promoting for on-chain agents.
                     Each agent mints an ERC-721 NFT that carries metadata &mdash; capabilities, avatar, description,
                     and contract endpoints. This creates a <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>verifiable,
                     portable identity</span> that works across chains and platforms.

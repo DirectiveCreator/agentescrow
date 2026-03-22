@@ -588,7 +588,7 @@ export default function AmpersendPage() {
             color: 'var(--text-secondary)',
           }}>
             <p style={{ margin: '0 0 12px' }}>
-              Ampersend solves a critical problem: <span style={{ color: 'var(--text-primary)' }}>how do you give autonomous AI agents the ability to spend money without losing control?</span>
+              Ampersend solves a critical problem: <span style={{ color: 'var(--text-primary)' }}>how do you give autonomous agents the ability to spend money without losing control?</span>
             </p>
             <p style={{ margin: '0 0 12px' }}>
               It provides <span style={{ color: 'var(--accent)' }}>smart account wallets</span> (ERC-4337) for each agent,

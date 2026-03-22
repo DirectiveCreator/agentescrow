@@ -142,7 +142,6 @@ const SDK_DETAILS = [
     usage: `import { createCeloClient, CELO_STABLECOINS } from './celo/client.js';
 
 const client = createCeloClient({
-  privateKey: process.env.DEPLOYER_PRIVATE_KEY,
   network: 'alfajores', // or 'mainnet'
 });
 
@@ -162,7 +161,7 @@ const hash = await client.sendWithFeeAbstraction({
     file: 'agents/src/celo/deploy.js',
     description: 'Deploy all three AgentEscrow contracts to Celo Alfajores testnet and wire up permissions.',
     usage: `# Deploy to Celo Alfajores
-DEPLOYER_PRIVATE_KEY=0x... node agents/src/celo/deploy.js
+node agents/src/celo/deploy.js
 
 # Output:
 # ServiceBoard: 0x...
@@ -174,11 +173,8 @@ DEPLOYER_PRIVATE_KEY=0x... node agents/src/celo/deploy.js
     name: 'Celo Demo',
     file: 'agents/src/celo/demo.js',
     description: 'Full end-to-end demo on Celo: post task with cUSD escrow, claim, execute, deliver, confirm, release.',
-    usage: `# Run demo (simulation mode without keys)
+    usage: `# Run demo (simulation mode)
 node agents/src/celo/demo.js
-
-# Run with real Celo testnet
-DEPLOYER_PRIVATE_KEY=0x... node agents/src/celo/demo.js
 
 # Full lifecycle:
 # 1. Post task with cUSD reward
@@ -192,7 +188,7 @@ DEPLOYER_PRIVATE_KEY=0x... node agents/src/celo/demo.js
     file: 'agents/src/celo/register-erc8004.js',
     description: 'Register buyer and seller agents on the Celo ERC-8004 IdentityRegistry. Multi-chain agent identity.',
     usage: `# Register agents on Celo
-DEPLOYER_PRIVATE_KEY=0x... node agents/src/celo/register-erc8004.js
+node agents/src/celo/register-erc8004.js
 
 # Registers:
 # - Buyer Agent on Celo IdentityRegistry

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Deploy AgentEscrow contracts to Celo Alfajores
+ * Deploy AgentEscrow contracts to Celo Sepolia
  *
  * Deploys ServiceBoard, EscrowVault, and ReputationRegistry
  * then wires up permissions (same as Base Sepolia deployment).
@@ -14,7 +14,7 @@
 
 import { createPublicClient, createWalletClient, http, formatEther } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { celoAlfajores } from 'viem/chains';
+import { celoSepolia } from 'viem/chains';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -23,6 +23,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // ─── Configuration ──────────────────────────────────────────────────────────
+// NOTE: Celo Sepolia is DEPRECATED as of Sept 2025.
+// Celo Sepolia (chain ID 11142220) is the new official testnet.
 
 const PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY;
 if (!PRIVATE_KEY) {
@@ -34,15 +36,17 @@ if (!PRIVATE_KEY) {
 const key = PRIVATE_KEY.startsWith('0x') ? PRIVATE_KEY : `0x${PRIVATE_KEY}`;
 const account = privateKeyToAccount(key);
 
+const RPC_URL = process.env.CELO_SEPOLIA_RPC || 'https://forno.celo-sepolia.celo-testnet.org';
+
 const publicClient = createPublicClient({
-  chain: celoAlfajores,
-  transport: http('https://alfajores-forno.celo-testnet.org'),
+  chain: celoSepolia,
+  transport: http(RPC_URL),
 });
 
 const walletClient = createWalletClient({
   account,
-  chain: celoAlfajores,
-  transport: http('https://alfajores-forno.celo-testnet.org'),
+  chain: celoSepolia,
+  transport: http(RPC_URL),
 });
 
 // ─── Load Contract Artifacts ────────────────────────────────────────────────
@@ -79,12 +83,12 @@ async function deployContract(name, args = []) {
 async function main() {
   console.log('');
   console.log('\u{1F7E2} ═══════════════════════════════════════════════════');
-  console.log('   AgentEscrow \u2192 Celo Alfajores Deployment');
+  console.log('   AgentEscrow \u2192 Celo Sepolia Deployment');
   console.log('\u{1F7E2} ═══════════════════════════════════════════════════');
   console.log('');
   console.log(`   Deployer: ${account.address}`);
-  console.log(`   Chain:    Celo Alfajores (44787)`);
-  console.log(`   RPC:      https://alfajores-forno.celo-testnet.org`);
+  console.log(`   Chain:    Celo Sepolia (11142220)`);
+  console.log(`   RPC:      ${RPC_URL}`);
   console.log('');
 
   // Check balance
@@ -92,7 +96,7 @@ async function main() {
   console.log(`   Balance:  ${formatEther(balance)} CELO`);
 
   if (balance === 0n) {
-    console.error('\u274C No CELO balance! Get testnet CELO from: https://faucet.celo.org/alfajores');
+    console.error('\u274C No CELO balance! Get testnet CELO from: https://faucet.celo.org/celo-sepolia');
     process.exit(1);
   }
 
@@ -141,7 +145,7 @@ async function main() {
   console.log('   DEPLOYMENT COMPLETE!');
   console.log('\u{1F389} ═══════════════════════════════════════════════════');
   console.log('');
-  console.log('   Deployed Contracts (Celo Alfajores):');
+  console.log('   Deployed Contracts (Celo Sepolia):');
   console.log(`   EscrowVault:        ${escrowVault.address}`);
   console.log(`   ReputationRegistry: ${reputationRegistry.address}`);
   console.log(`   ServiceBoard:       ${serviceBoard.address}`);

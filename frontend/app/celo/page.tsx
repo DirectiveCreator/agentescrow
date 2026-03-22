@@ -12,7 +12,7 @@ const WORKFLOW_STEPS = [
   {
     num: '01',
     title: 'Deploy Contracts to Celo',
-    description: 'Solidity contracts (ServiceBoard, EscrowVault, ReputationRegistry) deployed to Celo Alfajores testnet. Zero modifications needed — fully chain-agnostic architecture.',
+    description: 'Solidity contracts (ServiceBoard, EscrowVault, ReputationRegistry) deployed to Celo Sepolia testnet. Zero modifications needed — fully chain-agnostic architecture.',
     icon: '\u{1F4E6}',
     color: CELO_COLOR,
   },
@@ -114,6 +114,16 @@ const STABLECOINS = [
   },
 ];
 
+const DEPLOYED_CONTRACTS = {
+  serviceBoard: '0xDd04B859874947b9861d671DEEc8c39e5CD61c6C',
+  escrowVault: '0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E',
+  reputationRegistry: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c',
+  deployer: '0xC07b695eC19DE38f1e62e825585B2818077B96cC',
+  chain: 'Celo Sepolia',
+  chainId: 11142220,
+  explorer: 'https://celo-sepolia.blockscout.com',
+};
+
 const CELO_ADDRESSES = {
   identityRegistry: {
     mainnet: '0x8004A169FB4a3325136EB29fA0ceB6D2e539a432',
@@ -126,8 +136,8 @@ const CELO_ADDRESSES = {
 };
 
 const TECH_STACK = [
-  { label: 'Chain', value: 'Celo Alfajores', detail: 'Testnet (44787)' },
-  { label: 'RPC', value: 'forno.celo-testnet.org', detail: 'Public endpoint' },
+  { label: 'Chain', value: 'Celo Sepolia', detail: 'Testnet (11142220)' },
+  { label: 'RPC', value: 'forno.celo-sepolia.celo-testnet.org', detail: 'Public endpoint' },
   { label: 'Stablecoins', value: 'cUSD + USDC', detail: 'Native escrow currency' },
   { label: 'Fee Currency', value: 'CIP-64', detail: 'Pay gas in stablecoins' },
   { label: 'Identity', value: 'ERC-8004', detail: 'On-chain agent registry' },
@@ -159,15 +169,15 @@ const hash = await client.sendWithFeeAbstraction({
   {
     name: 'Deploy to Celo',
     file: 'agents/src/celo/deploy.js',
-    description: 'Deploy all three AgentEscrow contracts to Celo Alfajores testnet and wire up permissions.',
-    usage: `# Deploy to Celo Alfajores
-node agents/src/celo/deploy.js
+    description: 'Deploy all three AgentEscrow contracts to Celo Sepolia testnet and wire up permissions.',
+    usage: `# Deploy to Celo Sepolia
+DEPLOYER_PRIVATE_KEY=0x... node agents/src/celo/deploy.js
 
-# Output:
-# ServiceBoard: 0x...
-# EscrowVault: 0x...
-# ReputationRegistry: 0x...
-# All contracts wired up and ready`,
+# Deployed:
+# ServiceBoard:        ${DEPLOYED_CONTRACTS.serviceBoard}
+# EscrowVault:         ${DEPLOYED_CONTRACTS.escrowVault}
+# ReputationRegistry:  ${DEPLOYED_CONTRACTS.reputationRegistry}
+# All contracts wired up and verified ✅`,
   },
   {
     name: 'Celo Demo',
@@ -614,7 +624,7 @@ export default function CeloPage() {
             flexWrap: 'wrap' as const,
           }}>
             {[
-              { label: 'Chain', value: 'Celo Alfajores' },
+              { label: 'Chain', value: 'Celo Sepolia (11142220)' },
               { label: 'Chain ID', value: '44787' },
               { label: 'Escrow', value: 'cUSD / USDC' },
               { label: 'Identity', value: 'ERC-8004' },
@@ -731,7 +741,7 @@ export default function CeloPage() {
                   fontSize: 16,
                   color: 'var(--text-primary)',
                 }}>
-                  Celo Alfajores
+                  Celo Sepolia
                 </span>
                 <span style={{
                   fontFamily: 'var(--font-mono)',
@@ -897,9 +907,9 @@ export default function CeloPage() {
                 marginBottom: 16,
               }}>
                 {[
-                  { name: 'ServiceBoard', addr: '0xDd04...1c6C', color: '#3B82F6' },
-                  { name: 'EscrowVault', addr: '0xf275...771E', color: '#3B82F6' },
-                  { name: 'ReputationRegistry', addr: '0x9c3C...4BD9', color: '#3B82F6' },
+                  { name: 'ServiceBoard', addr: DEPLOYED_CONTRACTS.serviceBoard, color: '#3B82F6' },
+                  { name: 'EscrowVault', addr: DEPLOYED_CONTRACTS.escrowVault, color: '#3B82F6' },
+                  { name: 'ReputationRegistry', addr: DEPLOYED_CONTRACTS.reputationRegistry, color: '#3B82F6' },
                 ].map(c => (
                   <div key={c.name} style={{
                     padding: 12,
@@ -917,13 +927,23 @@ export default function CeloPage() {
                     }}>
                       {c.name}
                     </div>
-                    <div style={{
-                      fontSize: 10,
-                      fontFamily: 'var(--font-mono)',
-                      color: 'var(--text-tertiary)',
-                    }}>
-                      {c.addr}
-                    </div>
+                    <a
+                      href={`${DEPLOYED_CONTRACTS.explorer}/address/${c.addr}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        fontSize: 10,
+                        fontFamily: 'var(--font-mono)',
+                        color: 'var(--text-tertiary)',
+                        textDecoration: 'none',
+                        display: 'block',
+                        wordBreak: 'break-all',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = CELO_COLOR)}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-tertiary)')}
+                    >
+                      {c.addr} ↗
+                    </a>
                     <div style={{
                       fontSize: 10,
                       fontFamily: 'var(--font-mono)',
@@ -1012,11 +1032,64 @@ export default function CeloPage() {
           </div>
         </section>
 
+        {/* DEPLOYED CONTRACTS BANNER */}
+        <section style={{ marginBottom: 48 }}>
+          <div style={{
+            padding: 24,
+            background: `linear-gradient(135deg, ${CELO_COLOR}10, ${CELO_GREEN}10)`,
+            border: `2px solid ${CELO_GREEN}40`,
+            borderRadius: 16,
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              marginBottom: 16,
+            }}>
+              <span style={{ fontSize: 24 }}>✅</span>
+              <div>
+                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, color: CELO_GREEN }}>
+                  DEPLOYED TO CELO SEPOLIA
+                </div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-tertiary)' }}>
+                  Chain ID: {DEPLOYED_CONTRACTS.chainId} • All contracts verified and wired up
+                </div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 8 }}>
+              {[
+                { name: 'ServiceBoard', addr: DEPLOYED_CONTRACTS.serviceBoard },
+                { name: 'EscrowVault', addr: DEPLOYED_CONTRACTS.escrowVault },
+                { name: 'ReputationRegistry', addr: DEPLOYED_CONTRACTS.reputationRegistry },
+              ].map(c => (
+                <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 12, color: CELO_COLOR, minWidth: 160 }}>
+                    {c.name}
+                  </span>
+                  <a
+                    href={`${DEPLOYED_CONTRACTS.explorer}/address/${c.addr}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 12,
+                      color: 'var(--text-secondary)',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    {c.addr} ↗
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Contracts */}
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Smart Contracts"
-            subtitle="Battle-tested contracts deployed on Celo Alfajores."
+            subtitle="Battle-tested contracts deployed on Celo Sepolia."
           />
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
             {CONTRACTS.map(contract => (
@@ -1057,7 +1130,7 @@ export default function CeloPage() {
                   <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{CELO_ADDRESSES.identityRegistry.mainnet}</span>
                 </div>
                 <div>
-                  <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>ALFAJORES </span>
+                  <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>TESTNET</span>
                   <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{CELO_ADDRESSES.identityRegistry.alfajores}</span>
                 </div>
               </div>
@@ -1083,7 +1156,7 @@ export default function CeloPage() {
                   <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{CELO_ADDRESSES.reputationRegistry.mainnet}</span>
                 </div>
                 <div>
-                  <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>ALFAJORES </span>
+                  <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>TESTNET</span>
                   <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{CELO_ADDRESSES.reputationRegistry.alfajores}</span>
                 </div>
               </div>
@@ -1157,8 +1230,8 @@ export default function CeloPage() {
           }}>
             {[
               { label: 'Celo Documentation', url: 'https://docs.celo.org/', icon: '\u{1F4D6}' },
-              { label: 'Alfajores Faucet', url: 'https://faucet.celo.org/alfajores', icon: '\u{1F6B0}' },
-              { label: 'Celo Explorer', url: 'https://alfajores.celoscan.io/', icon: '\u{1F50D}' },
+              { label: 'Celo Sepolia Faucet', url: 'https://faucet.celo.org/celo-sepolia', icon: '\u{1F6B0}' },
+              { label: 'Celo Explorer', url: 'https://celo-sepolia.blockscout.com/', icon: '\u{1F50D}' },
               { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
               { label: 'ERC-8004 Standard', url: 'https://eips.ethereum.org/EIPS/eip-8004', icon: '\u{1F4CB}' },
               { label: 'Celo Agent Skills', url: 'https://github.com/celo-org/agent-skills', icon: '\u{1F916}' },

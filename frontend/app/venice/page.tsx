@@ -972,7 +972,7 @@ export default function VenicePage() {
               { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
               { label: 'Base Sepolia Explorer', url: 'https://sepolia.basescan.org/', icon: '\u{1F310}' },
               { label: 'Venice TEE Models', url: 'https://docs.venice.ai/api-reference/list-models', icon: '\u{1F6E1}\uFE0F' },
-              { label: 'Live Dashboard', url: 'https://agentescrow.onrender.com', icon: '\u{1F4CA}' },
+              { label: 'Live Dashboard', url: 'https://agentescrow.directivecreator.com', icon: '\u{1F4CA}' },
             ].map(link => (
               <a
                 key={link.label}

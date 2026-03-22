@@ -90,7 +90,7 @@ const ENS_FEATURES = [
 const TEXT_RECORDS = [
   { key: 'avatar', description: 'IPFS avatar image', example: 'ipfs://bafybei...' },
   { key: 'description', description: 'Agent role description', example: 'Autonomous buyer agent for AgentEscrow marketplace' },
-  { key: 'url', description: 'Agent service URL', example: 'https://agentescrow.onrender.com' },
+  { key: 'url', description: 'Agent service URL', example: 'https://agentescrow.directivecreator.com' },
   { key: 'ai.agent.type', description: 'Agent classification', example: 'buyer | seller' },
   { key: 'ai.agent.capabilities', description: 'What the agent can do', example: 'text_summary,code_review,data_analysis' },
   { key: 'ai.agent.erc8004.id', description: 'ERC-8004 agent ID', example: '2194' },

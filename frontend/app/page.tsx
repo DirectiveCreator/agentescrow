@@ -210,12 +210,8 @@ export default function Dashboard() {
       <header className="border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold tracking-tight"
-                 style={{ background: 'var(--accent-10)', border: '1px solid var(--accent-40)', color: 'var(--accent)' }}>
-              AE
-            </div>
             <div>
-              <h1 className="text-base font-semibold tracking-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+              <h1 className="text-xl font-bold tracking-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
                 <span style={{ color: 'var(--accent)' }}>Agent</span>Escrow
               </h1>
               <p className="text-[11px] tracking-wide" style={{ color: 'var(--text-tertiary)' }}>

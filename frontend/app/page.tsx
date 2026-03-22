@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { formatEther } from 'viem';
-import { publicClient, ServiceBoardABI, ReputationRegistryABI, EscrowVaultABI, CONTRACTS } from '@/lib/contracts';
+import { formatEther, parseEther, encodeFunctionData } from 'viem';
+import { publicClient, ServiceBoardABI, ReputationRegistryABI, EscrowVaultABI, CONTRACTS, connectWallet, switchChain, getWalletClient, getPublicClientForChain, SUPPORTED_CHAINS } from '@/lib/contracts';
 import { MeshGradient, NeuroNoise, GrainGradient, DotGrid, SmokeRing, Waves, Metaballs } from '@paper-design/shaders-react';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -96,7 +96,141 @@ export default function Dashboard() {
   const [walletAddress, setWalletAddress] = useState('');
   const [hireStep, setHireStep] = useState<'connect' | 'form' | 'confirm' | 'submitted'>('connect');
   const [selectedAgent, setSelectedAgent] = useState<number | null>(null);
+  const [walletChainId, setWalletChainId] = useState<number>(84532); // Default Base Sepolia
+  const [walletBalance, setWalletBalance] = useState<string>('');
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [txHash, setTxHash] = useState<string>('');
+  const [txError, setTxError] = useState<string>('');
+  const [isSigning, setIsSigning] = useState(false);
+  const [postedTaskId, setPostedTaskId] = useState<string>('');
   const prevTaskCountRef = useRef(0);
+
+  // Wallet event listeners — track account/chain changes
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.ethereum) return;
+    const handleAccountsChanged = (...args: unknown[]) => {
+      const accounts = args[0] as string[];
+      if (accounts.length === 0) {
+        setWalletConnected(false);
+        setWalletAddress('');
+        setHireStep('connect');
+      } else {
+        setWalletAddress(accounts[0]);
+      }
+    };
+    const handleChainChanged = (...args: unknown[]) => {
+      const chainIdHex = args[0] as string;
+      setWalletChainId(parseInt(chainIdHex, 16));
+    };
+    window.ethereum.on('accountsChanged', handleAccountsChanged);
+    window.ethereum.on('chainChanged', handleChainChanged);
+    return () => {
+      window.ethereum?.removeListener('accountsChanged', handleAccountsChanged);
+      window.ethereum?.removeListener('chainChanged', handleChainChanged);
+    };
+  }, []);
+
+  // Fetch wallet balance when connected
+  useEffect(() => {
+    if (!walletConnected || !walletAddress) return;
+    const fetchBalance = async () => {
+      try {
+        const client = getPublicClientForChain(walletChainId);
+        const bal = await client.getBalance({ address: walletAddress as `0x${string}` });
+        setWalletBalance(formatEther(bal));
+      } catch { setWalletBalance(''); }
+    };
+    fetchBalance();
+    const interval = setInterval(fetchBalance, 10000);
+    return () => clearInterval(interval);
+  }, [walletConnected, walletAddress, walletChainId]);
+
+  // Real wallet connection handler
+  const handleConnectWallet = useCallback(async () => {
+    setIsConnecting(true);
+    setTxError('');
+    try {
+      if (!window.ethereum) {
+        setTxError('No wallet detected. Please install MetaMask or another EVM wallet.');
+        setIsConnecting(false);
+        return;
+      }
+      const result = await connectWallet();
+      if (result) {
+        setWalletAddress(result.address);
+        setWalletChainId(result.chainId);
+        setWalletConnected(true);
+        setHireStep('form');
+        // Switch to a supported chain if not on one
+        const supportedIds = SUPPORTED_CHAINS.map(c => c.id as number);
+        if (!supportedIds.includes(result.chainId)) {
+          await switchChain(84532); // Default to Base Sepolia
+          setWalletChainId(84532);
+        }
+      } else {
+        setTxError('Wallet connection was rejected or failed.');
+      }
+    } catch {
+      setTxError('Failed to connect wallet.');
+    }
+    setIsConnecting(false);
+  }, []);
+
+  // Real on-chain task posting handler
+  const handlePostTask = useCallback(async () => {
+    if (!walletAddress || !walletConnected) return;
+    setIsSigning(true);
+    setTxError('');
+    setTxHash('');
+    try {
+      const walletClient = getWalletClient(walletChainId);
+      if (!walletClient) throw new Error('Wallet not available');
+
+      const deadlineTimestamp = BigInt(Math.floor(Date.now() / 1000) + parseInt(hireForm.deadline) * 3600);
+      const rewardWei = parseEther(hireForm.reward);
+
+      // Encode the function call
+      const data = encodeFunctionData({
+        abi: ServiceBoardABI,
+        functionName: 'postTask',
+        args: [hireForm.taskType, hireForm.description, deadlineTimestamp],
+      });
+
+      // Send the transaction via wallet
+      const targetChain = walletChainId === 11142220
+        ? { id: 11142220, name: 'Celo Sepolia', nativeCurrency: { name: 'CELO', symbol: 'CELO', decimals: 18 }, rpcUrls: { default: { http: ['https://forno.celo-sepolia.celo-testnet.org'] } }, blockExplorers: { default: { name: 'Blockscout', url: 'https://celo-sepolia.blockscout.com' } }, testnet: true } as const
+        : undefined; // use client default (baseSepolia)
+      const hash = await walletClient.sendTransaction({
+        account: walletAddress as `0x${string}`,
+        to: CONTRACTS.serviceBoard as `0x${string}`,
+        data,
+        value: rewardWei,
+        chain: targetChain,
+      });
+
+      setTxHash(hash);
+      setHireStep('submitted');
+
+      // Wait for confirmation to get task ID
+      const client = getPublicClientForChain(walletChainId);
+      const receipt = await client.waitForTransactionReceipt({ hash });
+      // Parse TaskPosted event to get task ID
+      if (receipt.logs.length > 0) {
+        // First topic of TaskPosted is the event sig, second is taskId (indexed)
+        const taskIdHex = receipt.logs[0]?.topics?.[1];
+        if (taskIdHex) {
+          setPostedTaskId(BigInt(taskIdHex).toString());
+        }
+      }
+      // Refresh data after a short delay to show the new task
+      setTimeout(() => window.location.reload(), 3000);
+    } catch (err: unknown) {
+      const msg = (err as { shortMessage?: string; message?: string })?.shortMessage || (err as Error)?.message || 'Transaction failed';
+      setTxError(msg);
+    }
+    setIsSigning(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletAddress, walletConnected, walletChainId, hireForm]);
 
   const fetchData = useCallback(async () => {
     try {
@@ -806,20 +940,28 @@ export default function Dashboard() {
                   <p className="text-[13px] mb-6 max-w-md mx-auto" style={{ color: 'var(--text-secondary)' }}>
                     Connect a wallet to post tasks and fund escrow. Your ETH is locked in a smart contract until you approve the agent&apos;s work.
                   </p>
+                  {txError && (
+                    <div className="mb-4 px-4 py-3 rounded-lg text-[12px] text-left"
+                         style={{ background: '#EF444410', border: '1px solid #EF444440', color: '#EF4444' }}>
+                      {txError}
+                    </div>
+                  )}
                   <button
-                    onClick={() => {
-                      // Simulate wallet connection (real version would use wagmi/viem)
-                      const demoAddr = '0x' + Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('');
-                      setWalletAddress(demoAddr);
-                      setWalletConnected(true);
-                      setHireStep('form');
-                    }}
+                    onClick={handleConnectWallet}
+                    disabled={isConnecting}
                     className="px-8 py-3 rounded-lg text-[13px] font-semibold transition-all hover:shadow-[0_0_20px_rgba(56,179,220,0.3)]"
-                    style={{ background: 'var(--accent)', color: '#0C0C0C' }}>
-                    Connect Wallet
+                    style={{
+                      background: isConnecting ? 'var(--bg-hover)' : 'var(--accent)',
+                      color: isConnecting ? 'var(--text-quaternary)' : '#0C0C0C',
+                      cursor: isConnecting ? 'wait' : 'pointer',
+                    }}>
+                    {isConnecting ? 'Connecting...' : 'Connect Wallet'}
                   </button>
                   <p className="text-[10px] mt-4" style={{ color: 'var(--text-quaternary)' }}>
-                    Supports MetaMask, WalletConnect, Coinbase Wallet &bull; Base Sepolia Network &bull; CELO Sepolia Network
+                    {typeof window !== 'undefined' && window.ethereum
+                      ? <>MetaMask detected &bull; Base Sepolia &bull; CELO Sepolia</>
+                      : <>No wallet detected — install <a href="https://metamask.io" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>MetaMask</a> to continue</>
+                    }
                   </p>
                 </div>
               </div>
@@ -833,17 +975,45 @@ export default function Dashboard() {
                     <span className="text-[12px] font-mono" style={{ color: '#34D399' }}>
                       {shortenAddress(walletAddress)}
                     </span>
+                    {walletBalance && (
+                      <span className="text-[11px] font-mono" style={{ color: 'var(--text-secondary)' }}>
+                        {parseFloat(walletBalance).toFixed(4)} {SUPPORTED_CHAINS.find(c => c.id === walletChainId)?.currency || 'ETH'}
+                      </span>
+                    )}
                     <span className="text-[11px] px-2 py-0.5 rounded"
                           style={{ background: '#34D39910', color: '#34D399', border: '1px solid #34D39940' }}>
                       CONNECTED
                     </span>
                   </div>
-                  <button onClick={() => { setWalletConnected(false); setWalletAddress(''); setHireStep('connect'); setSelectedAgent(null); }}
-                          className="text-[11px] px-3 py-1 rounded hover:opacity-80 transition-opacity"
-                          style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-tertiary)' }}>
-                    Disconnect
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {/* Chain selector */}
+                    <select
+                      value={walletChainId}
+                      onChange={async (e) => {
+                        const newChainId = parseInt(e.target.value);
+                        const switched = await switchChain(newChainId);
+                        if (switched) setWalletChainId(newChainId);
+                      }}
+                      className="text-[11px] px-2 py-1 rounded cursor-pointer"
+                      style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+                      {SUPPORTED_CHAINS.map(c => (
+                        <option key={c.id} value={c.id}>{c.name}</option>
+                      ))}
+                    </select>
+                    <button onClick={() => { setWalletConnected(false); setWalletAddress(''); setHireStep('connect'); setSelectedAgent(null); setTxHash(''); setTxError(''); setPostedTaskId(''); }}
+                            className="text-[11px] px-3 py-1 rounded hover:opacity-80 transition-opacity"
+                            style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-tertiary)' }}>
+                      Disconnect
+                    </button>
+                  </div>
                 </div>
+                {/* Chain mismatch warning */}
+                {!SUPPORTED_CHAINS.some(c => c.id === walletChainId) && (
+                  <div className="px-4 py-2 rounded-lg text-[11px]"
+                       style={{ background: '#FF880010', border: '1px solid #FF880040', color: '#FF8800' }}>
+                    ⚠ Unsupported chain (ID: {walletChainId}). Please switch to Base Sepolia or Celo Sepolia.
+                  </div>
+                )}
 
                 {/* Step indicator */}
                 <div className="flex items-center gap-2 justify-center">
@@ -921,7 +1091,7 @@ export default function Dashboard() {
                         {/* Reward & Deadline */}
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="text-[11px] tracking-wider mb-2 block" style={{ color: 'var(--text-tertiary)' }}>BOUNTY (ETH)</label>
+                            <label className="text-[11px] tracking-wider mb-2 block" style={{ color: 'var(--text-tertiary)' }}>BOUNTY ({SUPPORTED_CHAINS.find(c => c.id === walletChainId)?.currency || 'ETH'})</label>
                             <div className="relative">
                               <input
                                 type="text"
@@ -1052,7 +1222,7 @@ export default function Dashboard() {
                         {[
                           { label: 'Task Type', value: hireForm.taskType.replace('_', ' ') },
                           { label: 'Description', value: hireForm.description },
-                          { label: 'Bounty', value: `${hireForm.reward} ETH`, accent: true },
+                          { label: 'Bounty', value: `${hireForm.reward} ${SUPPORTED_CHAINS.find(c => c.id === walletChainId)?.currency || 'ETH'}`, accent: true },
                           { label: 'Deadline', value: `${hireForm.deadline} hours` },
                           { label: 'Agent', value: selectedAgent ? `ERC-8004 #${selectedAgent}` : 'Open (any agent)' },
                           { label: 'Escrow Contract', value: shortenAddress(CONTRACTS.escrowVault) },
@@ -1074,25 +1244,41 @@ export default function Dashboard() {
                           <div>
                             <p className="text-[12px] font-semibold mb-1" style={{ color: '#FF8800' }}>Escrow Protection</p>
                             <p className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>
-                              Your {hireForm.reward} ETH will be locked in the EscrowVault smart contract. Funds are only released when you
-                              confirm satisfactory delivery. If the deadline passes without delivery, you can reclaim your ETH.
+                              Your {hireForm.reward} {SUPPORTED_CHAINS.find(c => c.id === walletChainId)?.currency || 'ETH'} will be locked in the EscrowVault smart contract on {SUPPORTED_CHAINS.find(c => c.id === walletChainId)?.name || 'testnet'}. Funds are only released when you
+                              confirm satisfactory delivery. If the deadline passes without delivery, you can reclaim your funds.
                             </p>
                           </div>
                         </div>
                       </div>
 
+                      {txError && (
+                        <div className="mt-4 px-4 py-3 rounded-lg text-[12px]"
+                             style={{ background: '#EF444410', border: '1px solid #EF444440', color: '#EF4444' }}>
+                          {txError}
+                        </div>
+                      )}
+
                       <div className="flex gap-3 mt-6">
-                        <button onClick={() => setHireStep('form')}
+                        <button onClick={() => { setHireStep('form'); setTxError(''); }}
+                                disabled={isSigning}
                                 className="flex-1 py-3 rounded-lg text-[12px] font-medium transition-colors"
                                 style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
                           ← Back
                         </button>
-                        <button onClick={() => setHireStep('submitted')}
+                        <button onClick={handlePostTask}
+                                disabled={isSigning}
                                 className="flex-1 py-3 rounded-lg text-[13px] font-semibold transition-all hover:shadow-[0_0_20px_rgba(56,179,220,0.3)]"
-                                style={{ background: 'var(--accent)', color: '#0C0C0C' }}>
-                          Sign &amp; Fund Escrow
+                                style={{
+                                  background: isSigning ? 'var(--bg-hover)' : 'var(--accent)',
+                                  color: isSigning ? 'var(--text-quaternary)' : '#0C0C0C',
+                                  cursor: isSigning ? 'wait' : 'pointer',
+                                }}>
+                          {isSigning ? 'Signing Transaction...' : 'Sign & Fund Escrow'}
                         </button>
                       </div>
+                      <p className="text-[10px] mt-3 text-center" style={{ color: 'var(--text-quaternary)' }}>
+                        This will send a real transaction on {SUPPORTED_CHAINS.find(c => c.id === walletChainId)?.name || 'testnet'}. Your wallet will prompt for confirmation.
+                      </p>
                     </div>
                   </div>
                 )}
@@ -1120,7 +1306,7 @@ export default function Dashboard() {
                           Task Posted Successfully
                         </h3>
                         <p className="text-[13px] mb-6" style={{ color: 'var(--text-secondary)' }}>
-                          Your {hireForm.reward} ETH is locked in escrow. AI agents can now discover and claim your task.
+                          Your {hireForm.reward} {SUPPORTED_CHAINS.find(c => c.id === walletChainId)?.currency || 'ETH'} is locked in escrow{postedTaskId ? ` (Task #${postedTaskId})` : ''}. AI agents can now discover and claim your task.
                         </p>
 
                         {/* Live task status simulation */}
@@ -1149,7 +1335,7 @@ export default function Dashboard() {
                                   style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
                             View Board
                           </button>
-                          <button onClick={() => { setHireStep('form'); setHireForm({ taskType: 'text_summary', description: '', reward: '0.001', deadline: '24' }); setSelectedAgent(null); }}
+                          <button onClick={() => { setHireStep('form'); setHireForm({ taskType: 'text_summary', description: '', reward: '0.001', deadline: '24' }); setSelectedAgent(null); setTxHash(''); setTxError(''); setPostedTaskId(''); }}
                                   className="px-6 py-2.5 rounded-lg text-[12px] font-semibold transition-all hover:shadow-[0_0_20px_rgba(56,179,220,0.3)]"
                                   style={{ background: 'var(--accent)', color: '#0C0C0C' }}>
                             Post Another Task
@@ -1160,19 +1346,28 @@ export default function Dashboard() {
 
                     {/* Transaction receipt */}
                     <div className="rounded-xl p-5" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-                      <div className="text-[10px] tracking-wider mb-3" style={{ color: 'var(--text-tertiary)' }}>TRANSACTION RECEIPT (SIMULATED)</div>
+                      <div className="text-[10px] tracking-wider mb-3" style={{ color: 'var(--text-tertiary)' }}>
+                        TRANSACTION RECEIPT {txHash ? '' : '(PENDING)'}
+                      </div>
                       <div className="space-y-2 font-mono text-[11px]">
                         {[
-                          { k: 'tx_hash', v: '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('') },
-                          { k: 'block', v: (17000000 + Math.floor(Math.random() * 100000)).toString() },
+                          { k: 'tx_hash', v: txHash || 'Pending...', link: txHash ? `${SUPPORTED_CHAINS.find(c => c.id === walletChainId)?.explorer || 'https://sepolia.basescan.org'}/tx/${txHash}` : '' },
+                          { k: 'task_id', v: postedTaskId ? `#${postedTaskId}` : 'Confirming...' },
                           { k: 'method', v: 'ServiceBoard.postTask()' },
-                          { k: 'escrow', v: `${hireForm.reward} ETH → EscrowVault` },
-                          { k: 'gas', v: '~0.00001 ETH' },
-                          { k: 'network', v: 'Base Sepolia (84532) & CELO Sepolia (11142220)' },
+                          { k: 'escrow', v: `${hireForm.reward} ${SUPPORTED_CHAINS.find(c => c.id === walletChainId)?.currency || 'ETH'} → EscrowVault` },
+                          { k: 'from', v: shortenAddress(walletAddress) },
+                          { k: 'network', v: SUPPORTED_CHAINS.find(c => c.id === walletChainId)?.name || `Chain ${walletChainId}` },
                         ].map(row => (
                           <div key={row.k} className="flex justify-between">
                             <span style={{ color: 'var(--text-quaternary)' }}>{row.k}</span>
-                            <span className="text-right truncate max-w-[70%]" style={{ color: 'var(--text-secondary)' }}>{row.v}</span>
+                            {(row as { link?: string }).link ? (
+                              <a href={(row as { link: string }).link} target="_blank" rel="noopener noreferrer"
+                                 className="text-right truncate max-w-[70%] hover:underline" style={{ color: 'var(--accent)' }}>
+                                {row.v.slice(0, 10)}...{row.v.slice(-8)}
+                              </a>
+                            ) : (
+                              <span className="text-right truncate max-w-[70%]" style={{ color: 'var(--text-secondary)' }}>{row.v}</span>
+                            )}
                           </div>
                         ))}
                       </div>

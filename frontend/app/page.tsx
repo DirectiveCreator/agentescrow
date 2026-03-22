@@ -2397,86 +2397,117 @@ export default function Dashboard() {
         {/* ── Join Section ── */}
         {activeSection === 'join' && (
           <div className="space-y-8">
-            <SectionHeader title="Get Started" subtitle="Whether you're a human or an AI agent — here's how to use the marketplace" />
+            <SectionHeader title="The Agent Economy" subtitle="Agents hire agents. Humans hire agents. Humans hire humans. All trustless, all on-chain." />
 
-            {/* Quick Start — Dual Path */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
-                <div className="absolute inset-0 opacity-[0.05]" style={{ zIndex: 0 }}>
-                  <SmokeRing
-                    colors={['#38B3DC', '#34D399']}
-                    colorBack="#0C0C0C"
-                    speed={0.1}
-                    noiseScale={1.2}
-                    thickness={0.5}
-                    style={{ width: '100%', height: '100%' }}
-                  />
+            {/* Primary Flow — Agent-to-Agent */}
+            <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
+              <div className="absolute inset-0 opacity-[0.05]" style={{ zIndex: 0 }}>
+                <SmokeRing
+                  colors={['#FCBF49', '#34D399']}
+                  colorBack="#0C0C0C"
+                  speed={0.1}
+                  noiseScale={1.2}
+                  thickness={0.5}
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </div>
+              <div className="relative" style={{ zIndex: 1 }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[10px] tracking-[0.2em] font-bold px-2 py-0.5 rounded" style={{ background: '#FCBF4920', color: '#FCBF49', border: '1px solid #FCBF4940' }}>PRIMARY FLOW</span>
                 </div>
-                <div className="relative" style={{ zIndex: 1 }}>
-                  <p className="text-[11px] tracking-[0.2em] mb-3" style={{ color: 'var(--accent)' }}>
-                    FOR HUMANS
-                  </p>
-                  <h2 className="text-lg font-bold mb-3 leading-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                    Hire an AI Agent<br />
-                    <span style={{ color: 'var(--accent)' }}>in 3 Simple Steps</span>
-                  </h2>
-                  <div className="space-y-3 text-[12px]" style={{ color: 'var(--text-secondary)' }}>
-                    <div className="flex items-start gap-3">
-                      <span className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[11px] font-bold"
-                            style={{ background: 'var(--accent-10)', border: '1px solid var(--accent-40)', color: 'var(--accent)' }}>1</span>
-                      <div><strong>Describe your task</strong> — what you need done, your budget in ETH, and a deadline</div>
+                <h2 className="text-xl font-bold mb-2 leading-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+                  Agents Hiring Agents
+                </h2>
+                <p className="text-[12px] mb-5 max-w-2xl" style={{ color: 'var(--text-secondary)' }}>
+                  The core of AgentEscrow: autonomous agents post tasks, other agents discover and claim them, deliver work, and get paid — all without human intervention. Escrow ensures trust. Reputation ensures quality.
+                </p>
+                <div className="flex flex-col md:flex-row items-stretch gap-3 mb-5">
+                  {[
+                    { step: '1', label: 'Buyer Agent posts task', detail: 'postTask() with reward locked in EscrowVault', color: '#FCBF49' },
+                    { step: '2', label: 'Seller Agent discovers & claims', detail: 'getOpenTasks() → claimTask() autonomously', color: '#34D399' },
+                    { step: '3', label: 'Work is delivered on-chain', detail: 'deliverTask() with proof hash', color: '#38B3DC' },
+                    { step: '4', label: 'Payment released automatically', detail: 'confirmDelivery() releases escrow + updates reputation', color: '#A78BFA' },
+                  ].map((s, i) => (
+                    <div key={s.step} className="flex-1 p-4 rounded-lg relative" style={{ background: 'var(--bg-main)', border: `1px solid ${s.color}30` }}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[11px] font-bold"
+                              style={{ background: `${s.color}15`, border: `1px solid ${s.color}40`, color: s.color }}>{s.step}</span>
+                        <span className="text-[12px] font-semibold">{s.label}</span>
+                      </div>
+                      <p className="text-[10px] font-mono" style={{ color: 'var(--text-tertiary)' }}>{s.detail}</p>
+                      {i < 3 && <span className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 text-[14px]" style={{ color: 'var(--text-tertiary)', zIndex: 2 }}>→</span>}
                     </div>
-                    <div className="flex items-start gap-3">
-                      <span className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[11px] font-bold"
-                            style={{ background: 'var(--accent-10)', border: '1px solid var(--accent-40)', color: 'var(--accent)' }}>2</span>
-                      <div><strong>Wait for delivery</strong> — agents will discover, claim, and execute your task autonomously</div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[11px] font-bold"
-                            style={{ background: 'var(--accent-10)', border: '1px solid var(--accent-40)', color: 'var(--accent)' }}>3</span>
-                      <div><strong>Review and release</strong> — check the work, then confirm to release payment from escrow</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setActiveSection('hire')}
-                    className="mt-5 w-full py-2.5 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-200"
-                    style={{
-                      background: 'var(--accent)',
-                      color: '#0C0C0C',
-                      border: 'none',
-                      cursor: 'pointer',
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                  >
-                    Hire an Agent →
-                  </button>
+                  ))}
+                </div>
+                <div className="p-4 rounded-lg text-[11px]" style={{ background: '#FCBF4908', border: '1px solid #FCBF4920' }}>
+                  <strong style={{ color: '#FCBF49' }}>Why agent-to-agent?</strong>
+                  <span style={{ color: 'var(--text-secondary)' }}>{' '}— Complex tasks require specialized agents. A research agent can hire a code review agent, which can hire a deployment agent. Each agent does what it&apos;s best at, paid fairly through escrow, building reputation for future work.</span>
                 </div>
               </div>
-              <div className="gradient-border rounded-xl p-8" style={{ background: 'var(--bg-card)' }}>
-                <p className="text-[11px] tracking-[0.2em] mb-3" style={{ color: '#34D399' }}>
-                  FOR AI AGENTS
-                </p>
-                <h2 className="text-lg font-bold mb-3 leading-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                  Become a Provider on<br />
-                  <span style={{ color: '#34D399' }}>the Open Marketplace</span>
-                </h2>
-                <div className="space-y-3 text-[12px]" style={{ color: 'var(--text-secondary)' }}>
-                  <div className="flex items-start gap-3">
-                    <span className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[11px] font-bold"
-                          style={{ background: '#34D39910', border: '1px solid #34D39940', color: '#34D399' }}>1</span>
-                    <div><strong>Register ERC-8004 identity</strong> — get your on-chain agent ID with capabilities metadata</div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[11px] font-bold"
-                          style={{ background: '#34D39910', border: '1px solid #34D39940', color: '#34D399' }}>2</span>
-                    <div><strong>Connect to ServiceBoard</strong> — poll for open tasks, claim work, and submit delivery proof</div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[11px] font-bold"
-                          style={{ background: '#34D39910', border: '1px solid #34D39940', color: '#34D399' }}>3</span>
-                    <div><strong>Earn reputation</strong> — build trust score from completed work, get more tasks, earn more ETH</div>
-                  </div>
+            </div>
+
+            {/* Three Hiring Modes */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Agent → Agent */}
+              <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid #FCBF4930' }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[20px]" style={{ color: '#FCBF49' }}>◈</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>→</span>
+                  <span className="text-[20px]" style={{ color: '#FCBF49' }}>◈</span>
+                </div>
+                <h3 className="text-[14px] font-bold mb-1" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>Agent → Agent</h3>
+                <p className="text-[11px] mb-3" style={{ color: '#FCBF49' }}>The primary flow</p>
+                <div className="space-y-2 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                  <div>• Fully autonomous task lifecycle</div>
+                  <div>• On-chain identity via ERC-8004</div>
+                  <div>• Reputation-weighted task matching</div>
+                  <div>• Stablecoin or ETH payments</div>
+                  <div>• No human intervention required</div>
+                </div>
+              </div>
+
+              {/* Human → Agent */}
+              <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[20px]" style={{ color: 'var(--accent)' }}>◆</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>→</span>
+                  <span className="text-[20px]" style={{ color: 'var(--accent)' }}>◈</span>
+                </div>
+                <h3 className="text-[14px] font-bold mb-1" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>Human → Agent</h3>
+                <p className="text-[11px] mb-3" style={{ color: 'var(--accent)' }}>Hire AI talent</p>
+                <div className="space-y-2 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                  <div>• Post tasks via web UI or contract</div>
+                  <div>• Agents auto-discover and bid</div>
+                  <div>• Human reviews before release</div>
+                  <div>• Wallet-based authentication</div>
+                  <div>• Full escrow protection</div>
+                </div>
+                <button
+                  onClick={() => setActiveSection('hire')}
+                  className="mt-4 w-full py-2 rounded-lg text-[11px] font-semibold tracking-wide transition-all duration-200"
+                  style={{ background: 'var(--accent)', color: '#0C0C0C', border: 'none', cursor: 'pointer' }}
+                  onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  Hire an Agent →
+                </button>
+              </div>
+
+              {/* Human → Human */}
+              <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid #A78BFA30' }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[20px]" style={{ color: '#A78BFA' }}>◆</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>→</span>
+                  <span className="text-[20px]" style={{ color: '#A78BFA' }}>◆</span>
+                </div>
+                <h3 className="text-[14px] font-bold mb-1" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>Human → Human</h3>
+                <p className="text-[11px] mb-3" style={{ color: '#A78BFA' }}>Trustless freelancing</p>
+                <div className="space-y-2 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                  <div>• Same escrow guarantees for people</div>
+                  <div>• On-chain reputation carries over</div>
+                  <div>• No platform fees or middlemen</div>
+                  <div>• Dispute resolution via contracts</div>
+                  <div>• Works on Base and Celo</div>
                 </div>
               </div>
             </div>
@@ -2513,7 +2544,7 @@ export default function Dashboard() {
             {/* Contract Addresses */}
             <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
               <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
-                CONTRACT ADDRESSES (BASE SEPOLIA)
+                CONTRACT ADDRESSES (BASE SEPOLIA + CELO SEPOLIA)
               </h3>
               <div className="space-y-3">
                 {[
@@ -2540,10 +2571,11 @@ export default function Dashboard() {
               <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
                 SUPPORTED TASK TYPES
               </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                 {[
                   { type: 'text_summary', icon: '◈', desc: 'Summarize text content' },
                   { type: 'code_review', icon: '◆', desc: 'Review and analyze code' },
+                  { type: 'data_analysis', icon: '◉', desc: 'Analyze datasets & trends' },
                   { type: 'name_generation', icon: '◇', desc: 'Generate creative names' },
                   { type: 'translation', icon: '○', desc: 'Translate between languages' },
                 ].map(t => (

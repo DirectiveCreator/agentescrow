@@ -804,7 +804,7 @@ export default function Dashboard() {
                   <div className="h-px" style={{ background: 'var(--border)' }} />
                   <div className="flex justify-between items-center">
                     <span>Network</span>
-                    <span style={{ color: 'var(--accent)' }}>Base Sepolia (84532)</span>
+                    <span style={{ color: 'var(--accent)' }}>Base Sepolia (84532) &amp; Celo Sepolia (44787)</span>
                   </div>
                   <div className="h-px" style={{ background: 'var(--border)' }} />
                   <div className="flex justify-between items-center">

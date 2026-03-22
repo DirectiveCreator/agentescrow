@@ -37,14 +37,14 @@ AgentEscrow is a trustless on-chain marketplace where AI agents hire each other 
 - **Venice AI integration:** Added privacy-preserving cognition via TEE enclaves. Agents can evaluate tasks and verify deliveries privately, with cryptographic attestation proofs. 3 privacy tiers: Private → TEE → E2EE.
 - **MetaMask Delegation Toolkit:** Implemented smart account delegation with `@metamask/delegation-toolkit` v0.13.0. Humans can delegate spending authority to buyer agents with granular caveats (spending limits, allowed methods, time bounds). 6 enforcer contracts used.
 - **ENS identity:** Built scripts for `agentescrow.eth` registration + subdomains (`buyer.agentescrow.eth`, `seller.agentescrow.eth`) with 32 text records and ENSIP-25 bidirectional verification.
-- **Competitive analysis:** Indexed ~100+ Synthesis projects, identified 6 direct competitors (PACT, Nastar, HireChain as top 3).
+- **Competitive analysis:** Reviewed competing Synthesis projects to inform positioning.
 - **UI overhaul:** Human-friendly redesign with "Who Can Use It" and "What Makes Us Different" sections. Added Human→Agent hire interface (wallet connect, task form, agent selection, escrow flow, status tracker).
-- **Build Story tab** added for OpenServ Build Story prize ($500) — phased narrative with DX feedback.
+- **Build Story tab** added for OpenServ Build Story track — phased narrative with DX feedback.
 
 ### Phase 4 — ENS Registration & Bounty Research (Day 4, Mar 20)
 - **ENS on Sepolia:** Registered `agentescrow.eth` via commit-reveal. Created buyer + seller subdomains. Set 32 text records (avatar, capabilities, ERC-8004 IDs, ENSIP-25 verification). Cost: 0.003128 ETH.
 - **Critical ABI discovery:** Sepolia ENS V3 uses struct-based `Registration` tuple for `makeCommitment`/`register`, NOT individual params like mainnet. Wasted time debugging before finding the correct selectors (`0xcf7d6e01`, `0xef9c8805`).
-- **Ampersend evaluation:** Assessed Edge & Node's agent payment SDK — recommended build for $500 prize, strong x402 synergy.
+- **Ampersend evaluation:** Assessed Edge & Node's agent payment SDK — strong x402 synergy.
 
 ### Phase 5 — Multi-Chain & Polish (Day 5, Mar 21)
 - **Celo Sepolia deployment:** All 3 contracts deployed (same addresses as Base Sepolia — deterministic deployment). ERC-8004 registered (Buyer #225, Seller #226). 6 demo tasks completed on-chain. Frontend `/celo` page with explorer links.
@@ -67,7 +67,7 @@ Agent-to-agent commerce is an obvious gap: agents can do work but can't trustles
 - **Base Sepolia first:** Testnet-first strategy let us iterate on agents and metadata without mainnet costs. Human approval gates mainnet deployment.
 
 ### Why so many integrations
-The Synthesis hackathon has 44 prize tracks across sponsors. Each integration unlocked $2K-$8K in potential prizes while strengthening the core product:
+The Synthesis hackathon has multiple prize tracks across sponsors. Each integration strengthened the core product:
 - **x402** → agent-to-agent HTTP payments (natural extension of escrow)
 - **OpenServ** → network effects (agents can discover our marketplace)
 - **Venice** → privacy (agents evaluate work privately with attestation proofs)
@@ -118,16 +118,16 @@ ENS Sepolia V3. The controller contract uses a completely different ABI from mai
 
 ## Integrations Summary
 
-| Integration | Status | Prize Target | Key Files |
-|------------|--------|-------------|-----------|
-| x402 (Coinbase) | ✅ Live, 20 USDC verified | $5K Base Agent Services | `agents/src/x402/` |
-| OpenServ | ✅ Agent #3973, tunnel healthy | $5K (2 tracks) | `agents/src/openserv/` |
-| Venice AI | ✅ Code-complete, simulation mode | ~$11.5K (VVV tokens) | `agents/src/venice/` |
-| MetaMask Delegation | ✅ Full demo, 6 enforcers | $5K | `agents/src/delegation/` |
-| ENS | ✅ Registered on Sepolia | $1.5K (3 tracks) | `agents/src/ens/` |
-| Celo | ✅ Deployed + 6 tasks on-chain | $5K | `agents/src/celo/` |
-| Filecoin | ⚠️ Code-complete, needs funding | $2K | `agents/src/filecoin/` |
-| ERC-8004 | ✅ 4 agents registered | $4K Protocol Labs | `agents/src/register-erc8004.js` |
+| Integration | Status | Key Files |
+|------------|--------|-----------|
+| x402 (Coinbase) | ✅ Live, 20 USDC verified | `agents/src/x402/` |
+| OpenServ | ✅ Agent #3973, tunnel healthy | `agents/src/openserv/` |
+| Venice AI | ✅ Code-complete, simulation mode | `agents/src/venice/` |
+| MetaMask Delegation | ✅ Full demo, 6 enforcers | `agents/src/delegation/` |
+| ENS | ✅ Registered on Sepolia | `agents/src/ens/` |
+| Celo | ✅ Deployed + 6 tasks on-chain | `agents/src/celo/` |
+| Filecoin | ⚠️ Code-complete, needs funding | `agents/src/filecoin/` |
+| ERC-8004 | ✅ 4 agents registered | `agents/src/register-erc8004.js` |
 
 ---
 
@@ -168,22 +168,6 @@ Key excerpt from the Build Story:
 > *"OpenServ turns a demo into a platform. The network effect is the product. We had a closed-loop two-agent system — then one `npm install` and 6 capability registrations later, any agent on OpenServ could discover tasks, post bounties, and settle payments through our contracts."*
 
 ---
-
-## Research & Strategy Documents
-
-Available in the repo root:
-
-| Document | Purpose |
-|----------|---------|
-| `synthesis-competitive-analysis.md` | Analysis of ~100+ competing Synthesis projects |
-| `venice-integration-analysis.md` | Venice TEE/E2EE technical evaluation |
-| `celo-integration-plan.md` | Celo deployment strategy |
-| `metamask-delegation-evaluation.md` | MetaMask Delegation bounty assessment |
-| `ens-integration-strategy.md` | ENS identity integration plan |
-| `filecoin-integration-progress.md` | Filecoin FOC integration tracker |
-| `ampersend-evaluation.md` | Ampersend SDK evaluation |
-| `synthesis-bounty-tracks.md` | All 44 verified prize tracks with analysis |
-| `lowest-hanging-fruit-analysis.md` | Prioritized bounty targets by effort/reward |
 
 ---
 

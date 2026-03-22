@@ -512,9 +512,8 @@ export default function AmpersendPage() {
             marginBottom: 16,
           }}>
             <span style={{ fontSize: 12, color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>
-              Synthesis Hackathon Prize #126
+              Synthesis Hackathon — Best Agent Built with Ampersend
             </span>
-            <span style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 700 }}>$500</span>
           </div>
 
           <h1 style={{
@@ -830,7 +829,7 @@ const response = await payFetch('https://seller-agent.example.com/api/task');`,
                 fontSize: 28,
                 color: 'var(--accent)',
               }}>
-                $500
+                Prize Track
               </div>
             </div>
             <div style={{

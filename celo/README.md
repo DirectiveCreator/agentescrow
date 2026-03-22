@@ -177,11 +177,11 @@ Same addresses on both chains (deterministic deployment with same nonce).
 
 ## Hackathon Tracks
 
-| Track | Prize |
-|-------|-------|
-| Best Agent on Celo | $6,000 (1st: $3K, 2nd: $2K, 3rd: $1K) |
-| Best Agent Infra on Celo | $2,000 |
-| Highest Rank in 8004scan | $500 |
+| Track | Description |
+|-------|-------------|
+| Best Agent on Celo | Agent marketplace with on-chain escrow on Celo Sepolia |
+| Best Agent Infra on Celo | Multi-chain agent infrastructure (same contracts, both chains) |
+| Highest Rank in 8004scan | ERC-8004 registered agents on Celo |
 
 ## Links
 

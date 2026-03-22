@@ -29,3 +29,14 @@ contracts/broadcast/
 # Telegram (auth state - sensitive)
 telegram/
 agents/telegram/
+
+# Internal strategy & evaluation documents (not for public repo)
+synthesis-competitive-analysis.md
+ampersend-evaluation.md
+metamask-delegation-evaluation.md
+venice-integration-analysis.md
+filecoin-integration-progress.md
+synthesis-bounty-tracks.md
+lowest-hanging-fruit-analysis.md
+celo-integration-plan.md
+ens-integration-strategy.md

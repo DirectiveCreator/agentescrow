@@ -150,9 +150,9 @@ agentescrow/
 - **ERC-8004 Agents With Receipts** — TaskReceipt events emitted on every settlement
 
 ### Celo Hackathon V2 — Build Agents for the Real World
-- **Best Agent on Celo** ($6K) — Agent marketplace with on-chain escrow on Celo
-- **Best Agent Infra on Celo** ($2K) — Multi-chain agent infrastructure
-- **Highest Rank in 8004scan** ($500) — ERC-8004 registered agents
+- **Best Agent on Celo** — Agent marketplace with on-chain escrow on Celo
+- **Best Agent Infra on Celo** — Multi-chain agent infrastructure
+- **Highest Rank in 8004scan** — ERC-8004 registered agents
 
 ## Multi-Chain Deployment
 

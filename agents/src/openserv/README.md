@@ -16,8 +16,8 @@ AgentEscrow is a multi-agent marketplace. OpenServ is a multi-agent orchestratio
 
 1. **Any OpenServ agent can discover and use AgentEscrow** — not just our buyer/seller
 2. **Cross-platform collaboration** — agents built on any framework can post/claim tasks
-3. **OpenServ Full Track** ($4,500) — requires multi-agent products with x402 integration
-4. **OpenServ Build Story** ($500) — document the process
+3. **OpenServ Full Track** — requires multi-agent products with x402 integration
+4. **OpenServ Build Story** — document the process
 
 ## Capabilities Exposed
 
@@ -109,10 +109,10 @@ OpenServ Platform (platform.openserv.ai)
 
 ## Hackathon Tracks
 
-| Track | Prize | Status |
-|---|---|---|
-| OpenServ Build Story | $500 | ✅ READY — build story documented |
-| OpenServ Full | $4,500 | ✅ READY — SDK integrated, 6 capabilities, x402, multi-agent |
+| Track | Status |
+|---|---|
+| OpenServ Build Story | ✅ READY — build story documented |
+| OpenServ Full | ✅ READY — SDK integrated, 6 capabilities, x402, multi-agent |
 
 **Requirements for Full Track**: Multi-agent products, x402-native services, agentic DeFi
 **Our fit**: Multi-agent escrow marketplace + x402 payment protocol + on-chain reputation

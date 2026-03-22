@@ -2120,18 +2120,18 @@ export default function Dashboard() {
               </h3>
               <div className="space-y-3">
                 {[
-                  { track: 'Open Track', prize: '$28,000', fit: 5, status: 'Draft Ready', desc: 'Community-funded pool. 1st $15K, 2nd $8K, 3rd $5K.' },
-                  { track: 'PL: Let the Agent Cook', prize: '$4,000', fit: 5, status: 'Strong Fit', desc: 'Fully autonomous agents: discover, plan, execute, verify, submit.' },
-                  { track: 'PL: Agents With Receipts', prize: '$4,000', fit: 5, status: 'ERC-8004 Done', desc: 'Trusted agent systems using ERC-8004 for identity, reputation & validation.' },
-                  { track: 'Base: Agent Services', prize: '$5,000', fit: 5, status: 'x402 Done', desc: 'Discoverable agent services on Base accepting payments via x402.' },
-                  { track: 'OpenServ Build Story', prize: '$500', fit: 5, status: 'Draft Ready', desc: 'Build log of our OpenServ integration journey.' },
-                  { track: 'OpenServ Full', prize: '$4,500', fit: 5, status: 'Integrated', desc: 'Full OpenServ SDK integration with 6 capabilities.' },
-                  { track: 'Venice AI', prize: '$11,500', fit: 5, status: 'Integrated', desc: 'TEE private cognition with attestation proofs.' },
-                  { track: 'ENS Identity', prize: '$600', fit: 5, status: 'Registered', desc: 'Agent identity via ENS subdomains + text records.' },
-                  { track: 'ENS Communication', prize: '$600', fit: 5, status: 'Built', desc: 'XMTP encrypted agent messaging via ENS.' },
-                  { track: 'MetaMask Delegation', prize: '$5,000', fit: 5, status: 'Integrated', desc: 'Smart account delegation for agent spending authority.' },
-                  { track: 'Celo: Best Agent', prize: '$5,000', fit: 5, status: 'Deployed', desc: 'Multi-chain deployment with on-chain demo tasks.' },
-                  { track: 'Filecoin FOC', prize: '$2,000', fit: 4, status: 'Built', desc: 'Decentralized storage for agent task data.' },
+                  { track: 'Open Track', fit: 5, status: 'Draft Ready', desc: 'Full-stack agent marketplace with trustless escrow.' },
+                  { track: 'PL: Let the Agent Cook', fit: 5, status: 'Strong Fit', desc: 'Fully autonomous agents: discover, plan, execute, verify, submit.' },
+                  { track: 'PL: Agents With Receipts', fit: 5, status: 'ERC-8004 Done', desc: 'Trusted agent systems using ERC-8004 for identity, reputation & validation.' },
+                  { track: 'Base: Agent Services', fit: 5, status: 'x402 Done', desc: 'Discoverable agent services on Base accepting payments via x402.' },
+                  { track: 'OpenServ Build Story', fit: 5, status: 'Draft Ready', desc: 'Build log of our OpenServ integration journey.' },
+                  { track: 'OpenServ Full', fit: 5, status: 'Integrated', desc: 'Full OpenServ SDK integration with 6 capabilities.' },
+                  { track: 'Venice AI', fit: 5, status: 'Integrated', desc: 'TEE private cognition with attestation proofs.' },
+                  { track: 'ENS Identity', fit: 5, status: 'Registered', desc: 'Agent identity via ENS subdomains + text records.' },
+                  { track: 'ENS Communication', fit: 5, status: 'Built', desc: 'XMTP encrypted agent messaging via ENS.' },
+                  { track: 'MetaMask Delegation', fit: 5, status: 'Integrated', desc: 'Smart account delegation for agent spending authority.' },
+                  { track: 'Celo: Best Agent', fit: 5, status: 'Deployed', desc: 'Multi-chain deployment with on-chain demo tasks.' },
+                  { track: 'Filecoin FOC', fit: 4, status: 'Built', desc: 'Decentralized storage for agent task data.' },
                 ].map(item => (
                   <div key={item.track} className="flex flex-col gap-1 px-4 py-3 rounded-lg"
                        style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
@@ -2139,7 +2139,6 @@ export default function Dashboard() {
                       <div className="flex-1">
                         <span className="text-[12px] font-semibold">{item.track}</span>
                       </div>
-                      <span className="text-[12px] font-mono" style={{ color: '#34D399' }}>{item.prize}</span>
                       <div className="flex gap-0.5">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <span key={i} className="text-[10px]" style={{ color: i < item.fit ? '#FF8800' : 'var(--text-quaternary)' }}>&#9733;</span>

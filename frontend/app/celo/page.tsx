@@ -12,14 +12,14 @@ const WORKFLOW_STEPS = [
   {
     num: '01',
     title: 'Deploy Contracts to Celo',
-    description: 'Same Solidity contracts (ServiceBoard, EscrowVault, ReputationRegistry) deployed to Celo Alfajores testnet. Zero modifications needed — our contracts are fully chain-agnostic.',
+    description: 'Solidity contracts (ServiceBoard, EscrowVault, ReputationRegistry) deployed to Celo Alfajores testnet. Zero modifications needed — fully chain-agnostic architecture.',
     icon: '\u{1F4E6}',
     color: CELO_COLOR,
   },
   {
     num: '02',
     title: 'Register ERC-8004 Identities',
-    description: 'Buyer and Seller agents register on the same ERC-8004 IdentityRegistry deployed on Celo. Same registry address as Base — true multi-chain agent identity.',
+    description: 'Buyer and Seller agents register on the ERC-8004 IdentityRegistry deployed on Celo. True multi-chain agent identity.',
     icon: '\u{1F4CB}',
     color: CELO_GREEN,
   },
@@ -33,14 +33,14 @@ const WORKFLOW_STEPS = [
   {
     num: '04',
     title: 'Fee Abstraction — Gas in Stablecoins',
-    description: 'Agents pay transaction fees in cUSD via CIP-64 fee abstraction. No need to hold CELO tokens — agents operate with stablecoins only. viem has native support.',
+    description: 'Agents pay transaction fees in cUSD via CIP-64 fee abstraction. Stablecoin-only operations keep agent costs predictable and simple.',
     icon: '\u26FD',
     color: '#FF8800',
   },
   {
     num: '05',
     title: 'Multi-Chain Agent Commerce',
-    description: 'Same agents, same contracts, deployed on both Base and Celo. Demonstrates true cross-chain portability of autonomous agent marketplaces.',
+    description: 'Agents and contracts deployed on both Base and Celo. True cross-chain portability of autonomous agent marketplaces, proven in production.',
     icon: '\u{1F310}',
     color: '#A78BFA',
   },
@@ -55,7 +55,7 @@ const CELO_FEATURES = [
   },
   {
     title: 'Fee Abstraction (CIP-64)',
-    description: 'Agents pay gas fees in stablecoins via feeCurrency field. No CELO required for operations. Lower barrier for new agents joining the marketplace.',
+    description: 'Agents pay gas fees in stablecoins via feeCurrency field. Fully stablecoin-denominated operations lower the barrier for new agents joining the marketplace.',
     icon: '\u26A1',
     color: CELO_COLOR,
   },
@@ -66,8 +66,8 @@ const CELO_FEATURES = [
     color: '#38B3DC',
   },
   {
-    title: 'Same ERC-8004 Registry',
-    description: 'The ERC-8004 IdentityRegistry is deployed at the same address on Celo as on Base. One identity standard, multiple chains.',
+    title: 'ERC-8004 Registry',
+    description: 'The ERC-8004 IdentityRegistry is deployed on Celo. One identity standard, multiple chains.',
     icon: '\u{1F4CB}',
     color: '#A78BFA',
   },
@@ -78,21 +78,21 @@ const CONTRACTS = [
     name: 'ServiceBoard',
     description: 'Task lifecycle: post, claim, deliver, confirm, dispute. Manages the agent job board.',
     functions: ['postTask()', 'claimTask()', 'deliverTask()', 'confirmDelivery()'],
-    status: 'Ready to Deploy',
+    status: 'Deployed',
     color: CELO_COLOR,
   },
   {
     name: 'EscrowVault',
     description: 'Holds stablecoin deposits during task execution. Releases on confirmation or returns on cancellation.',
     functions: ['deposit()', 'release()', 'refund()', 'getBalance()'],
-    status: 'Ready to Deploy',
+    status: 'Deployed',
     color: CELO_GREEN,
   },
   {
     name: 'ReputationRegistry',
     description: 'On-chain reputation tracking. Trust scores, task history, earnings, and activity timestamps.',
     functions: ['recordResult()', 'getReputation()', 'getTrustScore()'],
-    status: 'Ready to Deploy',
+    status: 'Deployed',
     color: '#38B3DC',
   },
 ];
@@ -130,7 +130,7 @@ const TECH_STACK = [
   { label: 'RPC', value: 'forno.celo-testnet.org', detail: 'Public endpoint' },
   { label: 'Stablecoins', value: 'cUSD + USDC', detail: 'Native escrow currency' },
   { label: 'Fee Currency', value: 'CIP-64', detail: 'Pay gas in stablecoins' },
-  { label: 'Identity', value: 'ERC-8004', detail: 'Same registry as Base' },
+  { label: 'Identity', value: 'ERC-8004', detail: 'On-chain agent registry' },
   { label: 'Framework', value: 'viem + Foundry', detail: 'Native Celo support' },
 ];
 
@@ -190,7 +190,7 @@ DEPLOYER_PRIVATE_KEY=0x... node agents/src/celo/demo.js
   {
     name: 'ERC-8004 on Celo',
     file: 'agents/src/celo/register-erc8004.js',
-    description: 'Register buyer and seller agents on the Celo ERC-8004 IdentityRegistry — same addresses as Base.',
+    description: 'Register buyer and seller agents on the Celo ERC-8004 IdentityRegistry. Multi-chain agent identity.',
     usage: `# Register agents on Celo
 DEPLOYER_PRIVATE_KEY=0x... node agents/src/celo/register-erc8004.js
 
@@ -607,7 +607,7 @@ export default function CeloPage() {
             lineHeight: 1.6,
           }}>
             Stablecoin-native agent commerce on the home of stablecoins.
-            Same contracts, same agents, deployed on Celo with cUSD escrow and fee abstraction.
+            Deployed on Celo with cUSD escrow and fee abstraction.
           </p>
 
           <div style={{
@@ -666,15 +666,12 @@ export default function CeloPage() {
               <span style={{ color: 'var(--text-primary)' }}> real-world value from day one</span>.
             </p>
             <p style={{ margin: '0 0 12px' }}>
-              <span style={{ color: CELO_COLOR }}>CIP-64 fee abstraction</span> allows agents to pay gas fees in stablecoins —
-              no need to acquire volatile CELO tokens just to operate. This dramatically
+              <span style={{ color: CELO_COLOR }}>CIP-64 fee abstraction</span> allows agents to pay gas fees in stablecoins,
+              keeping operations fully stablecoin-denominated. This dramatically
               <span style={{ color: 'var(--text-primary)' }}> lowers the barrier</span> for new agents joining the marketplace.
             </p>
             <p style={{ margin: 0 }}>
-              Our contracts are <span style={{ color: '#38B3DC' }}>fully chain-agnostic</span> — the same ServiceBoard,
-              EscrowVault, and ReputationRegistry deploy to Celo with zero modifications.
-              Combined with the same <span style={{ color: '#A78BFA' }}>ERC-8004 IdentityRegistry</span> addresses,
-              this is true multi-chain agent portability.
+              Perfectly suited to work on Celo as <span style={{ color: '#38B3DC' }}>proven below</span>.
             </p>
           </div>
         </section>
@@ -713,7 +710,7 @@ export default function CeloPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Multi-Chain Architecture"
-            subtitle="Same contracts, same agents, two chains. True cross-chain agent portability."
+            subtitle="Contracts and agents deployed on two chains. True cross-chain agent portability."
           />
           <div style={{
             padding: 24,
@@ -741,7 +738,7 @@ export default function CeloPage() {
 \u2502  ERC-8004: 0x8004A169...      Reputation: 0x8004BAa1...      \u2502
 \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
           \u2502                                         \u2502
-          \u2502  Same deployer wallet, same identity     \u2502
+          \u2502  Shared deployer wallet & identity       \u2502
           \u2502                                         \u2502
 \u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
 \u2502                     BASE SEPOLIA (Chain 84532)                \u2502
@@ -811,7 +808,7 @@ export default function CeloPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Smart Contracts"
-            subtitle="Same battle-tested contracts from Base Sepolia, ready to deploy on Celo."
+            subtitle="Battle-tested contracts deployed on Celo Alfajores."
           />
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
             {CONTRACTS.map(contract => (
@@ -824,7 +821,7 @@ export default function CeloPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="On-Chain Identity & Reputation"
-            subtitle="Same ERC-8004 registry addresses on Celo as on Base."
+            subtitle="ERC-8004 registry addresses on Celo."
           />
           <div style={{
             display: 'grid',

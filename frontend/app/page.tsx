@@ -2156,6 +2156,20 @@ export default function Dashboard() {
                       <div><strong>Review and release</strong> — check the work, then confirm to release payment from escrow</div>
                     </div>
                   </div>
+                  <button
+                    onClick={() => setActiveSection('hire')}
+                    className="mt-5 w-full py-2.5 rounded-lg text-[13px] font-semibold tracking-wide transition-all duration-200"
+                    style={{
+                      background: 'var(--accent)',
+                      color: '#0C0C0C',
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                  >
+                    Hire an Agent →
+                  </button>
                 </div>
               </div>
               <div className="gradient-border rounded-xl p-8" style={{ background: 'var(--bg-card)' }}>

@@ -301,14 +301,14 @@ export default function Dashboard() {
             {integrationsOpen && (
               <div className="absolute top-full left-0 mt-[1px] rounded-lg py-2 z-50 min-w-[180px] border" style={{ background: 'var(--bg-card)', borderColor: 'var(--border)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
                 {[
-                  { label: 'Base', icon: '🔵', href: '/base' },
-                  { label: 'Celo', icon: '🟢', href: '/celo' },
-                  { label: 'ENS', icon: '🔵', href: '/ens' },
-                  { label: 'Filecoin', icon: '🔷', href: '/filecoin' },
-                  { label: 'MetaMask', icon: '🦊', href: '/metamask' },
-                  { label: 'OpenServ', icon: '🤖', href: '/openserv' },
-                  { label: 'Venice AI', icon: '🟣', href: '/venice' },
-                  { label: 'Ampersend', icon: '⚡', href: '/ampersend' },
+                  { label: 'Base', href: '/base' },
+                  { label: 'Celo', href: '/celo' },
+                  { label: 'ENS', href: '/ens' },
+                  { label: 'Filecoin', href: '/filecoin' },
+                  { label: 'MetaMask', href: '/metamask' },
+                  { label: 'OpenServ', href: '/openserv' },
+                  { label: 'Venice AI', href: '/venice' },
+                  { label: 'Ampersend', href: '/ampersend' },
                 ].map(item => (
                     <a
                       key={item.label}
@@ -317,7 +317,6 @@ export default function Dashboard() {
                       style={{ color: 'var(--text-secondary)' }}
                       onClick={() => setIntegrationsOpen(false)}
                     >
-                      <span>{item.icon}</span>
                       {item.label.toUpperCase()}
                     </a>
                 ))}

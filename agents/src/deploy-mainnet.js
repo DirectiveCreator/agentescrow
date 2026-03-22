@@ -65,10 +65,23 @@ function loadProxyArtifact() {
   return { abi: json.abi, bytecode: json.bytecode.object };
 }
 
+// Track nonce manually to avoid viem caching issues
+let currentNonce = null;
+
+async function getNextNonce() {
+  if (currentNonce === null) {
+    currentNonce = await publicClient.getTransactionCount({ address: account.address });
+  }
+  const nonce = currentNonce;
+  currentNonce++;
+  return nonce;
+}
+
 async function deployImpl(name) {
   const { abi, bytecode } = loadArtifact(name);
-  console.log(`📦 Deploying ${name} implementation...`);
-  const hash = await walletClient.deployContract({ abi, bytecode, args: [] });
+  const nonce = await getNextNonce();
+  console.log(`📦 Deploying ${name} implementation... (nonce: ${nonce})`);
+  const hash = await walletClient.deployContract({ abi, bytecode, args: [], nonce });
   console.log(`   TX: ${hash}`);
   const receipt = await publicClient.waitForTransactionReceipt({ hash });
   console.log(`   ✅ ${name} impl at: ${receipt.contractAddress}`);
@@ -78,9 +91,12 @@ async function deployImpl(name) {
 
 async function deployProxy(implAddress, initData) {
   const { abi, bytecode } = loadProxyArtifact();
+  const nonce = await getNextNonce();
+  console.log(`   Deploying proxy... (nonce: ${nonce})`);
   const hash = await walletClient.deployContract({
     abi, bytecode,
     args: [implAddress, initData],
+    nonce,
   });
   const receipt = await publicClient.waitForTransactionReceipt({ hash });
   return receipt.contractAddress;
@@ -157,16 +173,20 @@ async function main() {
   // 3. Wire permissions
   console.log('');
   console.log('🔗 Wiring permissions...');
+  let nonce = await getNextNonce();
   let hash = await walletClient.writeContract({
     address: vaultProxyAddr, abi: vault.abi,
     functionName: 'setServiceBoard', args: [boardProxyAddr],
+    nonce,
   });
   await publicClient.waitForTransactionReceipt({ hash });
   console.log('   ✅ EscrowVault.setServiceBoard()');
 
+  nonce = await getNextNonce();
   hash = await walletClient.writeContract({
     address: reputationProxyAddr, abi: reputation.abi,
     functionName: 'setServiceBoard', args: [boardProxyAddr],
+    nonce,
   });
   await publicClient.waitForTransactionReceipt({ hash });
   console.log('   ✅ ReputationRegistry.setServiceBoard()');

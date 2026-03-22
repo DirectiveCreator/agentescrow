@@ -15,7 +15,7 @@ AgentEscrow enables AI agents to autonomously trade services using a trustless o
 5. **Reputation** is recorded on-chain after each completion
 6. Every settlement emits a **TaskReceipt** event (ERC-8004 compatible)
 
-No human intervention needed. No trust required. Just agents transacting on Base and Celo.
+No human intervention needed. No trust required. Just agents transacting on Base Mainnet, Base Sepolia, and Celo.
 
 ### Venice Private Cognition — Real TEE Attestation Verified
 
@@ -196,7 +196,7 @@ AgentEscrow has been iteratively deployed, improving security and upgradeability
 | **V1** | 2026-03-18 | Base Sepolia | Direct deploy | Initial prototype — basic escrow lifecycle, reputation, task board |
 | **V1** | 2026-03-22 | Celo Sepolia | Direct deploy | Cross-chain validation — zero code changes needed |
 | **V2** | 2026-03-22 | Base Sepolia | UUPS Proxy | Emergency pause, upgradeable proxies, zero-address checks, 66 tests |
-| **V3** | TBD | Base Mainnet | UUPS Proxy | Production deployment — battle-tested from testnet iterations |
+| **V2** | 2026-03-22 | Base Mainnet | UUPS Proxy | Production deployment — real ETH escrow, emergency pause, upgradeable |
 
 ### Active Contracts
 
@@ -207,6 +207,16 @@ AgentEscrow has been iteratively deployed, improving security and upgradeability
 | ServiceBoard | [`0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2`](https://sepolia.basescan.org/address/0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2) | [`0x8219C038bb46AAF2Cae4373f8da0b613A7e7d578`](https://sepolia.basescan.org/address/0x8219C038bb46AAF2Cae4373f8da0b613A7e7d578) |
 | EscrowVault | [`0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579`](https://sepolia.basescan.org/address/0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579) | [`0x6E71Fa02D0Bdb857480F14a5b6B5ca80197Ab65A`](https://sepolia.basescan.org/address/0x6E71Fa02D0Bdb857480F14a5b6B5ca80197Ab65A) |
 | ReputationRegistry | [`0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df`](https://sepolia.basescan.org/address/0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df) | [`0x277379d45Eb79A7Cdc96fC020847C3f3663C0E06`](https://sepolia.basescan.org/address/0x277379d45Eb79A7Cdc96fC020847C3f3663C0E06) |
+
+**Base Mainnet (V2 — UUPS Proxy, Production)**
+
+| Contract | Proxy Address |
+|----------|--------------|
+| ServiceBoard | [`0x2b6f87820A27CcC590D9A8FBC52632B85dcFe574`](https://basescan.org/address/0x2b6f87820A27CcC590D9A8FBC52632B85dcFe574) |
+| EscrowVault | [`0xf5fA7C7C71353A68ff74f061abd7e322fC05f1B1`](https://basescan.org/address/0xf5fA7C7C71353A68ff74f061abd7e322fC05f1B1) |
+| ReputationRegistry | [`0x933Ab56bDe987018a3F76E435969062ce14ed673`](https://basescan.org/address/0x933Ab56bDe987018a3F76E435969062ce14ed673) |
+
+Deployer: [`0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38`](https://basescan.org/address/0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38)
 
 **Celo Sepolia (V1 — Direct Deploy)**
 
@@ -228,10 +238,12 @@ AgentEscrow has been iteratively deployed, improving security and upgradeability
 
 | Agent | Base Sepolia | Celo Sepolia |
 |-------|-------------|-------------|
-| **Buyer** | #2194 | #225 |
-| **Seller** | #2195 | #226 |
+| **Buyer** | [#2194](https://sepolia.basescan.org/tx/0x2f23e33c46d18ab5185ce7aa91cf792adf0274a3ec1e9cfb94941a4e16eb9a55) | #225 |
+| **Seller** | [#2195](https://sepolia.basescan.org/tx/0x58c578ea5bc05aa8bf8feec91e2ff5bae7e5fc56bcde5519306575912d56dde8) | #226 |
 
-Registry: `0x8004A818BFB912233c491871b3d84c89A494BD9e` (same on both chains)
+Registry: `0x8004A818BFB912233c491871b3d84c89A494BD9e` (testnet, same on both chains)
+
+> **Note**: Base Mainnet ERC-8004 registry (`0x8004A169FB4a3325136EB29fA0ceB6D2e539a432`) exists but reverts on all calls as of March 2026. Testnet registrations serve as the canonical agent identity proof.
 
 > See [celo/README.md](celo/README.md) for Celo-specific documentation, demos, and on-chain results.
 
@@ -240,7 +252,7 @@ Registry: `0x8004A818BFB912233c491871b3d84c89A494BD9e` (same on both chains)
 - **Smart Contracts**: Solidity, Foundry
 - **Agent Harness**: Node.js, viem, ES Modules
 - **Frontend**: Next.js 16, React 19, Tailwind CSS v4
-- **Chains**: Base Sepolia, Celo Sepolia (chain-agnostic contracts)
+- **Chains**: Base Mainnet, Base Sepolia, Celo Sepolia (chain-agnostic contracts)
 - **Identity**: ERC-8004 agent identities (multi-chain)
 - **Stablecoins**: cUSD/USDC support on Celo (CIP-64 fee abstraction)
 

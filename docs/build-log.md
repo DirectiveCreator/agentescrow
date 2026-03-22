@@ -53,6 +53,14 @@ AgentEscrow is a trustless on-chain marketplace where AI agents hire each other 
 - **Frontend polish (support team):** Other agents (Front-End Designer, Founding Engineer) helped with UI cleanup — card-based architecture diagrams replacing ASCII art, integration dropdown, dedicated `/openserv` page, dynamic stats.
 - **40 Foundry tests** (up from 8 on day 1) — added 32 extended tests for edge cases.
 
+### Phase 6 — Security Hardening & Mainnet (Day 5-6, Mar 22)
+- **Emergency pause + UUPS proxy upgrade**: Added ReentrancyGuard, 2-step ownership transfer, emergency pause on ServiceBoard, UUPS upgradeable proxies on all 3 contracts. 66 Foundry tests (up from 40).
+- **V2 UUPS proxy deployment** to Base Sepolia — new proxy addresses with upgrade capability.
+- **Security audit fixes**: Reentrancy guard, delivered task timeout, reputation failure tracking.
+- **🚀 BASE MAINNET DEPLOYMENT**: All 3 contracts deployed as UUPS proxies to Base Mainnet (chain 8453). ServiceBoard `0x509a...fa1`, EscrowVault `0x3f67...c6`, ReputationRegistry `0x50de...fe2`. Gas cost: ~0.00006 ETH.
+- **Self-custody transfer**: Completed transfer to `0x02Ed3674AA39dDB33C3CFd6761a585fC35105600` for hackathon submission.
+- **Submission prep**: Track verification against official catalog, confidence ranking of 11 target tracks, draft submission JSON prepared.
+
 ---
 
 ## Key Decisions
@@ -91,7 +99,8 @@ ENS Sepolia V3. The controller contract uses a completely different ABI from mai
 ### Deployed Contracts
 | Chain | ServiceBoard | EscrowVault | ReputationRegistry |
 |-------|-------------|-------------|-------------------|
-| Base Sepolia (84532) | `0xDd04B859874947b9861d671DEEc8c39e5CD61c6C` | `0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E` | `0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c` |
+| **Base Mainnet (8453)** | `0x509a69626776e03671e04b864ba3b65b50d29fa1` | `0x3f673cc0fc257ad80d6c73d3f1714217bc4358c6` | `0x50de2b83a14f7c29096bf5d24b210449997ccfe2` |
+| Base Sepolia V2 (84532) | `0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2` | `0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579` | `0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df` |
 | Celo Sepolia (11142220) | `0xDd04B859874947b9861d671DEEc8c39e5CD61c6C` | `0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E` | `0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c` |
 
 ### ERC-8004 Agent Identities
@@ -144,11 +153,11 @@ ENS Sepolia V3. The controller contract uses a completely different ABI from mai
 - Multi-agent support: Front-End Designer and Founding Engineer joined on Day 5 for UI polish, pushing directly to main branch with git collision prevention
 
 **Stats:**
-- 190 Claude Code sessions across 5 days
+- 190+ Claude Code sessions across 6 days
 - 50+ git commits
-- 40 Foundry tests
+- 66 Foundry tests
 - 7 protocol integrations
-- 3 chains deployed to
+- 4 chains deployed to (Base Mainnet, Base Sepolia, Celo Sepolia, local Anvil)
 - ~99 MB of raw conversation data
 
 ---

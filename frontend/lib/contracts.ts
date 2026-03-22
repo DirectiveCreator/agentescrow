@@ -55,11 +55,11 @@ const CELO_SEPOLIA_CONTRACTS = {
   reputationRegistry: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c',
 };
 
-// Base Mainnet contracts (filled after deployment)
+// Base Mainnet contracts — V2 UUPS Proxy deployment (2026-03-22)
 const BASE_MAINNET_CONTRACTS = {
-  serviceBoard: process.env.NEXT_PUBLIC_BASE_MAINNET_SERVICE_BOARD || '',
-  escrowVault: process.env.NEXT_PUBLIC_BASE_MAINNET_ESCROW_VAULT || '',
-  reputationRegistry: process.env.NEXT_PUBLIC_BASE_MAINNET_REPUTATION_REGISTRY || '',
+  serviceBoard: process.env.NEXT_PUBLIC_BASE_MAINNET_SERVICE_BOARD || '0x2b6f87820A27CcC590D9A8FBC52632B85dcFe574',
+  escrowVault: process.env.NEXT_PUBLIC_BASE_MAINNET_ESCROW_VAULT || '0xf5fA7C7C71353A68ff74f061abd7e322fC05f1B1',
+  reputationRegistry: process.env.NEXT_PUBLIC_BASE_MAINNET_REPUTATION_REGISTRY || '0x933Ab56bDe987018a3F76E435969062ce14ed673',
 };
 
 // Active contracts — defaults to Base Sepolia V2, switches to mainnet when enabled
@@ -116,12 +116,16 @@ export const DEPLOYMENT_HISTORY = {
     explorer: 'https://celo-sepolia.blockscout.com',
   },
   mainnet: {
-    version: 'V3 (Planned)',
-    date: 'TBD',
+    version: 'V2',
+    date: '2026-03-22',
     chain: 'Base Mainnet',
     type: 'UUPS Proxy (Production)',
-    features: ['Production deployment', 'Battle-tested from testnet iterations'],
-    contracts: { serviceBoard: 'TBD', escrowVault: 'TBD', reputationRegistry: 'TBD' },
+    features: ['Production deployment', 'Battle-tested from testnet iterations', 'Real ETH escrow', 'Emergency pause', 'UUPS upgradeable'],
+    contracts: {
+      serviceBoard: '0x2b6f87820A27CcC590D9A8FBC52632B85dcFe574',
+      escrowVault: '0xf5fA7C7C71353A68ff74f061abd7e322fC05f1B1',
+      reputationRegistry: '0x933Ab56bDe987018a3F76E435969062ce14ed673',
+    },
     explorer: 'https://basescan.org',
   },
 };
@@ -142,7 +146,8 @@ export const publicClient = createPublicClient({
 // Create a wallet client from browser wallet (MetaMask etc.)
 export function getWalletClient(chainId?: number): WalletClient | null {
   if (typeof window === 'undefined' || !window.ethereum) return null;
-  const targetChain = chainId === 11142220 ? celoSepolia : baseSepolia;
+  const targetChain = isMainnet && chainId === 8453 ? base :
+    chainId === 11142220 ? celoSepolia : baseSepolia;
   return createWalletClient({
     chain: targetChain,
     transport: custom(window.ethereum),
@@ -151,6 +156,9 @@ export function getWalletClient(chainId?: number): WalletClient | null {
 
 // Get public client for a specific chain
 export function getPublicClientForChain(chainId: number) {
+  if (chainId === 8453) {
+    return createPublicClient({ chain: base, transport: http('https://mainnet.base.org') });
+  }
   if (chainId === 11142220) {
     return createPublicClient({ chain: celoSepolia, transport: http('https://forno.celo-sepolia.celo-testnet.org') });
   }
@@ -193,7 +201,9 @@ export async function switchChain(chainId: number): Promise<boolean> {
               : { name: 'Ether', symbol: 'ETH', decimals: 18 },
             rpcUrls: chainId === 11142220
               ? ['https://forno.celo-sepolia.celo-testnet.org']
-              : ['https://sepolia.base.org'],
+              : chainId === 8453
+                ? ['https://mainnet.base.org']
+                : ['https://sepolia.base.org'],
             blockExplorerUrls: [chainInfo.explorer],
           }],
         });

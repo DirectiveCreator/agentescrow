@@ -2243,18 +2243,29 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* V3 — Mainnet (Planned) */}
+                {/* V2 — Base Mainnet (LIVE) */}
                 <div className="relative">
-                  <div className="absolute left-[-20px] top-[6px] w-[18px] h-[18px] rounded-full border-2 border-dashed" style={{ borderColor: '#3B82F680', background: 'var(--bg-primary)' }}>
-                    <div className="w-[8px] h-[8px] rounded-full m-[3px]" style={{ background: '#3B82F640' }} />
+                  <div className="absolute left-[-20px] top-[6px] w-[18px] h-[18px] rounded-full border-2" style={{ borderColor: '#22C55E', background: 'var(--bg-primary)' }}>
+                    <div className="w-[8px] h-[8px] rounded-full m-[3px]" style={{ background: '#22C55E' }} />
                   </div>
                   <div className="ml-2">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="text-xs font-mono px-2 py-0.5 rounded border-dashed" style={{ background: '#3B82F610', color: '#3B82F680', border: '1px dashed #3B82F640' }}>V3</span>
-                      <span className="text-xs" style={{ color: '#3B82F680' }}>Planned · Base Mainnet</span>
+                      <span className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: '#22C55E20', color: '#22C55E', border: '1px solid #22C55E40' }}>V2</span>
+                      <span className="text-xs" style={{ color: '#22C55E' }}>2026-03-22 · Base Mainnet · LIVE</span>
                     </div>
-                    <h4 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-tertiary)' }}>Production Deploy — Base Mainnet</h4>
-                    <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Battle-tested from two testnet iterations. UUPS proxies for future upgrades. Same deployer wallet, production-grade.</p>
+                    <h4 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Production Deploy — Base Mainnet</h4>
+                    <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>Battle-tested from two testnet iterations. UUPS proxies, emergency pause, real ETH escrow. Task lifecycle verified on-chain.</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { name: 'ServiceBoard', addr: '0x2b6f87820A27CcC590D9A8FBC52632B85dcFe574' },
+                        { name: 'EscrowVault', addr: '0xf5fA7C7C71353A68ff74f061abd7e322fC05f1B1' },
+                        { name: 'ReputationRegistry', addr: '0x933Ab56bDe987018a3F76E435969062ce14ed673' },
+                      ].map(c => (
+                        <a key={c.name} href={`https://basescan.org/address/${c.addr}`} target="_blank" rel="noopener noreferrer" className="text-xs font-mono px-2 py-1 rounded hover:opacity-80 transition-opacity" style={{ background: '#22C55E10', border: '1px solid #22C55E40', color: '#22C55E' }}>
+                          {c.name}: {c.addr.slice(0,6)}...{c.addr.slice(-4)} ↗
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>

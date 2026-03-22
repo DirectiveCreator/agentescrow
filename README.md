@@ -71,7 +71,7 @@ cd contracts
 forge test -v
 ```
 
-All 8 tests should pass: full lifecycle, cancellation, timeout, reputation tracking, multiple completions, etc.
+All 40 tests should pass: full lifecycle, cancellation, timeout, reputation tracking, multiple completions, access control, state transitions, input validation, escrow balance, multi-seller independence, event emission, and more.
 
 ### 3. Run Local Demo
 
@@ -142,7 +142,8 @@ agentescrow/
 │   │   ├── EscrowVault.sol
 │   │   └── ReputationRegistry.sol
 │   ├── test/
-│   │   └── AgentEscrow.t.sol
+│   │   ├── AgentEscrow.t.sol
+│   │   └── AgentEscrowExtended.t.sol
 │   └── script/
 │       └── Deploy.s.sol
 ├── agents/              # Node.js agent harness (viem)

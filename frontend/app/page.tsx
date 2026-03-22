@@ -393,7 +393,7 @@ export default function Dashboard() {
       {/* ── Navigation ── */}
       <nav className="border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 flex gap-0">
-          {(['overview', 'hire', 'join', 'board', 'architecture', 'build-story'] as const).map(section => (
+          {(['overview', 'join', 'hire', 'board', 'architecture', 'build-story'] as const).map(section => (
             <button
               key={section}
               onClick={() => { setActiveSection(section); setIntegrationsOpen(false); }}

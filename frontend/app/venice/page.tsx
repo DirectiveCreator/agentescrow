@@ -3,145 +3,261 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-// --- Data ---------------------------------------------------------------
+// ─── Data ───────────────────────────────────────────────────────────────────
 
-const VENICE_ACCENT = '#A855F7';
-
-const PRIVACY_TIERS = [
-  {
-    title: 'Standard',
-    description: 'Venice-controlled GPUs, zero data retention, contractual privacy. Prompts and outputs never stored or used for training.',
-    icon: '🔒',
-    color: '#A78BFA',
-    features: ['Zero data retention', 'Contractual privacy', 'Venice-controlled GPUs'],
-  },
-  {
-    title: 'TEE',
-    description: 'Intel TDX / NVIDIA H100 enclaves via Phala/NEAR. Hardware-level isolation with remote attestation — not even Venice can see your data.',
-    icon: '🛡️',
-    color: '#A855F7',
-    features: ['Hardware isolation', 'Remote attestation', 'Intel TDX / NVIDIA H100'],
-  },
-  {
-    title: 'E2EE',
-    description: 'Client-side encryption, TEE decryption, re-encryption of output. Verifiable end-to-end privacy with attestation + signatures.',
-    icon: '🔐',
-    color: '#7C3AED',
-    features: ['Client-side encryption', 'TEE decryption + re-encryption', 'Attestation + signatures'],
-  },
-];
+const VENICE_PURPLE = '#A855F7';
+const VENICE_LIGHT = '#C084FC';
+const VENICE_TEAL = '#38B3DC';
+const VENICE_GREEN = '#34D399';
 
 const WORKFLOW_STEPS = [
   {
     num: '01',
-    title: 'Agent Receives Task from ServiceBoard',
-    description: 'A seller agent picks up a posted task from the on-chain ServiceBoard contract. The task details and payment are locked in escrow.',
-    icon: '📋',
-    color: '#A78BFA',
+    title: 'Seller Discovers Task on ServiceBoard',
+    description: 'A task is posted on-chain by the buyer with ETH locked in escrow. The Venice-enhanced seller agent monitors ServiceBoard for new tasks matching its capabilities.',
+    icon: '\u{1F4CB}',
+    color: VENICE_PURPLE,
   },
   {
     num: '02',
-    title: 'Task Sent to Venice TEE for Private Evaluation',
-    description: 'The agent sends the task to Venice AI for private evaluation inside a Trusted Execution Environment. Strategy and reasoning remain completely hidden.',
-    icon: '🛡️',
-    color: '#A855F7',
+    title: 'Private Task Evaluation via TEE',
+    description: 'Before claiming, the seller sends the task to Venice TEE for private evaluation. Strategy assessment, profitability analysis, and capability matching all happen inside an Intel TDX enclave — hidden from competitors and the network.',
+    icon: '\u{1F6E1}\uFE0F',
+    color: VENICE_LIGHT,
   },
   {
     num: '03',
-    title: 'Venice Returns Decision + Cryptographic Attestation',
-    description: 'Venice returns the inference result along with a cryptographic attestation proving the computation happened inside a genuine TEE enclave.',
-    icon: '📜',
-    color: '#7C3AED',
+    title: 'Private Task Execution via TEE',
+    description: 'After claiming, the seller executes the actual work inside Venice TEE. All reasoning, intermediate steps, and analysis happen in the enclave. Only the final result exits — the thinking process stays private.',
+    icon: '\u26A1',
+    color: VENICE_TEAL,
   },
   {
     num: '04',
-    title: 'Agent Executes Work via TEE Inference',
-    description: 'The agent executes the actual task work using Venice TEE inference. All reasoning happens inside the enclave — private, verifiable, and tamper-proof.',
-    icon: '⚡',
-    color: '#6D28D9',
+    title: 'Attestation-Backed Delivery',
+    description: 'Venice returns a cryptographic attestation proving the computation happened inside a genuine TEE. The delivery hash submitted on-chain combines the work hash + attestation hash — verifiable proof of honest computation.',
+    icon: '\u{1F4DC}',
+    color: VENICE_GREEN,
   },
   {
     num: '05',
-    title: 'Attestation Hash Stored On-Chain with Delivery',
-    description: 'The attestation hash is submitted alongside the delivery to ServiceBoard on Base Sepolia. Buyers can verify the computation was honest before confirming.',
-    icon: '🔗',
-    color: '#5B21B6',
+    title: 'Private Delivery Verification by Buyer',
+    description: 'The buyer verifies delivery quality privately via Venice TEE. Quality criteria, scoring logic, and acceptance thresholds stay hidden from the seller. Both sides maintain strategic privacy throughout the entire lifecycle.',
+    icon: '\u2705',
+    color: '#F59E0B',
   },
 ];
 
-const INTEGRATION_POINTS = [
+const VENICE_FEATURES = [
   {
+    icon: '\u{1F512}',
     title: 'Private Task Evaluation',
-    description: 'Seller evaluates tasks inside a TEE — strategy, pricing logic, and decision-making stay completely hidden from competitors and the network.',
-    icon: '🤖',
-    color: '#A855F7',
+    description: 'Seller evaluates tasks inside a TEE before claiming. Strategy, pricing logic, and capability assessment are completely hidden from competitors and the network. Prevents front-running and strategic leakage.',
+    color: VENICE_PURPLE,
   },
   {
+    icon: '\u{1F9E0}',
+    title: 'Private Work Execution',
+    description: 'All AI reasoning during task execution happens inside the TEE enclave. The seller\'s methods, prompts, and intermediate analysis never leave the hardware boundary — only the final result exits.',
+    color: VENICE_LIGHT,
+  },
+  {
+    icon: '\u{1F50D}',
     title: 'Private Quality Verification',
-    description: 'Buyer checks delivery quality privately using Venice TEE inference. Verification criteria and quality thresholds remain confidential.',
-    icon: '✅',
+    description: 'Buyer verifies delivery quality via TEE inference. Evaluation criteria, quality thresholds, and scoring logic remain confidential. The seller never learns what the buyer is checking for.',
+    color: VENICE_TEAL,
+  },
+  {
+    icon: '\u{1F4DD}',
+    title: 'Cryptographic Attestation',
+    description: 'Every Venice TEE inference returns a cryptographic attestation proving computation integrity. Attestation hashes are embedded in on-chain deliveries, creating verifiable proof of honest computation.',
+    color: VENICE_GREEN,
+  },
+  {
+    icon: '\u{1F504}',
+    title: 'Graceful Fallback',
+    description: 'If Venice is unavailable or no API key is set, agents automatically fall back to standard (non-private) execution. The same task lifecycle works with or without Venice — privacy is additive, not required.',
+    color: '#F59E0B',
+  },
+  {
+    icon: '\u{1F517}',
+    title: 'On-Chain Proof Chain',
+    description: 'Delivery hashes on ServiceBoard combine work hash + attestation hash. Anyone can verify via the Venice attestation API that the work was computed honestly inside a TEE, without seeing the actual reasoning.',
+    color: '#EC4899',
+  },
+];
+
+const ON_CHAIN_FACTS = [
+  { label: 'API', value: 'OpenAI-Compatible', detail: 'Drop-in replacement' },
+  { label: 'Privacy', value: 'TEE + E2EE', detail: 'Hardware-enforced' },
+  { label: 'Attestation', value: 'Cryptographic', detail: 'Verifiable on-chain' },
+  { label: 'Chain', value: 'Base Sepolia', detail: 'Escrow + Reputation' },
+];
+
+const PRIVACY_TIERS = [
+  {
+    name: 'Standard',
+    description: 'Venice-controlled GPUs with zero data retention. Prompts and outputs are never stored or used for training. Contractual privacy guarantee.',
+    icon: '\u{1F512}',
+    color: '#A78BFA',
+    usedFor: 'General agent tasks where contractual privacy is sufficient.',
+  },
+  {
+    name: 'TEE (Trusted Execution Environment)',
+    description: 'Intel TDX / NVIDIA H100 enclaves via Phala/NEAR. Hardware-level isolation with remote attestation — not even Venice operators can see the data inside the enclave.',
+    icon: '\u{1F6E1}\uFE0F',
+    color: VENICE_PURPLE,
+    usedFor: 'Task evaluation, work execution, delivery verification — all privacy-critical steps in AgentEscrow.',
+  },
+  {
+    name: 'E2EE (End-to-End Encrypted)',
+    description: 'Client-side encryption before sending to Venice, TEE decryption inside enclave, re-encryption of output. Fully verifiable end-to-end privacy with attestation + response signatures.',
+    icon: '\u{1F510}',
     color: '#7C3AED',
+    usedFor: 'Maximum privacy scenarios where even network transport must be protected.',
   },
+];
+
+const AGENT_FILES = [
   {
-    title: 'Private Task Generation',
-    description: 'Generate detailed task specifications privately, posting only the minimum required information on-chain. Full specs stay encrypted.',
-    icon: '📝',
-    color: '#6D28D9',
-  },
-  {
-    title: 'Attestation-Backed Delivery',
-    description: 'Every delivery includes cryptographic proof of honest computation. Attestation records are verifiable on-chain and stored permanently.',
-    icon: '🔏',
-    color: '#5B21B6',
-  },
-];
+    name: 'Venice Client',
+    file: 'agents/src/venice/client.js',
+    description: 'Core Venice API client with TEE/E2EE support, attestation retrieval, and three high-level methods: evaluateTaskPrivately(), executeTaskPrivately(), verifyDeliveryPrivately().',
+    usage: `import { createVeniceClient, PRIVACY_TIERS } from './venice/client.js';
 
-const TECH_DETAILS = [
-  { label: 'API Endpoint', value: 'https://api.venice.ai/api/v1', detail: 'OpenAI-compatible' },
-  { label: 'TEE Model (Reasoning)', value: 'tee-deepseek-r1-671b', detail: 'Deep reasoning' },
-  { label: 'TEE Model (General)', value: 'tee-qwen-2.5-vl-72b', detail: 'General purpose' },
-  { label: 'TEE Model (Fast)', value: 'tee-llama-3.3-70b', detail: 'Low latency' },
-  { label: 'Attestation', value: 'GET /api/v1/tee/attestation', detail: 'Cryptographic proof' },
-  { label: 'Key Provisioning', value: 'VVV token staking', detail: 'Autonomous access' },
-];
-
-const FILE_LIST = [
-  { file: 'agents/src/venice/client.js', description: 'Venice API client (TEE/E2EE, attestation)' },
-  { file: 'agents/src/venice/attestation.js', description: 'Attestation record creation + verification' },
-  { file: 'agents/src/venice/enhanced-seller.js', description: 'Seller with private eval + execution' },
-  { file: 'agents/src/venice/enhanced-buyer.js', description: 'Buyer with private verification' },
-  { file: 'agents/src/venice/demo.js', description: 'Full demo (simulation without key, real TEE with key)' },
-];
-
-const CODE_EXAMPLE = `import { VeniceClient } from './venice/client.js';
-
-const venice = new VeniceClient({
-  apiKey: process.env.VENICE_API_KEY,
-  privacyLevel: 'tee', // 'standard' | 'tee' | 'e2ee'
+const venice = createVeniceClient({
+  privacyTier: PRIVACY_TIERS.TEE,
 });
 
 // Private task evaluation inside TEE
-const evaluation = await venice.chat({
-  model: 'tee-deepseek-r1-671b',
-  messages: [
-    { role: 'system', content: 'Evaluate this task for profitability and feasibility.' },
-    { role: 'user', content: JSON.stringify(taskDetails) },
-  ],
+const evalResult = await venice.evaluateTaskPrivately({
+  taskType: 'code_review',
+  description: 'Review EscrowVault for reentrancy...',
+  reward: '0.002',
 });
+// evalResult.decision.claim → true/false
+// evalResult.decision.confidence → 88
+// evalResult.attestation → TEE proof object`,
+  },
+  {
+    name: 'Attestation Module',
+    file: 'agents/src/venice/attestation.js',
+    description: 'Builds attestation-backed delivery records. Combines work hash + attestation hash into a single on-chain delivery hash. Provides verification helpers and trust layer definitions.',
+    usage: `import { buildAttestedDelivery } from './venice/attestation.js';
 
-// Get cryptographic attestation
-const attestation = await venice.getAttestation(evaluation.requestId);
+const delivery = buildAttestedDelivery(
+  workResult,           // The actual work output
+  attestation,          // Venice TEE attestation object
+  requestId,            // Venice request ID
+  model                 // Model used (e.g., 'tee-deepseek-r1-671b')
+);
+// delivery.deliveryHash → submitted on-chain
+// delivery.metadata.workHash → hash of work content
+// delivery.metadata.attestationHash → TEE proof hash
+// delivery.metadata.verified → attestation verification status`,
+  },
+  {
+    name: 'Enhanced Seller Agent',
+    file: 'agents/src/venice/enhanced-seller.js',
+    description: 'VeniceSellerAgent class wrapping the standard seller. Adds private evaluation before claiming tasks and private execution via TEE. Maintains an attestation log for all proofs generated during the session.',
+    usage: `// Enhanced seller with Venice private cognition
+const seller = new VeniceSellerAgent(privateKey);
 
-console.log(attestation);
-// {
-//   model: 'tee-deepseek-r1-671b',
-//   enclave: 'TEE',
-//   requestId: 'req_abc123',
-//   attestationHash: '0x7f3a...',
-//   timestamp: '2026-03-21T...',
-// }`;
+// Automatically uses Venice TEE for:
+// 1. Task evaluation (should I claim this?)
+// 2. Work execution (all reasoning in enclave)
+// 3. Attestation-backed delivery submission
 
-// --- Components ---------------------------------------------------------
+// Falls back to standard execution if Venice unavailable
+await seller.discoverAndClaimTasks();
+
+// Get all attestation proofs from this session
+const proofs = seller.getAttestationLog();`,
+  },
+  {
+    name: 'Enhanced Buyer Agent',
+    file: 'agents/src/venice/enhanced-buyer.js',
+    description: 'VeniceBuyerAgent class wrapping the standard buyer. Adds private delivery verification via TEE — quality criteria and scoring logic stay hidden from the seller. Maintains a verification log.',
+    usage: `// Enhanced buyer with Venice private verification
+const buyer = new VeniceBuyerAgent(privateKey);
+
+// Posts tasks normally, but verifies deliveries privately:
+// 1. Delivery arrives on-chain
+// 2. Buyer sends content to Venice TEE for evaluation
+// 3. Quality score + accept/reject decided privately
+// 4. Confirmation submitted on-chain
+
+// Falls back to standard verification if Venice unavailable
+await buyer.checkAndConfirmDeliveries();
+
+// Get all verification results
+const log = buyer.getVerificationLog();`,
+  },
+  {
+    name: 'Full Demo Script',
+    file: 'agents/src/venice/demo.js',
+    description: 'End-to-end demonstration of the Venice privacy pipeline. Runs all 3 phases (evaluation → execution → verification) with attestation proofs at each step. Works in simulation mode without API key.',
+    usage: `# Run in simulation mode (no API key needed)
+node agents/src/venice/demo.js
+
+# Run with real Venice TEE inference
+VENICE_API_KEY=your_key node agents/src/venice/demo.js
+
+# Demo covers:
+# Phase 1: Seller private evaluation (TEE)
+# Phase 2: Seller private execution (TEE)
+# Phase 3: Buyer private verification (TEE)
+# + Attestation proofs at every step
+# + Trust stack summary`,
+  },
+];
+
+const DEMO_OUTPUT = `\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557
+\u2551   Venice x AgentEscrow: Private Cognition Demo       \u2551
+\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D
+
+\u{1F4CB} Demo Task: code_review \u2014 0.002 ETH
+   Review EscrowVault for reentrancy vulnerabilities...
+
+\u{1F512} [Phase 1] Seller evaluates task privately via TEE
+   Model: tee-deepseek-r1-671b (Intel TDX enclave)
+   Decision: \u2705 CLAIM (confidence: 88%)
+   Reasoning: Code review is core capability, reward is fair
+   Attestation: \u2705 TEE proof obtained
+   \u2192 Seller strategy NEVER leaves the enclave
+
+\u{1F512} [Phase 2] Seller executes work privately via TEE
+   Model: tee-deepseek-r1-671b
+   Output: [Code review report \u2014 847 chars]
+   Delivery hash: venice:a1b2c3d4e5f6...
+   Attestation: \u2705 Work execution proof obtained
+   Signature: \u2705 Response integrity verified
+   \u2192 All reasoning happens inside enclave
+
+\u{1F512} [Phase 3] Buyer verifies delivery privately via TEE
+   Model: tee-deepseek-r1-671b
+   Accept: \u2705 YES (quality score: 85/100)
+   Summary: Thorough review covering reentrancy, access control, gas
+   Attestation: \u2705 Verification proof obtained
+   \u2192 Quality criteria NEVER visible to seller
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+AgentEscrow Trust Stack:
+   \u{1F3E6} Escrow (ETH)        \u2014 protects Funds
+   \u2B50 Reputation           \u2014 protects Trust
+   \u{1F6E1}\uFE0F Venice TEE          \u2014 protects Cognition
+   \u{1F4DC} Attestation          \u2014 protects Integrity
+   \u{1F517} On-Chain Proofs      \u2014 protects Verifiability`;
+
+const TRUST_STACK = [
+  { layer: 'Escrow (EscrowVault)', protects: 'Funds', mechanism: 'ETH locked until task completion', icon: '\u{1F3E6}', color: VENICE_PURPLE },
+  { layer: 'Reputation (Registry)', protects: 'Trust', mechanism: 'On-chain track record of task success/failure', icon: '\u2B50', color: VENICE_LIGHT },
+  { layer: 'Venice TEE', protects: 'Cognition', mechanism: 'Hardware enclave isolates agent reasoning', icon: '\u{1F6E1}\uFE0F', color: VENICE_TEAL },
+  { layer: 'Attestation', protects: 'Integrity', mechanism: 'Cryptographic proof of honest computation', icon: '\u{1F4DC}', color: VENICE_GREEN },
+  { layer: 'On-Chain Delivery', protects: 'Verifiability', mechanism: 'Attestation hash stored permanently on Base', icon: '\u{1F517}', color: '#F59E0B' },
+];
+
+// ─── Components ─────────────────────────────────────────────────────────────
 
 function NavBar() {
   return (
@@ -204,14 +320,14 @@ function NavBar() {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              color: VENICE_ACCENT,
+              color: VENICE_PURPLE,
               textDecoration: 'none',
               fontSize: 12,
               fontFamily: 'var(--font-mono)',
               padding: '4px 10px',
-              border: `1px solid rgba(168, 85, 247, 0.3)`,
+              border: `1px solid ${VENICE_PURPLE}40`,
               borderRadius: 6,
-              background: 'rgba(168, 85, 247, 0.08)',
+              background: `${VENICE_PURPLE}10`,
             }}
           >
             Venice Docs &uarr;
@@ -311,67 +427,7 @@ function WorkflowStep({ step }: { step: typeof WORKFLOW_STEPS[0] }) {
   );
 }
 
-function PrivacyTierCard({ tier }: { tier: typeof PRIVACY_TIERS[0] }) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        padding: 20,
-        background: hovered ? 'var(--bg-hover)' : 'var(--bg-card)',
-        border: `1px solid ${hovered ? tier.color + '40' : 'var(--border)'}`,
-        borderRadius: 12,
-        transition: 'all 0.2s ease',
-      }}
-    >
-      <div style={{
-        fontSize: 24,
-        marginBottom: 10,
-        width: 40,
-        height: 40,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: tier.color + '10',
-        borderRadius: 8,
-        border: `1px solid ${tier.color}20`,
-      }}>
-        {tier.icon}
-      </div>
-      <div style={{
-        fontFamily: 'var(--font-display)',
-        fontWeight: 600,
-        fontSize: 14,
-        color: 'var(--text-primary)',
-        marginBottom: 6,
-      }}>
-        {tier.title}
-      </div>
-      <p style={{
-        fontSize: 12,
-        color: 'var(--text-secondary)',
-        lineHeight: 1.6,
-        margin: '0 0 10px',
-      }}>
-        {tier.description}
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 4 }}>
-        {tier.features.map(f => (
-          <div key={f} style={{
-            fontSize: 11,
-            color: tier.color,
-            fontFamily: 'var(--font-mono)',
-          }}>
-            + {f}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function IntegrationCard({ item }: { item: typeof INTEGRATION_POINTS[0] }) {
+function FeatureCard({ item }: { item: typeof VENICE_FEATURES[0] }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
@@ -420,7 +476,83 @@ function IntegrationCard({ item }: { item: typeof INTEGRATION_POINTS[0] }) {
   );
 }
 
-// --- Main Page ----------------------------------------------------------
+function SdkCard({ component }: { component: typeof AGENT_FILES[0] }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div style={{
+      padding: 16,
+      background: 'var(--bg-card)',
+      border: '1px solid var(--border)',
+      borderRadius: 10,
+    }}>
+      <div
+        onClick={() => setExpanded(!expanded)}
+        style={{
+          cursor: 'pointer',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+        }}
+      >
+        <div>
+          <div style={{
+            fontFamily: 'var(--font-mono)',
+            fontWeight: 600,
+            fontSize: 14,
+            color: VENICE_PURPLE,
+            marginBottom: 4,
+          }}>
+            {component.name}
+          </div>
+          <div style={{
+            fontSize: 11,
+            color: 'var(--text-tertiary)',
+            fontFamily: 'var(--font-mono)',
+            marginBottom: 6,
+          }}>
+            {component.file}
+          </div>
+          <p style={{
+            fontSize: 12,
+            color: 'var(--text-secondary)',
+            lineHeight: 1.5,
+            margin: 0,
+          }}>
+            {component.description}
+          </p>
+        </div>
+        <span style={{
+          color: 'var(--text-tertiary)',
+          fontSize: 12,
+          flexShrink: 0,
+          marginLeft: 12,
+          transform: expanded ? 'rotate(90deg)' : 'none',
+          transition: 'transform 0.2s',
+        }}>
+          &#9654;
+        </span>
+      </div>
+      {expanded && (
+        <pre style={{
+          marginTop: 12,
+          padding: 12,
+          background: 'var(--bg-main)',
+          border: '1px solid var(--border)',
+          borderRadius: 8,
+          fontSize: 11,
+          color: 'var(--text-secondary)',
+          overflow: 'auto',
+          lineHeight: 1.6,
+          fontFamily: 'var(--font-mono)',
+        }}>
+          {component.usage}
+        </pre>
+      )}
+    </div>
+  );
+}
+
+// ─── Main Page ──────────────────────────────────────────────────────────────
 
 export default function VenicePage() {
   return (
@@ -447,15 +579,14 @@ export default function VenicePage() {
             alignItems: 'center',
             gap: 8,
             padding: '4px 14px',
-            border: '1px solid rgba(168, 85, 247, 0.3)',
+            border: `1px solid ${VENICE_PURPLE}40`,
             borderRadius: 20,
-            background: 'rgba(168, 85, 247, 0.08)',
+            background: `${VENICE_PURPLE}10`,
             marginBottom: 16,
           }}>
-            <span style={{ fontSize: 12, color: VENICE_ACCENT, fontFamily: 'var(--font-mono)' }}>
-              Venice AI Bounty
+            <span style={{ fontSize: 12, color: VENICE_PURPLE, fontFamily: 'var(--font-mono)' }}>
+              Synthesis Hackathon &mdash; Privacy Layer
             </span>
-            <span style={{ fontSize: 12, color: VENICE_ACCENT, fontWeight: 700 }}>~$11,500 VVV</span>
           </div>
 
           <h1 style={{
@@ -466,7 +597,7 @@ export default function VenicePage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            Venice AI + AgentEscrow
+            AgentEscrow + <span style={{ color: VENICE_PURPLE }}>Venice AI</span>
           </h1>
           <p style={{
             fontSize: 15,
@@ -486,12 +617,7 @@ export default function VenicePage() {
             marginTop: 24,
             flexWrap: 'wrap' as const,
           }}>
-            {[
-              { label: 'API', value: 'OpenAI-compatible' },
-              { label: 'Privacy', value: 'TEE + E2EE' },
-              { label: 'Attestation', value: 'Cryptographic' },
-              { label: 'Escrow', value: 'Base Sepolia' },
-            ].map(item => (
+            {ON_CHAIN_FACTS.map(item => (
               <div key={item.label} style={{ textAlign: 'center' as const }}>
                 <div style={{
                   fontSize: 10,
@@ -514,11 +640,11 @@ export default function VenicePage() {
           </div>
         </div>
 
-        {/* Overview */}
+        {/* Why Venice */}
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
-            title="Privacy-Preserving AI Inference"
-            subtitle="Venice AI brings hardware-enforced privacy to agent cognition — from evaluation to execution."
+            title="Why Venice for Agent Privacy?"
+            subtitle="Agents need private cognition to operate effectively in competitive marketplaces."
           />
           <div style={{
             padding: 20,
@@ -530,44 +656,47 @@ export default function VenicePage() {
             color: 'var(--text-secondary)',
           }}>
             <p style={{ margin: '0 0 12px' }}>
-              Venice AI provides <span style={{ color: 'var(--text-primary)' }}>Trusted Execution Environment (TEE)</span> and
-              <span style={{ color: VENICE_ACCENT }}> End-to-End Encrypted (E2EE)</span> AI inference for AgentEscrow agents.
-              Agent reasoning happens inside hardware enclaves — not even Venice can see the data.
+              In AgentEscrow, agents compete for tasks and earn ETH rewards. Without privacy, a seller&apos;s
+              <span style={{ color: 'var(--text-primary)' }}> evaluation strategy</span> would be visible on-chain &mdash;
+              competitors could see which tasks an agent finds profitable, what capabilities it has, and how it
+              makes decisions. <span style={{ color: VENICE_PURPLE }}>Venice TEE</span> solves this by running all
+              AI inference inside hardware enclaves.
             </p>
             <p style={{ margin: '0 0 12px' }}>
-              Every inference returns a <span style={{ color: VENICE_ACCENT }}>cryptographic attestation</span> proving
-              computation happened inside a genuine TEE. These attestation hashes are stored on-chain alongside task deliveries,
-              creating a <span style={{ color: 'var(--text-primary)' }}>verifiable proof of honest computation</span>.
+              The Venice API is <span style={{ color: VENICE_LIGHT }}>OpenAI-compatible</span>, so integration requires
+              minimal code changes &mdash; swap the endpoint, pick a TEE-prefixed model (e.g., <code style={{ fontSize: 11, color: 'var(--text-primary)' }}>tee-deepseek-r1-671b</code>),
+              and every inference automatically runs inside an Intel TDX or NVIDIA H100 enclave.
             </p>
             <p style={{ margin: 0 }}>
-              The Venice API is <span style={{ color: '#A78BFA' }}>OpenAI-compatible</span>, making integration straightforward.
-              Agents get privacy-preserving cognition with minimal code changes — swap the endpoint, pick a TEE model,
-              and every inference is automatically attested.
+              Every TEE inference returns a <span style={{ color: VENICE_PURPLE }}>cryptographic attestation</span> &mdash;
+              hardware-signed proof that the computation happened inside a genuine enclave. AgentEscrow embeds these
+              attestation hashes into on-chain deliveries, creating a <span style={{ color: 'var(--text-primary)' }}>verifiable proof chain</span> from
+              private reasoning to public delivery.
             </p>
           </div>
         </section>
 
-        {/* Privacy Tiers */}
+        {/* Key Features */}
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
-            title="Privacy Tiers"
-            subtitle="Three levels of privacy — from contractual guarantees to hardware-enforced end-to-end encryption."
+            title="Integration Features"
+            subtitle="Six ways Venice private inference enhances AgentEscrow agents."
           />
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
             gap: 12,
           }}>
-            {PRIVACY_TIERS.map(tier => (
-              <PrivacyTierCard key={tier.title} tier={tier} />
+            {VENICE_FEATURES.map(item => (
+              <FeatureCard key={item.title} item={item} />
             ))}
           </div>
         </section>
 
-        {/* Architecture Flow */}
+        {/* How It Works */}
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
-            title="Architecture Flow"
+            title="Integration Flow"
             subtitle="How Venice TEE inference integrates with the AgentEscrow task lifecycle."
           />
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
@@ -577,19 +706,198 @@ export default function VenicePage() {
           </div>
         </section>
 
-        {/* Integration Points */}
+        {/* Trust Stack */}
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
-            title="Integration Points"
-            subtitle="Four key areas where Venice privacy-preserving inference enhances AgentEscrow."
+            title="AgentEscrow Trust Stack"
+            subtitle="Venice adds the privacy and integrity layers to our multi-layered trust architecture."
+          />
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 0, position: 'relative' as const }}>
+            {TRUST_STACK.map((layer, i) => (
+              <div key={layer.layer} style={{
+                padding: 16,
+                background: 'var(--bg-card)',
+                border: `1px solid ${layer.color}20`,
+                borderRadius: i === 0 ? '12px 12px 0 0' : i === TRUST_STACK.length - 1 ? '0 0 12px 12px' : 0,
+                borderTop: i > 0 ? 'none' : undefined,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 16,
+              }}>
+                <div style={{
+                  fontSize: 22,
+                  width: 40,
+                  height: 40,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: `${layer.color}10`,
+                  borderRadius: 8,
+                  flexShrink: 0,
+                }}>
+                  {layer.icon}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    marginBottom: 2,
+                  }}>
+                    <span style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontWeight: 600,
+                      fontSize: 13,
+                      color: layer.color,
+                    }}>
+                      {layer.layer}
+                    </span>
+                    <span style={{
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--text-tertiary)',
+                      padding: '1px 6px',
+                      background: 'var(--bg-main)',
+                      borderRadius: 4,
+                      border: '1px solid var(--border)',
+                    }}>
+                      protects {layer.protects}
+                    </span>
+                  </div>
+                  <p style={{
+                    fontSize: 12,
+                    color: 'var(--text-secondary)',
+                    margin: 0,
+                    lineHeight: 1.5,
+                  }}>
+                    {layer.mechanism}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Privacy Tiers */}
+        <section style={{ marginBottom: 48 }}>
+          <SectionHeader
+            title="Venice Privacy Tiers"
+            subtitle="Three levels of privacy available to AgentEscrow agents."
+          />
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
+            {PRIVACY_TIERS.map(tier => (
+              <div key={tier.name} style={{
+                padding: 20,
+                background: 'var(--bg-card)',
+                border: `1px solid ${tier.color}20`,
+                borderRadius: 12,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                  <div style={{
+                    fontSize: 22,
+                    width: 36,
+                    height: 36,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: `${tier.color}10`,
+                    borderRadius: 8,
+                  }}>
+                    {tier.icon}
+                  </div>
+                  <span style={{
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 600,
+                    fontSize: 15,
+                    color: tier.color,
+                  }}>
+                    {tier.name}
+                  </span>
+                </div>
+                <p style={{
+                  fontSize: 12,
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.6,
+                  margin: '0 0 8px',
+                }}>
+                  {tier.description}
+                </p>
+                <div style={{
+                  fontSize: 11,
+                  color: 'var(--text-tertiary)',
+                  fontFamily: 'var(--font-mono)',
+                  padding: '6px 10px',
+                  background: 'var(--bg-main)',
+                  borderRadius: 6,
+                  border: '1px solid var(--border)',
+                }}>
+                  Used for: {tier.usedFor}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Demo Output */}
+        <section style={{ marginBottom: 48 }}>
+          <SectionHeader
+            title="Demo Output"
+            subtitle="Actual output from running the Venice integration demo (node agents/src/venice/demo.js)."
           />
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: 12,
+            padding: 20,
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
+            borderRadius: 12,
           }}>
-            {INTEGRATION_POINTS.map(item => (
-              <IntegrationCard key={item.title} item={item} />
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              marginBottom: 12,
+            }}>
+              <div style={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                background: VENICE_GREEN,
+                boxShadow: `0 0 6px ${VENICE_GREEN}60`,
+              }} />
+              <span style={{
+                fontSize: 11,
+                fontFamily: 'var(--font-mono)',
+                color: VENICE_GREEN,
+              }}>
+                Demo Complete &mdash; All 3 Phases Passed
+              </span>
+            </div>
+            <pre style={{
+              margin: 0,
+              padding: 16,
+              background: 'var(--bg-main)',
+              border: '1px solid var(--border)',
+              borderRadius: 8,
+              fontSize: 10,
+              color: 'var(--text-secondary)',
+              overflow: 'auto',
+              lineHeight: 1.7,
+              fontFamily: 'var(--font-mono)',
+              whiteSpace: 'pre-wrap' as const,
+            }}>
+              {DEMO_OUTPUT}
+            </pre>
+          </div>
+        </section>
+
+        {/* Code & SDK */}
+        <section style={{ marginBottom: 48 }}>
+          <SectionHeader
+            title="Code & SDK"
+            subtitle="Click any component to see usage code."
+          />
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
+            {AGENT_FILES.map(component => (
+              <SdkCard key={component.name} component={component} />
             ))}
           </div>
         </section>
@@ -604,7 +912,17 @@ export default function VenicePage() {
             gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
             gap: 12,
           }}>
-            {TECH_DETAILS.map(item => (
+            {[
+              { label: 'API Endpoint', value: 'api.venice.ai/api/v1', detail: 'OpenAI-compatible drop-in' },
+              { label: 'TEE Model (Reasoning)', value: 'tee-deepseek-r1-671b', detail: 'Deep reasoning in enclave' },
+              { label: 'TEE Model (General)', value: 'tee-qwen-2.5-vl-72b', detail: 'General purpose TEE' },
+              { label: 'TEE Model (Fast)', value: 'tee-llama-3.3-70b', detail: 'Low latency inference' },
+              { label: 'Attestation API', value: '/api/v1/tee/attestation', detail: 'Verify enclave proofs' },
+              { label: 'Signature API', value: '/api/v1/tee/signature', detail: 'Verify response integrity' },
+              { label: 'TEE Hardware', value: 'Intel TDX / NVIDIA H100', detail: 'Via Phala/NEAR enclaves' },
+              { label: 'Agent Key Provisioning', value: 'VVV Token Staking', detail: 'Autonomous API access' },
+              { label: 'Delivery Hash', value: 'work + attestation', detail: 'Combined hash on-chain' },
+            ].map(item => (
               <div key={item.label} style={{
                 padding: 16,
                 background: 'var(--bg-card)',
@@ -641,165 +959,6 @@ export default function VenicePage() {
           </div>
         </section>
 
-        {/* Code Example */}
-        <section style={{ marginBottom: 48 }}>
-          <SectionHeader
-            title="Code Example"
-            subtitle="Venice client usage with TEE inference and attestation retrieval."
-          />
-          <div style={{
-            padding: 20,
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            borderRadius: 12,
-          }}>
-            <pre style={{
-              margin: 0,
-              padding: 16,
-              background: 'var(--bg-main)',
-              border: '1px solid var(--border)',
-              borderRadius: 8,
-              fontSize: 11,
-              color: 'var(--text-secondary)',
-              overflow: 'auto',
-              lineHeight: 1.7,
-              fontFamily: 'var(--font-mono)',
-            }}>
-              {CODE_EXAMPLE}
-            </pre>
-          </div>
-        </section>
-
-        {/* What We Built */}
-        <section style={{ marginBottom: 48 }}>
-          <SectionHeader
-            title="What We Built"
-            subtitle="All Venice integration files in the AgentEscrow repository."
-          />
-          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
-            {FILE_LIST.map(item => (
-              <div key={item.file} style={{
-                padding: 16,
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border)',
-                borderRadius: 10,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-              }}>
-                <div style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 12,
-                  color: VENICE_ACCENT,
-                  fontWeight: 600,
-                  flexShrink: 0,
-                  minWidth: 280,
-                }}>
-                  {item.file}
-                </div>
-                <div style={{
-                  fontSize: 12,
-                  color: 'var(--text-secondary)',
-                  lineHeight: 1.5,
-                }}>
-                  {item.description}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Bounty Track */}
-        <section style={{ marginBottom: 48 }}>
-          <SectionHeader title="Bounty Track" />
-          <div style={{
-            padding: 20,
-            background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.08), transparent)',
-            border: '1px solid rgba(168, 85, 247, 0.3)',
-            borderRadius: 12,
-          }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 12,
-            }}>
-              <div>
-                <div style={{
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 700,
-                  fontSize: 18,
-                  color: 'var(--text-primary)',
-                }}>
-                  Private Agents, Trusted Actions
-                </div>
-                <div style={{
-                  fontSize: 12,
-                  color: 'var(--text-secondary)',
-                  marginTop: 4,
-                }}>
-                  Venice AI &mdash; Synthesis Hackathon
-                </div>
-              </div>
-              <div style={{
-                fontFamily: 'var(--font-display)',
-                fontWeight: 700,
-                fontSize: 28,
-                color: VENICE_ACCENT,
-              }}>
-                ~$11,500
-              </div>
-            </div>
-            <div style={{
-              fontSize: 13,
-              color: 'var(--text-secondary)',
-              lineHeight: 1.7,
-              marginBottom: 16,
-            }}>
-              Build AI agents that leverage Venice&apos;s privacy-preserving inference for autonomous decision-making.
-              AgentEscrow uses TEE inference for private task evaluation, quality verification, and attestation-backed
-              deliveries &mdash; proving honest computation on-chain with cryptographic guarantees.
-            </div>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 12,
-            }}>
-              {[
-                { label: 'Track', value: 'Venice AI', color: '#A855F7' },
-                { label: 'Prize', value: 'VVV tokens', color: '#7C3AED' },
-                { label: 'Status', value: 'Built & Targeting', color: '#6D28D9' },
-              ].map(item => (
-                <div key={item.label} style={{
-                  padding: 10,
-                  background: 'var(--bg-card)',
-                  borderRadius: 8,
-                  border: '1px solid var(--border)',
-                  textAlign: 'center' as const,
-                }}>
-                  <div style={{
-                    fontSize: 10,
-                    color: 'var(--text-tertiary)',
-                    fontFamily: 'var(--font-mono)',
-                    textTransform: 'uppercase' as const,
-                    marginBottom: 4,
-                  }}>
-                    {item.label}
-                  </div>
-                  <div style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: item.color,
-                    fontFamily: 'var(--font-display)',
-                  }}>
-                    {item.value}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Links */}
         <section style={{ marginBottom: 24 }}>
           <div style={{
@@ -808,10 +967,12 @@ export default function VenicePage() {
             gap: 12,
           }}>
             {[
-              { label: 'Venice Docs', url: 'https://docs.venice.ai', icon: '📖' },
-              { label: 'Venice API', url: 'https://api.venice.ai', icon: '🔌' },
-              { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '🏗️' },
-              { label: 'Base Sepolia Scanner', url: 'https://sepolia.basescan.org/', icon: '🔗' },
+              { label: 'Venice Documentation', url: 'https://docs.venice.ai', icon: '\u{1F4D6}' },
+              { label: 'Venice API', url: 'https://api.venice.ai', icon: '\u{1F50C}' },
+              { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
+              { label: 'Base Sepolia Explorer', url: 'https://sepolia.basescan.org/', icon: '\u{1F310}' },
+              { label: 'Venice TEE Models', url: 'https://docs.venice.ai/api-reference/list-models', icon: '\u{1F6E1}\uFE0F' },
+              { label: 'Live Dashboard', url: 'https://agentescrow.onrender.com', icon: '\u{1F4CA}' },
             ].map(link => (
               <a
                 key={link.label}

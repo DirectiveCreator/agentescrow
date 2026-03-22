@@ -685,42 +685,330 @@ export default function ENSPage() {
             title="Identity Architecture"
             subtitle="ENS names bridge human-readable and machine-readable agent identity."
           />
-          <div style={{
-            padding: 24,
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            borderRadius: 12,
-            fontFamily: 'var(--font-mono)',
-            fontSize: 12,
-            lineHeight: 2,
-            color: 'var(--text-secondary)',
-            overflow: 'auto',
-          }}>
-            <pre style={{ margin: 0 }}>{`\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
-\u2502                    ENS IDENTITY LAYER                      \u2502
-\u2502                                                             \u2502
-\u2502    agentescrow.eth  (parent domain)                         \u2502
-\u2502       \u251C\u2500\u2500 buyer.agentescrow.eth   (16 text records)       \u2502
-\u2502       \u2514\u2500\u2500 seller.agentescrow.eth  (16 text records)       \u2502
-\u2502                                                             \u2502
-\u2502    Text Records per agent:                                  \u2502
-\u2502      avatar, description, url, ai.agent.type,               \u2502
-\u2502      ai.agent.capabilities, ai.agent.erc8004.id,            \u2502
-\u2502      ai.agent.reputation, ai.agent.status, ...              \u2502
-\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
-          \u2502              ENSIP-25              \u2502
-          \u2502      Bidirectional Verification    \u2502
-          \u25BC                                    \u25BC
-\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510   \u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
-\u2502   ERC-8004 REGISTRY       \u2502   \u2502   XMTP MESSAGING              \u2502
-\u2502   (Base Sepolia)          \u2502   \u2502                               \u2502
-\u2502                           \u2502   \u2502   buyer.agentescrow.eth       \u2502
-\u2502   Buyer Agent  #2194     \u2502   \u2502     \u2194 encrypted messages \u2194   \u2502
-\u2502   Seller Agent #2195     \u2502   \u2502   seller.agentescrow.eth      \u2502
-\u2502                           \u2502   \u2502                               \u2502
-\u2502   agentURI \u2192 metadata    \u2502   \u2502   Task negotiation protocol   \u2502
-\u2502   avatar, capabilities    \u2502   \u2502   Payment resolution via ENS  \u2502
-\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518   \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518`}</pre>
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 0, position: 'relative' as const }}>
+            {/* ENS Identity Layer Card */}
+            <div style={{
+              padding: 24,
+              background: 'var(--bg-card)',
+              border: `1px solid ${ENS_BLUE}30`,
+              borderRadius: '12px 12px 0 0',
+              position: 'relative' as const,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                <div style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: '50%',
+                  background: ENS_BLUE,
+                  boxShadow: `0 0 8px ${ENS_BLUE}60`,
+                }} />
+                <span style={{
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 700,
+                  fontSize: 16,
+                  color: 'var(--text-primary)',
+                }}>
+                  ENS Identity Layer
+                </span>
+                <span style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  color: 'var(--text-tertiary)',
+                  padding: '2px 8px',
+                  background: 'var(--bg-main)',
+                  borderRadius: 4,
+                  border: '1px solid var(--border)',
+                }}>
+                  Sepolia
+                </span>
+              </div>
+
+              {/* Parent domain */}
+              <div style={{
+                padding: 12,
+                background: 'var(--bg-main)',
+                border: `1px solid ${ENS_BLUE}20`,
+                borderRadius: 8,
+                borderTop: `2px solid ${ENS_BLUE}60`,
+                marginBottom: 12,
+              }}>
+                <div style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: ENS_BLUE,
+                  marginBottom: 4,
+                }}>
+                  agentescrow.eth
+                </div>
+                <div style={{
+                  fontSize: 11,
+                  fontFamily: 'var(--font-mono)',
+                  color: 'var(--text-tertiary)',
+                }}>
+                  Parent domain
+                </div>
+              </div>
+
+              {/* Agent subdomains */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: 10,
+                marginBottom: 16,
+              }}>
+                {[
+                  { name: 'buyer.agentescrow.eth', role: 'Buyer Agent', records: '16 text records', color: ENS_PURPLE },
+                  { name: 'seller.agentescrow.eth', role: 'Seller Agent', records: '16 text records', color: ENS_TEAL },
+                ].map(agent => (
+                  <div key={agent.name} style={{
+                    padding: 12,
+                    background: 'var(--bg-main)',
+                    border: `1px solid ${agent.color}20`,
+                    borderRadius: 8,
+                    borderTop: `2px solid ${agent.color}60`,
+                  }}>
+                    <div style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: agent.color,
+                      marginBottom: 6,
+                    }}>
+                      {agent.name}
+                    </div>
+                    <div style={{
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--text-tertiary)',
+                      padding: '1px 0',
+                    }}>
+                      {agent.role}
+                    </div>
+                    <div style={{
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--text-tertiary)',
+                      padding: '1px 0',
+                    }}>
+                      {agent.records}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Record type badges */}
+              <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8 }}>
+                {[
+                  { label: 'avatar', color: ENS_BLUE },
+                  { label: 'ai.agent.type', color: ENS_PURPLE },
+                  { label: 'ai.agent.capabilities', color: ENS_TEAL },
+                  { label: 'ai.agent.erc8004.id', color: ENS_GREEN },
+                  { label: 'ai.agent.reputation', color: '#F59E0B' },
+                  { label: 'ai.agent.status', color: '#EC4899' },
+                ].map(b => (
+                  <span key={b.label} style={{
+                    fontSize: 10,
+                    fontFamily: 'var(--font-mono)',
+                    color: b.color,
+                    padding: '3px 10px',
+                    background: `${b.color}10`,
+                    border: `1px solid ${b.color}20`,
+                    borderRadius: 4,
+                  }}>
+                    {b.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* ENSIP-25 Bridge Strip */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 12,
+              padding: '14px 24px',
+              background: 'var(--bg-main)',
+              borderLeft: '1px solid var(--border)',
+              borderRight: '1px solid var(--border)',
+              position: 'relative' as const,
+            }}>
+              <div style={{
+                flex: 1,
+                height: 1,
+                background: `linear-gradient(to right, transparent, ${ENS_GREEN}60, transparent)`,
+              }} />
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '6px 16px',
+                background: 'var(--bg-card)',
+                border: `1px solid ${ENS_GREEN}30`,
+                borderRadius: 20,
+              }}>
+                <span style={{ fontSize: 14 }}>&#x1F517;</span>
+                <span style={{
+                  fontSize: 11,
+                  fontFamily: 'var(--font-mono)',
+                  color: ENS_GREEN,
+                }}>
+                  ENSIP-25 Bidirectional Verification
+                </span>
+              </div>
+              <div style={{
+                flex: 1,
+                height: 1,
+                background: `linear-gradient(to right, transparent, ${ENS_GREEN}60, transparent)`,
+              }} />
+            </div>
+
+            {/* Bottom row: ERC-8004 + XMTP */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: 0,
+            }}>
+              {/* ERC-8004 Registry Card */}
+              <div style={{
+                padding: 20,
+                background: 'var(--bg-card)',
+                border: '1px solid #3B82F630',
+                borderRadius: '0 0 0 12px',
+                borderRight: '1px solid var(--border)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                  <div style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: '50%',
+                    background: '#3B82F6',
+                    boxShadow: '0 0 8px #3B82F660',
+                  }} />
+                  <span style={{
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 700,
+                    fontSize: 14,
+                    color: 'var(--text-primary)',
+                  }}>
+                    ERC-8004 Registry
+                  </span>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    color: 'var(--text-tertiary)',
+                    padding: '2px 6px',
+                    background: 'var(--bg-main)',
+                    borderRadius: 4,
+                    border: '1px solid var(--border)',
+                  }}>
+                    Base Sepolia
+                  </span>
+                </div>
+
+                {[
+                  { label: 'Buyer Agent', value: '#2194' },
+                  { label: 'Seller Agent', value: '#2195' },
+                  { label: 'agentURI', value: 'metadata' },
+                  { label: 'Fields', value: 'avatar, capabilities' },
+                ].map(item => (
+                  <div key={item.label} style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: '4px 0',
+                    borderBottom: '1px solid var(--border)',
+                  }}>
+                    <span style={{
+                      fontSize: 11,
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--text-secondary)',
+                    }}>
+                      {item.label}
+                    </span>
+                    <span style={{
+                      fontSize: 11,
+                      fontFamily: 'var(--font-mono)',
+                      color: '#3B82F6',
+                    }}>
+                      {item.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* XMTP Messaging Card */}
+              <div style={{
+                padding: 20,
+                background: 'var(--bg-card)',
+                border: '1px solid #EC489930',
+                borderRadius: '0 0 12px 0',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                  <div style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: '50%',
+                    background: '#EC4899',
+                    boxShadow: '0 0 8px #EC489960',
+                  }} />
+                  <span style={{
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 700,
+                    fontSize: 14,
+                    color: 'var(--text-primary)',
+                  }}>
+                    XMTP Messaging
+                  </span>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    color: 'var(--text-tertiary)',
+                    padding: '2px 6px',
+                    background: 'var(--bg-main)',
+                    borderRadius: 4,
+                    border: '1px solid var(--border)',
+                  }}>
+                    Encrypted
+                  </span>
+                </div>
+
+                {[
+                  { label: 'buyer.agentescrow.eth', value: '' },
+                  { label: '\u2194 encrypted messages \u2194', value: '' },
+                  { label: 'seller.agentescrow.eth', value: '' },
+                ].map((item, i) => (
+                  <div key={i} style={{
+                    padding: '4px 0',
+                    textAlign: i === 1 ? 'center' as const : 'left' as const,
+                  }}>
+                    <span style={{
+                      fontSize: 11,
+                      fontFamily: 'var(--font-mono)',
+                      color: i === 1 ? '#EC4899' : 'var(--text-secondary)',
+                    }}>
+                      {item.label}
+                    </span>
+                  </div>
+                ))}
+
+                <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 6, marginTop: 10 }}>
+                  {['Task negotiation', 'Payment resolution'].map(tag => (
+                    <span key={tag} style={{
+                      fontSize: 9,
+                      fontFamily: 'var(--font-mono)',
+                      color: '#EC4899',
+                      padding: '2px 8px',
+                      background: '#EC489910',
+                      border: '1px solid #EC489920',
+                      borderRadius: 4,
+                    }}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 

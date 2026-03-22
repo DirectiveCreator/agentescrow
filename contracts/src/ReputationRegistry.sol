@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
+
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 
 /**
  * @title ReputationRegistry
@@ -11,6 +14,7 @@ pragma solidity ^0.8.20;
  *   - Both buyers and sellers accrue reputation through task completions.
  *   - Reputation score is a simple percentage: (completed / total) * 100.
  *   - New agents start with a default score of 50 (neutral reputation).
+ *   - UUPS upgradeable proxy pattern for post-deploy fixes.
  *
  * Agent Integration Notes:
  *   - Agents can read any agent's reputation: getReputation(address) returns full stats.
@@ -29,7 +33,7 @@ pragma solidity ^0.8.20;
  *   - setServiceBoard is one-time-only (cannot be changed after initial setup).
  *   - Read functions are public — any agent or contract can query reputation.
  */
-contract ReputationRegistry {
+contract ReputationRegistry is Initializable, UUPSUpgradeable {
     /// @notice Tracks an agent's full reputation history
     /// @dev Updated by ServiceBoard on task completion/failure
     struct AgentReputation {
@@ -41,7 +45,7 @@ contract ReputationRegistry {
         uint256 lastActiveAt;      // Timestamp of most recent activity
     }
 
-    /// @notice Maps agent address → their reputation record
+    /// @notice Maps agent address -> their reputation record
     mapping(address => AgentReputation) public reputations;
 
     /// @notice The ServiceBoard contract authorized to update reputations
@@ -76,11 +80,16 @@ contract ReputationRegistry {
         _;
     }
 
-    // ─── Constructor ───────────────────────────────────────────────────
+    // ─── Initializer (replaces constructor for UUPS proxy) ────────────
 
-    /// @notice Deploys the ReputationRegistry. The deployer becomes the owner.
-    /// @dev ServiceBoard must be set separately via setServiceBoard() after deployment.
+    /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
+        _disableInitializers();
+    }
+
+    /// @notice Initializes the ReputationRegistry. The caller becomes the owner.
+    /// @dev Replaces the constructor for proxy deployments. Can only be called once.
+    function initialize() external initializer {
         owner = msg.sender;
     }
 
@@ -91,8 +100,14 @@ contract ReputationRegistry {
     /// @param _serviceBoard Address of the deployed ServiceBoard contract
     function setServiceBoard(address _serviceBoard) external onlyOwner {
         require(serviceBoard == address(0), "Already set");
+        require(_serviceBoard != address(0), "Zero address");
         serviceBoard = _serviceBoard;
     }
+
+    // ─── UUPS Upgrade Authorization ────────────────────────────────────
+
+    /// @dev Only the owner can authorize contract upgrades
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
     // ─── Core Reputation Functions ─────────────────────────────────────
 

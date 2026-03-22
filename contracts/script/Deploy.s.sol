@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "forge-std/Script.sol";
+import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "../src/EscrowVault.sol";
 import "../src/ReputationRegistry.sol";
 import "../src/ServiceBoard.sol";
@@ -11,23 +12,40 @@ contract DeployScript is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        // 1. Deploy EscrowVault
-        EscrowVault vault = new EscrowVault();
-        console.log("EscrowVault deployed at:", address(vault));
+        // 1. Deploy implementation contracts
+        EscrowVault vaultImpl = new EscrowVault();
+        console.log("EscrowVault implementation:", address(vaultImpl));
 
-        // 2. Deploy ReputationRegistry
-        ReputationRegistry reputation = new ReputationRegistry();
-        console.log("ReputationRegistry deployed at:", address(reputation));
+        ReputationRegistry reputationImpl = new ReputationRegistry();
+        console.log("ReputationRegistry implementation:", address(reputationImpl));
 
-        // 3. Deploy ServiceBoard
-        ServiceBoard board = new ServiceBoard(address(vault), address(reputation));
-        console.log("ServiceBoard deployed at:", address(board));
+        ServiceBoard boardImpl = new ServiceBoard();
+        console.log("ServiceBoard implementation:", address(boardImpl));
 
-        // 4. Wire up permissions
-        vault.setServiceBoard(address(board));
-        reputation.setServiceBoard(address(board));
+        // 2. Deploy proxies with initializers
+        ERC1967Proxy vaultProxy = new ERC1967Proxy(
+            address(vaultImpl),
+            abi.encodeCall(EscrowVault.initialize, ())
+        );
+        console.log("EscrowVault proxy:", address(vaultProxy));
 
-        console.log("All contracts deployed and wired up!");
+        ERC1967Proxy reputationProxy = new ERC1967Proxy(
+            address(reputationImpl),
+            abi.encodeCall(ReputationRegistry.initialize, ())
+        );
+        console.log("ReputationRegistry proxy:", address(reputationProxy));
+
+        ERC1967Proxy boardProxy = new ERC1967Proxy(
+            address(boardImpl),
+            abi.encodeCall(ServiceBoard.initialize, (address(vaultProxy), address(reputationProxy)))
+        );
+        console.log("ServiceBoard proxy:", address(boardProxy));
+
+        // 3. Wire up permissions (via proxy addresses)
+        EscrowVault(payable(address(vaultProxy))).setServiceBoard(address(boardProxy));
+        ReputationRegistry(address(reputationProxy)).setServiceBoard(address(boardProxy));
+
+        console.log("All contracts deployed via UUPS proxies and wired up!");
 
         vm.stopBroadcast();
     }

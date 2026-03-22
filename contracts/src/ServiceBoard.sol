@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "./EscrowVault.sol";
 import "./ReputationRegistry.sol";
 
@@ -13,8 +15,10 @@ import "./ReputationRegistry.sol";
  * @dev Architecture:
  *   - ServiceBoard is the orchestrator. It manages the task lifecycle and coordinates
  *     with EscrowVault (funds) and ReputationRegistry (trust scores).
- *   - Task lifecycle: Open → Claimed → Delivered → Completed (happy path)
- *   - Alternative paths: Open → Cancelled (buyer cancels) or Claimed → Cancelled (timeout)
+ *   - Task lifecycle: Open -> Claimed -> Delivered -> Completed (happy path)
+ *   - Alternative paths: Open -> Cancelled (buyer cancels) or Claimed -> Cancelled (timeout)
+ *   - Emergency pause mechanism allows owner to freeze operations if a bug is found.
+ *   - UUPS upgradeable proxy pattern for post-deploy fixes.
  *
  * Agent Integration Notes:
  *   - BUYER AGENT workflow:
@@ -48,11 +52,12 @@ import "./ReputationRegistry.sol";
  *   - TaskCompleted: Buyer confirmed, payment released
  *   - TaskCancelled: Task was cancelled or timed out
  *   - TaskReceipt: Full receipt emitted on completion (for indexing/reporting)
+ *   - Paused / Unpaused: Emergency circuit breaker state changes
  */
-contract ServiceBoard {
+contract ServiceBoard is Initializable, UUPSUpgradeable {
     /// @notice The possible states a task can be in
-    /// @dev Linear progression: Open → Claimed → Delivered → Completed
-    ///      Branch paths: Open → Cancelled, Claimed → Cancelled (timeout)
+    /// @dev Linear progression: Open -> Claimed -> Delivered -> Completed
+    ///      Branch paths: Open -> Cancelled, Claimed -> Cancelled (timeout)
     enum TaskStatus {
         Open,       // Task posted, waiting for a seller to claim
         Claimed,    // Seller has claimed, working on delivery
@@ -82,7 +87,7 @@ contract ServiceBoard {
     /// @notice Auto-incrementing task ID counter
     uint256 public nextTaskId;
 
-    /// @notice Maps taskId → Task struct
+    /// @notice Maps taskId -> Task struct
     mapping(uint256 => Task) public tasks;
 
     /// @notice Array of all task IDs (for enumeration)
@@ -93,6 +98,12 @@ contract ServiceBoard {
 
     /// @notice The ReputationRegistry contract that tracks agent trust scores
     ReputationRegistry public reputationRegistry;
+
+    /// @notice The deployer/owner who can pause/unpause and authorize upgrades
+    address public owner;
+
+    /// @notice Whether the contract is paused (emergency circuit breaker)
+    bool public paused;
 
     // ─── Events ────────────────────────────────────────────────────────
 
@@ -114,6 +125,12 @@ contract ServiceBoard {
     /// @notice Full receipt emitted on task completion — useful for indexing and reporting
     event TaskReceipt(uint256 indexed taskId, address indexed buyer, address indexed seller, string taskType, uint256 reward, uint256 timestamp);
 
+    /// @notice Emitted when the contract is paused
+    event Paused(address account);
+
+    /// @notice Emitted when the contract is unpaused
+    event Unpaused(address account);
+
     // ─── Modifiers ─────────────────────────────────────────────────────
 
     /// @dev Ensures the caller is the buyer of the specified task
@@ -128,17 +145,60 @@ contract ServiceBoard {
         _;
     }
 
-    // ─── Constructor ───────────────────────────────────────────────────
+    /// @dev Ensures the caller is the contract owner
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
 
-    /// @notice Deploys the ServiceBoard with references to EscrowVault and ReputationRegistry
-    /// @dev Both vault and registry must already be deployed. After deployment, call
+    /// @dev Ensures the contract is not paused
+    modifier whenNotPaused() {
+        require(!paused, "Contract is paused");
+        _;
+    }
+
+    // ─── Initializer (replaces constructor for UUPS proxy) ────────────
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    /// @notice Initializes the ServiceBoard with references to EscrowVault and ReputationRegistry
+    /// @dev Replaces the constructor for proxy deployments. Can only be called once.
+    ///      Both vault and registry must already be deployed. After deployment, call
     ///      vault.setServiceBoard(address(this)) and registry.setServiceBoard(address(this)).
     /// @param _escrowVault Address of the deployed EscrowVault contract
     /// @param _reputationRegistry Address of the deployed ReputationRegistry contract
-    constructor(address _escrowVault, address _reputationRegistry) {
+    function initialize(address _escrowVault, address _reputationRegistry) external initializer {
         escrowVault = EscrowVault(payable(_escrowVault));
         reputationRegistry = ReputationRegistry(_reputationRegistry);
+        owner = msg.sender;
+        paused = false;
     }
+
+    // ─── Emergency Pause Functions ─────────────────────────────────────
+
+    /// @notice Pause the contract — freezes all task lifecycle operations
+    /// @dev Only the owner can pause. View functions and claimTimeout still work.
+    function pause() external onlyOwner {
+        require(!paused, "Already paused");
+        paused = true;
+        emit Paused(msg.sender);
+    }
+
+    /// @notice Unpause the contract — resumes normal operations
+    /// @dev Only the owner can unpause.
+    function unpause() external onlyOwner {
+        require(paused, "Not paused");
+        paused = false;
+        emit Unpaused(msg.sender);
+    }
+
+    // ─── UUPS Upgrade Authorization ────────────────────────────────────
+
+    /// @dev Only the owner can authorize contract upgrades
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
     // ─── Task Lifecycle Functions ──────────────────────────────────────
 
@@ -153,7 +213,7 @@ contract ServiceBoard {
         string calldata taskType,
         string calldata description,
         uint256 deadline
-    ) external payable returns (uint256) {
+    ) external payable whenNotPaused returns (uint256) {
         require(msg.value > 0, "Must send ETH for reward");
         require(deadline > block.timestamp, "Deadline must be in the future");
 
@@ -185,7 +245,7 @@ contract ServiceBoard {
     /// @dev The task must be Open, not expired, and you cannot claim your own task.
     ///      After claiming, you should deliver work before the deadline.
     /// @param taskId The task to claim
-    function claimTask(uint256 taskId) external {
+    function claimTask(uint256 taskId) external whenNotPaused {
         Task storage task = tasks[taskId];
         require(task.status == TaskStatus.Open, "Task not open");
         require(task.buyer != msg.sender, "Buyer cannot claim own task");
@@ -203,7 +263,7 @@ contract ServiceBoard {
     ///      an IPFS hash, content hash, or URI pointing to the completed work.
     /// @param taskId The task to deliver work for
     /// @param deliveryHash A hash or URI of the delivered work (e.g., IPFS CID)
-    function deliverTask(uint256 taskId, string calldata deliveryHash) external onlySeller(taskId) {
+    function deliverTask(uint256 taskId, string calldata deliveryHash) external whenNotPaused onlySeller(taskId) {
         Task storage task = tasks[taskId];
         require(task.status == TaskStatus.Claimed, "Task not claimed");
 
@@ -218,7 +278,7 @@ contract ServiceBoard {
     /// @dev Only the buyer can confirm. This releases funds from EscrowVault to seller
     ///      and records a successful completion in ReputationRegistry for both parties.
     /// @param taskId The task to confirm delivery for
-    function confirmDelivery(uint256 taskId) external onlyBuyer(taskId) {
+    function confirmDelivery(uint256 taskId) external whenNotPaused onlyBuyer(taskId) {
         Task storage task = tasks[taskId];
         require(task.status == TaskStatus.Delivered, "Task not delivered");
 
@@ -238,7 +298,7 @@ contract ServiceBoard {
     /// @dev Only the buyer can cancel, and only while the task is still Open (no seller yet).
     ///      Funds are returned from EscrowVault to the buyer.
     /// @param taskId The task to cancel
-    function cancelTask(uint256 taskId) external onlyBuyer(taskId) {
+    function cancelTask(uint256 taskId) external whenNotPaused onlyBuyer(taskId) {
         Task storage task = tasks[taskId];
         require(task.status == TaskStatus.Open, "Can only cancel open tasks");
 
@@ -252,6 +312,7 @@ contract ServiceBoard {
     /// @dev This is a public good function — any agent or EOA can call it to clean up
     ///      expired tasks and return funds to the buyer. Works for both Open and Claimed
     ///      tasks that have passed their deadline.
+    ///      NOTE: claimTimeout works even when paused — users must be able to recover expired funds.
     /// @param taskId The expired task to refund
     function claimTimeout(uint256 taskId) external {
         Task storage task = tasks[taskId];

@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
+import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "../src/EscrowVault.sol";
 import "../src/ReputationRegistry.sol";
 import "../src/ServiceBoard.sol";
@@ -20,9 +21,29 @@ contract AgentEscrowExtendedTest is Test {
     address third = makeAddr("third");
 
     function setUp() public {
-        vault = new EscrowVault();
-        reputation = new ReputationRegistry();
-        board = new ServiceBoard(address(vault), address(reputation));
+        // Deploy implementations
+        EscrowVault vaultImpl = new EscrowVault();
+        ReputationRegistry reputationImpl = new ReputationRegistry();
+        ServiceBoard boardImpl = new ServiceBoard();
+
+        // Deploy proxies
+        ERC1967Proxy vaultProxy = new ERC1967Proxy(
+            address(vaultImpl),
+            abi.encodeCall(EscrowVault.initialize, ())
+        );
+        ERC1967Proxy reputationProxy = new ERC1967Proxy(
+            address(reputationImpl),
+            abi.encodeCall(ReputationRegistry.initialize, ())
+        );
+        ERC1967Proxy boardProxy = new ERC1967Proxy(
+            address(boardImpl),
+            abi.encodeCall(ServiceBoard.initialize, (address(vaultProxy), address(reputationProxy)))
+        );
+
+        vault = EscrowVault(payable(address(vaultProxy)));
+        reputation = ReputationRegistry(address(reputationProxy));
+        board = ServiceBoard(address(boardProxy));
+
         vault.setServiceBoard(address(board));
         reputation.setServiceBoard(address(board));
 
@@ -44,9 +65,6 @@ contract AgentEscrowExtendedTest is Test {
     // ─── Reputation: Mixed Completions and Failures ─────────────────────
 
     /// @notice Score should reflect mix of completions and failures
-    /// @dev recordFailure is callable only by ServiceBoard, so we test
-    ///      via timeout path which doesn't call recordFailure (by design).
-    ///      We test the score formula directly by simulating through board.
     function testReputationScoreAfterCompletionsAndTimeout() public {
         // Complete 3 tasks
         for (uint256 i = 0; i < 3; i++) {
@@ -205,7 +223,6 @@ contract AgentEscrowExtendedTest is Test {
         vm.prank(buyer);
         uint256 taskId = board.postTask{value: 0.1 ether}("text_summary", "Test", block.timestamp + 1 hours);
 
-        // seller is not the task seller (no one is), so "Not seller" first
         vm.prank(seller);
         vm.expectRevert("Not seller");
         board.deliverTask(taskId, "QmHash");
@@ -263,6 +280,34 @@ contract AgentEscrowExtendedTest is Test {
         vm.prank(buyer);
         vm.expectRevert("Deadline must be in the future");
         board.postTask{value: 0.1 ether}("text_summary", "Test", 500);
+    }
+
+    // ─── Input Validation: Zero Address in setServiceBoard ──────────────
+
+    /// @notice setServiceBoard should reject zero address
+    function testSetServiceBoardRejectsZeroAddress() public {
+        EscrowVault newVaultImpl = new EscrowVault();
+        ERC1967Proxy newVaultProxy = new ERC1967Proxy(
+            address(newVaultImpl),
+            abi.encodeCall(EscrowVault.initialize, ())
+        );
+        EscrowVault newVault = EscrowVault(payable(address(newVaultProxy)));
+
+        vm.expectRevert("Zero address");
+        newVault.setServiceBoard(address(0));
+    }
+
+    /// @notice ReputationRegistry setServiceBoard should reject zero address
+    function testReputationSetServiceBoardRejectsZeroAddress() public {
+        ReputationRegistry newRepImpl = new ReputationRegistry();
+        ERC1967Proxy newRepProxy = new ERC1967Proxy(
+            address(newRepImpl),
+            abi.encodeCall(ReputationRegistry.initialize, ())
+        );
+        ReputationRegistry newRep = ReputationRegistry(address(newRepProxy));
+
+        vm.expectRevert("Zero address");
+        newRep.setServiceBoard(address(0));
     }
 
     // ─── Timeout: Open Task Timeout ─────────────────────────────────────
@@ -381,7 +426,12 @@ contract AgentEscrowExtendedTest is Test {
 
     /// @notice Non-owner cannot set the ServiceBoard address
     function testNonOwnerCannotSetServiceBoard() public {
-        EscrowVault newVault = new EscrowVault();
+        EscrowVault newVaultImpl = new EscrowVault();
+        ERC1967Proxy newVaultProxy = new ERC1967Proxy(
+            address(newVaultImpl),
+            abi.encodeCall(EscrowVault.initialize, ())
+        );
+        EscrowVault newVault = EscrowVault(payable(address(newVaultProxy)));
 
         vm.prank(attacker);
         vm.expectRevert("Only owner");

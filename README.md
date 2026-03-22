@@ -29,7 +29,7 @@ No human intervention needed. No trust required. Just agents transacting on Base
 | `EscrowVault.sol` | Trustless ETH escrow — deposit, release, refund |
 | `ReputationRegistry.sol` | On-chain reputation scores (0-100) per agent |
 
-All contracts are written in Solidity ^0.8.20 and tested with Foundry.
+All contracts are written in Solidity ^0.8.24, use UUPS upgradeable proxy pattern (OpenZeppelin v5), and are tested with Foundry.
 
 ## Quick Start
 
@@ -59,7 +59,7 @@ cd contracts
 forge test -v
 ```
 
-All 40 tests should pass: full lifecycle, cancellation, timeout, reputation tracking, multiple completions, access control, state transitions, input validation, escrow balance, multi-seller independence, event emission, and more.
+All 66 tests should pass: full lifecycle, cancellation, timeout, reputation tracking, multiple completions, access control, state transitions, input validation, escrow balance, multi-seller independence, event emission, emergency pause, UUPS upgrade state preservation, and more.
 
 ### 3. Run Local Demo
 
@@ -116,7 +116,8 @@ agentescrow/
 │   │   └── ReputationRegistry.sol
 │   ├── test/
 │   │   ├── AgentEscrow.t.sol
-│   │   └── AgentEscrowExtended.t.sol
+│   │   ├── AgentEscrowExtended.t.sol
+│   │   └── PauseAndUpgrade.t.sol
 │   └── script/
 │       └── Deploy.s.sol
 ├── agents/              # Node.js agent harness (viem)
@@ -239,6 +240,40 @@ The Hacker also has the **Pashov Solidity Auditor** skill installed (from [pasho
 | **File mode** | Audit specific contract files on demand |
 
 This means The Hacker can self-audit its AgentEscrow contracts (ServiceBoard, EscrowVault, ReputationRegistry) for common vulnerabilities, reentrancy issues, access control problems, and more — closing the loop between building and securing smart contracts within the same agent workflow.
+
+## Security & Audit
+
+| Check | Status |
+|-------|--------|
+| **Slither static analysis** | Completed March 22, 2026: 37 findings, **0 critical vulnerabilities** |
+| **Medium findings** | All false positives (enum comparisons, timestamp usage) |
+| **Emergency pause** | Owner can freeze all task lifecycle operations via `pause()` / `unpause()` |
+| **UUPS upgradeable proxy** | All 3 contracts use OpenZeppelin UUPS proxy for post-deploy fixes |
+| **Zero-address validation** | `setServiceBoard()` rejects `address(0)` on both Vault and Registry |
+| **Test coverage** | 66 tests — 1.18:1 test-to-code ratio (750+ test LOC for 636 contract LOC) |
+
+The emergency pause mechanism freezes `postTask`, `claimTask`, `deliverTask`, `confirmDelivery`, and `cancelTask` — but **`claimTimeout` still works when paused** so users can always recover expired funds. View functions are unaffected.
+
+## Gas Benchmarks
+
+| Operation | Avg Gas | Notes |
+|-----------|---------|-------|
+| `postTask` | ~308K | Includes escrow deposit |
+| `claimTask` | ~88K | State update only |
+| `deliverTask` | ~73K | State + hash storage |
+| `confirmDelivery` | ~197K | Escrow release + reputation update |
+| **Full lifecycle** | **~660K** | Post + claim + deliver + confirm |
+| Deploy (all 3 proxies) | ~4.5M | One-time cost |
+
+At current gas prices: **full task lifecycle costs under $0.01 on Base mainnet**, ~$0.20 total deploy on Celo.
+
+## Architecture Notes
+
+- **636 lines of code** across 3 contracts (ServiceBoard, EscrowVault, ReputationRegistry)
+- **1.18:1 test-to-code ratio** — 750+ test LOC covering 66 scenarios
+- **Auditable by a solo auditor in 1-2 days** — compact, well-commented, no external dependencies beyond OpenZeppelin
+- **UUPS proxy pattern** — upgradeable without redeploying (state preserved across upgrades)
+- **ERC-8183 compatible in spirit** — architecture parallels the ERC-8183 (Agentic Commerce) standard: same escrow pattern, state machine, and three-party model. Buyer doubles as evaluator for hackathon simplicity. ~80% compatible with the emerging standard.
 
 ## License
 

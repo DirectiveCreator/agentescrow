@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
+import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "../src/EscrowVault.sol";
 import "../src/ReputationRegistry.sol";
 import "../src/ServiceBoard.sol";
@@ -15,9 +16,29 @@ contract AgentEscrowTest is Test {
     address seller = makeAddr("seller");
 
     function setUp() public {
-        vault = new EscrowVault();
-        reputation = new ReputationRegistry();
-        board = new ServiceBoard(address(vault), address(reputation));
+        // Deploy implementations
+        EscrowVault vaultImpl = new EscrowVault();
+        ReputationRegistry reputationImpl = new ReputationRegistry();
+        ServiceBoard boardImpl = new ServiceBoard();
+
+        // Deploy proxies
+        ERC1967Proxy vaultProxy = new ERC1967Proxy(
+            address(vaultImpl),
+            abi.encodeCall(EscrowVault.initialize, ())
+        );
+        ERC1967Proxy reputationProxy = new ERC1967Proxy(
+            address(reputationImpl),
+            abi.encodeCall(ReputationRegistry.initialize, ())
+        );
+        ERC1967Proxy boardProxy = new ERC1967Proxy(
+            address(boardImpl),
+            abi.encodeCall(ServiceBoard.initialize, (address(vaultProxy), address(reputationProxy)))
+        );
+
+        vault = EscrowVault(payable(address(vaultProxy)));
+        reputation = ReputationRegistry(address(reputationProxy));
+        board = ServiceBoard(address(boardProxy));
+
         vault.setServiceBoard(address(board));
         reputation.setServiceBoard(address(board));
 

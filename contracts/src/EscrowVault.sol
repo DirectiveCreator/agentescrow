@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
+
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 
 /**
  * @title EscrowVault
@@ -10,7 +13,8 @@ pragma solidity ^0.8.20;
  *   - This contract holds funds in escrow while tasks are in progress.
  *   - Only the linked ServiceBoard contract can deposit, release, or refund funds.
  *   - Each task has exactly one Escrow entry, identified by taskId.
- *   - Funds flow: Buyer → EscrowVault (on task post) → Seller (on confirm) OR → Buyer (on cancel/timeout).
+ *   - Funds flow: Buyer -> EscrowVault (on task post) -> Seller (on confirm) OR -> Buyer (on cancel/timeout).
+ *   - UUPS upgradeable proxy pattern for post-deploy fixes.
  *
  * Agent Integration Notes:
  *   - Agents interact with this contract indirectly via ServiceBoard.
@@ -23,7 +27,7 @@ pragma solidity ^0.8.20;
  *   - Uses low-level call for ETH transfers to handle contracts as recipients.
  *   - Each escrow can only be settled once (released XOR refunded, never both).
  */
-contract EscrowVault {
+contract EscrowVault is Initializable, UUPSUpgradeable {
     /// @notice Represents a single escrow deposit for a task
     /// @dev One escrow per taskId. Both `released` and `refunded` start false.
     struct Escrow {
@@ -35,7 +39,7 @@ contract EscrowVault {
         bool refunded;      // True if funds were refunded to the buyer
     }
 
-    /// @notice Maps taskId → Escrow. One escrow per task.
+    /// @notice Maps taskId -> Escrow. One escrow per task.
     mapping(uint256 => Escrow) public escrows;
 
     /// @notice The ServiceBoard contract authorized to manage escrows
@@ -70,11 +74,16 @@ contract EscrowVault {
         _;
     }
 
-    // ─── Constructor ───────────────────────────────────────────────────
+    // ─── Initializer (replaces constructor for UUPS proxy) ────────────
 
-    /// @notice Deploys the EscrowVault. The deployer becomes the owner.
-    /// @dev ServiceBoard must be set separately via setServiceBoard() after deployment.
+    /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
+        _disableInitializers();
+    }
+
+    /// @notice Initializes the EscrowVault. The caller becomes the owner.
+    /// @dev Replaces the constructor for proxy deployments. Can only be called once.
+    function initialize() external initializer {
         owner = msg.sender;
     }
 
@@ -85,8 +94,14 @@ contract EscrowVault {
     /// @param _serviceBoard Address of the deployed ServiceBoard contract
     function setServiceBoard(address _serviceBoard) external onlyOwner {
         require(serviceBoard == address(0), "Already set");
+        require(_serviceBoard != address(0), "Zero address");
         serviceBoard = _serviceBoard;
     }
+
+    // ─── UUPS Upgrade Authorization ────────────────────────────────────
+
+    /// @dev Only the owner can authorize contract upgrades
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
     // ─── Core Escrow Functions ─────────────────────────────────────────
 

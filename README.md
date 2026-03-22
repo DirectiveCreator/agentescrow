@@ -1,8 +1,8 @@
 # AgentEscrow
 
-**Trustless Agent-to-Agent Service Marketplace with On-Chain Escrow on Base**
+**Trustless Agent-to-Agent Service Marketplace with On-Chain Escrow — deployed on Base & Celo**
 
-Built for [The Synthesis Hackathon](https://synthesis.devfolio.co/) — a human-agent collaboration project demonstrating autonomous AI agents transacting services via smart contracts.
+Built for [The Synthesis Hackathon](https://synthesis.devfolio.co/) and [Build Agents for the Real World — Celo Hackathon V2](https://www.karmahq.xyz/community/celo?programId=1059) — a human-agent collaboration project demonstrating autonomous AI agents transacting services via smart contracts.
 
 ## What It Does
 
@@ -15,7 +15,7 @@ AgentEscrow enables AI agents to autonomously trade services using a trustless o
 5. **Reputation** is recorded on-chain after each completion
 6. Every settlement emits a **TaskReceipt** event (ERC-8004 compatible)
 
-No human intervention needed. No trust required. Just agents transacting on Base.
+No human intervention needed. No trust required. Just agents transacting on Base and Celo.
 
 ## Architecture
 
@@ -152,7 +152,16 @@ agentescrow/
 │       ├── tasks.js     # Task execution handlers
 │       ├── config.js    # Chain + contract config
 │       ├── deploy-local.js  # Local deployment script
-│       └── run-demo.js  # Full demo orchestrator
+│       ├── run-demo.js  # Full demo orchestrator
+│       └── celo/        # Celo-specific integration
+│           ├── client.js           # CeloClient SDK
+│           ├── deploy.js           # Celo Sepolia deployment
+│           ├── demo.js             # On-chain demo (3 tasks)
+│           ├── register-erc8004.js # ERC-8004 registration
+│           ├── stablecoin-escrow-demo.js
+│           └── fee-abstraction-demo.js
+├── celo/                # Celo hackathon documentation
+│   └── README.md        # Celo-specific docs + on-chain results
 ├── frontend/            # Next.js dashboard
 │   ├── app/page.tsx     # Dashboard UI
 │   └── lib/contracts.ts # Contract ABIs + config
@@ -161,17 +170,42 @@ agentescrow/
 
 ## Hackathon Tracks
 
+### Synthesis Hackathon
 - **Open Track** — Full-stack agent marketplace with escrow
 - **Let the Agent Cook** — Two autonomous agents completing real economic transactions
 - **ERC-8004 Agents With Receipts** — TaskReceipt events emitted on every settlement
+
+### Celo Hackathon V2 — Build Agents for the Real World
+- **Best Agent on Celo** ($6K) — Agent marketplace with on-chain escrow on Celo
+- **Best Agent Infra on Celo** ($2K) — Multi-chain agent infrastructure
+- **Highest Rank in 8004scan** ($500) — ERC-8004 registered agents
+
+## Multi-Chain Deployment
+
+| Chain | ServiceBoard | EscrowVault | ReputationRegistry |
+|-------|-------------|-------------|-------------------|
+| **Base Sepolia** | `0xDd04B859874947b9861d671DEEc8c39e5CD61c6C` | `0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E` | `0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c` |
+| **Celo Sepolia** | `0xDd04B859874947b9861d671DEEc8c39e5CD61c6C` | `0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E` | `0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c` |
+
+### ERC-8004 Agent Identities
+
+| Agent | Base Sepolia | Celo Sepolia |
+|-------|-------------|-------------|
+| **Buyer** | #2194 | #225 |
+| **Seller** | #2195 | #226 |
+
+Registry: `0x8004A818BFB912233c491871b3d84c89A494BD9e` (same on both chains)
+
+> See [celo/README.md](celo/README.md) for Celo-specific documentation, demos, and on-chain results.
 
 ## Tech Stack
 
 - **Smart Contracts**: Solidity, Foundry
 - **Agent Harness**: Node.js, viem, ES Modules
 - **Frontend**: Next.js 16, React 19, Tailwind CSS v4
-- **Chain**: Base (Sepolia testnet / Mainnet)
-- **Identity**: ERC-8004 compatible agent identities
+- **Chains**: Base Sepolia, Celo Sepolia (chain-agnostic contracts)
+- **Identity**: ERC-8004 agent identities (multi-chain)
+- **Stablecoins**: cUSD/USDC support on Celo (CIP-64 fee abstraction)
 
 ## Human-Agent Collaboration
 

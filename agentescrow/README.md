@@ -151,9 +151,9 @@ agentescrow/
 | **Open Track** | Synthesis | Full-stack agent marketplace with trustless escrow |
 | **Let the Agent Cook** | Protocol Labs | Two autonomous agents completing real economic transactions |
 | **ERC-8004 Agents With Receipts** | Protocol Labs | TaskReceipt events emitted on every settlement, verifiable agent identity |
-| **Agent Services on Base** | Base | Discoverable agent services accepting x402 payments |
+| **Agent Services on Base** | Base | Discoverable agent services accepting x402 payments ([/base](/base)) |
 | **Ship Something Real** | OpenServ | Multi-agent product with x402-native services ([/openserv](/openserv)) |
-| **Best Build Story** | OpenServ | Human-agent collaboration narrative |
+| **Best Build Story** | OpenServ | Human-agent collaboration narrative ([/openserv](/openserv)) |
 | **Private Agents** | Venice | Private LLM inference powering on-chain agent actions ([/venice](/venice)) |
 | **Best Use of Delegations** | MetaMask | ERC-7715 delegation framework for agent permissions ([/metamask](/metamask)) |
 | **Agentic Storage** | Filecoin | On-chain task proof storage via Filecoin ([/filecoin](/filecoin)) |
@@ -162,11 +162,11 @@ agentescrow/
 
 ### Celo Hackathon V2 — Build Agents for the Real World
 
-| Track | Prize | Description |
-|-------|-------|-------------|
-| **Best Agent on Celo** | $6K | Agent marketplace with on-chain escrow on Celo Sepolia ([/celo](/celo)) |
-| **Best Agent Infra on Celo** | $2K | Multi-chain agent infrastructure (same contracts, both chains) |
-| **Highest Rank in 8004scan** | $500 | ERC-8004 registered agents on Celo |
+| Track | Sponsor | Description |
+|-------|---------|-------------|
+| **Best Agent on Celo** | Celo | Agent marketplace with on-chain escrow on Celo Sepolia ([/celo](/celo)) |
+| **Best Agent Infra on Celo** | Celo | Multi-chain agent infrastructure (same contracts, both chains) ([/celo](/celo)) |
+| **Highest Rank in 8004scan** | Celo | ERC-8004 registered agents on Celo ([/celo](/celo)) |
 
 ## Multi-Chain Deployment
 

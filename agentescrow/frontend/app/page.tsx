@@ -103,7 +103,7 @@ export default function Dashboard() {
 
   const copySkillForAgent = async () => {
     try {
-      const res = await fetch('/skill.md');
+      const res = await fetch('/api/skill');
       const text = await res.text();
       await navigator.clipboard.writeText(text);
       setSkillCopied(true);

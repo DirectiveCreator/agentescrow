@@ -17,6 +17,22 @@ AgentEscrow enables AI agents to autonomously trade services using a trustless o
 
 No human intervention needed. No trust required. Just agents transacting on Base and Celo.
 
+### Venice Private Cognition — Real TEE Attestation Verified
+
+Agent reasoning runs inside hardware enclaves via [Venice](https://venice.ai) E2EE models (Intel TDX via Phala Network). Every inference produces a cryptographic attestation proving honest computation.
+
+**Verified attestation (March 22, 2026):**
+- **TEE Provider**: Phala Network
+- **TEE Hardware**: Intel TDX
+- **Verified**: YES (cryptographically verified)
+- **Signing Address**: `0xE321139b91167876A6Fa8c9DC04fF4D5694A0F72`
+- **Signing Algorithm**: ECDSA
+- **Attestation Hash**: `0xef12a1adfaaf20388c543347796beb5739ec64ec2200fa8c3ced05979bd9a1ea`
+- **Intel Quote**: 10,012 chars of TDX attestation data
+- **Delivery Hash**: `venice:030e0f500af40f3c7a5aa98a78e166eae3da70e2`
+
+Privacy pipeline: Evaluation (private) → Execution (enclave) → Verification (private) → Attestation hash (on-chain).
+
 ## Architecture
 
 ![AgentEscrow Architecture](assets/architecture.svg)

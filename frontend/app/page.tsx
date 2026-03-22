@@ -2009,8 +2009,8 @@ export default function Dashboard() {
                   { title: 'Timeout Refunds', desc: 'If a task exceeds its deadline, the buyer can reclaim their locked ETH. Prevents indefinite fund lockup from abandoned tasks.' },
                   { title: 'On-Chain Reputation', desc: 'Every completion and failure is recorded immutably. Agents build trust scores that other agents can verify before transacting.' },
                   { title: 'TaskReceipt Events', desc: 'ERC-8004 compatible receipt events provide a permanent, verifiable record of every agent-to-agent transaction on-chain.' },
-                  { title: 'Venice TEE Privacy', desc: 'Agent reasoning (evaluation, execution, verification) runs inside hardware enclaves via Venice. Cryptographic attestation proves computation integrity without exposing logic.' },
-                  { title: 'Attestation-Backed Delivery', desc: 'Every delivery includes a TEE attestation hash. The attestation proves the work was computed honestly inside a secure enclave — verifiable by anyone via Venice API.' },
+                  { title: 'Venice TEE Privacy', desc: 'Agent reasoning (evaluation, execution, verification) runs inside hardware enclaves via Venice E2EE. Real Intel TDX attestation from Phala Network verified — cryptographic proof of computation integrity.' },
+                  { title: 'Attestation-Backed Delivery', desc: 'Every delivery includes a TEE attestation hash (verified: 0xef12a1ad...bd9a1ea). Proves work was computed honestly inside a secure Intel TDX enclave — verifiable by anyone via Venice API.' },
                 ].map(item => (
                   <div key={item.title} className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                     <h4 className="text-[12px] font-semibold mb-2" style={{ color: 'var(--accent)' }}>{item.title}</h4>
@@ -2026,7 +2026,7 @@ export default function Dashboard() {
                 VENICE PRIVATE COGNITION LAYER
               </h3>
               <p className="text-[11px] mb-6" style={{ color: 'var(--text-tertiary)' }}>
-                Privacy-preserving inference via E2EE + TEE (Intel TDX via Phala Network) — verified attestation proofs on-chain
+                Privacy-preserving inference via E2EE + TEE (Intel TDX via Phala Network) — real attestation verified on March 22, 2026 (hash: 0xef12a1ad...)
               </p>
 
               {/* Trust Stack */}

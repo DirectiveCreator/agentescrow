@@ -231,7 +231,8 @@ PHASE 0: Live TEE Attestation Verification
    Signing Algorithm: ecdsa
    Upstream Model:    openai/gpt-oss-120b
    Intel Quote:       10012 chars of TDX attestation data
-   On-chain hash:     0x0b037dd43c904e0d...
+   Candidates:        1/1 evaluated
+   On-chain hash:     0xef12a1adfaaf2038...
 
 \u{1F4CB} Demo Task: code_review \u2014 0.002 ETH
    Review EscrowVault for reentrancy vulnerabilities...
@@ -245,7 +246,7 @@ PHASE 0: Live TEE Attestation Verification
 \u{1F512} [LIVE ATTESTATION] Phase 2: Seller executes work via E2EE
    Model: e2ee-gpt-oss-120b-p
    Output: [Code review report \u2014 269 chars]
-   Delivery hash: venice:030e0f500af40f3c7a5a...
+   Delivery hash: venice:030e0f500af40f3c7a5aa98a...
    Attestation: \u2705 REAL \u2014 phala / intel-tdx
    Signing Address: 0xE321139b...4A0F72
    \u2192 All reasoning happens inside enclave
@@ -626,6 +627,29 @@ export default function VenicePage() {
             so AgentEscrow agents can think privately, act verifiably, and prove honest computation on-chain.
           </p>
 
+          {/* Real Attestation Verified Badge */}
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            padding: '8px 20px',
+            border: `1px solid ${VENICE_GREEN}50`,
+            borderRadius: 8,
+            background: `${VENICE_GREEN}10`,
+            marginTop: 16,
+          }}>
+            <div style={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: VENICE_GREEN,
+              boxShadow: `0 0 8px ${VENICE_GREEN}60`,
+            }} />
+            <span style={{ fontSize: 12, color: VENICE_GREEN, fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
+              ATTESTATION VERIFIED &mdash; Real Intel TDX proof from Phala Network (March 22, 2026)
+            </span>
+          </div>
+
           <div style={{
             display: 'flex',
             justifyContent: 'center',
@@ -1000,7 +1024,7 @@ export default function VenicePage() {
             }}>
               <div style={{ fontSize: 10, color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)', marginBottom: 4 }}>ON-CHAIN ATTESTATION HASH</div>
               <div style={{ fontSize: 12, color: VENICE_GREEN, fontFamily: 'var(--font-mono)', wordBreak: 'break-all' as const }}>
-                0x0b037dd43c904e0d066d9bdeb7ecf8d7a95c263bcff99eeef3658dcbd61c787f
+                0xef12a1adfaaf20388c543347796beb5739ec64ec2200fa8c3ced05979bd9a1ea
               </div>
             </div>
             <div style={{

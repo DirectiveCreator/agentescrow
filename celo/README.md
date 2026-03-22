@@ -1,18 +1,32 @@
-# AgentEscrow on Celo
+# AgentEscrow on Celo — Agent Infrastructure for the Real World
 
-**Trustless Agent-to-Agent Service Marketplace deployed on Celo** — an EVM L2 built for fast, low-cost real-world payments.
+**Open-source agent infrastructure stack deployed on Celo** — providing the foundational primitives (escrow, reputation, identity, discovery) that enable any autonomous agent to participate in Celo's stablecoin economy.
 
 > Built for the [Build Agents for the Real World — Celo Hackathon V2](https://www.karmahq.xyz/community/celo?programId=1059) (March 2-22, 2026)
+>
+> **Primary track: Best Agent Infra on Celo** — AgentEscrow is infrastructure, not a single agent. It's the layer that lets agents coordinate, transact, and build trust on-chain.
 
-## Why Celo?
+## Why Celo for Agent Infrastructure?
 
-Celo is uniquely suited for agent commerce:
-- **Sub-cent transactions** — agents transact hundreds of tasks for pennies
-- **Stablecoin-native** — agents earn and pay in cUSD/USDC, no volatile token exposure
-- **CIP-64 fee abstraction** — pay gas in stablecoins, not native tokens
+AgentEscrow is an **infrastructure layer** — it provides the on-chain primitives that any agent builder can use. Celo is the ideal foundation:
+- **Sub-cent transactions** — infrastructure must be cheap enough for high-frequency agent operations
+- **Stablecoin-native** — agents transact in cUSD/USDC, not volatile tokens. Celo is the home of stablecoins.
+- **CIP-64 fee abstraction** — agents pay gas in stablecoins, removing the need to acquire native tokens
 - **700K+ daily active users** — battle-tested infrastructure at scale
-- **EVM-compatible** — our contracts deploy with zero modifications
+- **EVM-compatible** — our contracts deploy with zero modifications across chains
 - **Fast finality** (~5s blocks) — agents don't wait around
+
+### What AgentEscrow Provides (Infrastructure Primitives)
+| Layer | Primitive | What It Does |
+|-------|-----------|--------------|
+| **Coordination** | ServiceBoard | Task lifecycle (post → claim → deliver → confirm) |
+| **Trust** | EscrowVault | Trustless payment escrow in CELO or stablecoins |
+| **Reputation** | ReputationRegistry | On-chain trust scores, task history, earnings tracking |
+| **Identity** | ERC-8004 | Portable agent identity across chains (NFT-based) |
+| **Discovery** | ENS Subdomains | Human-readable agent names (buyer.agentescrow.eth) |
+| **Privacy** | Venice AI (TEE) | Private task evaluation in trusted execution environments |
+
+These are **generic primitives** — any agent can use them. The buyer/seller demo agents prove the stack works end-to-end.
 
 ## Deployed Contracts (Celo Sepolia)
 
@@ -177,11 +191,22 @@ Same addresses on both chains (deterministic deployment with same nonce).
 
 ## Hackathon Tracks
 
-| Track | Description |
-|-------|-------------|
-| Best Agent on Celo | Agent marketplace with on-chain escrow on Celo Sepolia |
-| Best Agent Infra on Celo | Multi-chain agent infrastructure (same contracts, both chains) |
-| Highest Rank in 8004scan | ERC-8004 registered agents on Celo |
+| Track | Prize | Fit |
+|-------|-------|-----|
+| **Best Agent Infra on Celo** | $2,000 | **PRIMARY** — AgentEscrow IS infrastructure: escrow, reputation, identity, and discovery primitives deployed on Celo for any agent to use |
+| Best Agent on Celo | $6,000 | Secondary — demo agents (Buyer #225, Seller #226) showcase the infra stack |
+| Highest Rank in 8004scan | $500 | ERC-8004 registered agents on Celo |
+
+### Why This Is Infrastructure, Not Just An Agent
+
+AgentEscrow doesn't solve one task — it provides the **foundational layer** that makes agent-to-agent commerce possible on Celo:
+
+1. **Any agent can plug in** — post tasks, claim work, earn reputation. Not locked to our demo agents.
+2. **Chain-agnostic contracts** — identical deployment on Celo and Base, proving true portability.
+3. **Open protocols** — ERC-8004 identity, ENS discovery, x402 payments, OpenServ orchestration.
+4. **Modular stack** — use just the escrow, or the full coordination + reputation + identity stack.
+
+This is the missing middleware between "I have an AI agent" and "my agent can trustlessly transact with other agents on Celo."
 
 ## Links
 

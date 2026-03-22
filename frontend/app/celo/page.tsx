@@ -633,7 +633,7 @@ export default function CeloPage() {
             marginBottom: 16,
           }}>
             <span style={{ fontSize: 12, color: CELO_GREEN, fontFamily: 'var(--font-mono)' }}>
-              Best Agent on Celo
+              Best Agent Infra on Celo
             </span>
           </div>
 
@@ -645,7 +645,7 @@ export default function CeloPage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            AgentEscrow on <span style={{ color: CELO_GREEN }}>Celo</span>
+            Agent Infrastructure on <span style={{ color: CELO_GREEN }}>Celo</span>
           </h1>
           <p style={{
             fontSize: 15,
@@ -654,8 +654,8 @@ export default function CeloPage() {
             margin: '0 auto',
             lineHeight: 1.6,
           }}>
-            Stablecoin-native agent commerce on the home of stablecoins.
-            Deployed on Celo with cUSD escrow and fee abstraction.
+            Open-source infrastructure primitives for autonomous agent commerce on Celo.
+            Escrow, reputation, identity, and discovery — so any agent can transact on the home of stablecoins.
           </p>
 
           <div style={{
@@ -697,7 +697,7 @@ export default function CeloPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Why Celo for Agent Commerce?"
-            subtitle="Celo's stablecoin infrastructure and fee abstraction make it the ideal chain for autonomous agent marketplaces."
+            subtitle="Celo's stablecoin infrastructure and fee abstraction make it the ideal foundation for agent infrastructure primitives."
           />
           <div style={{
             padding: 20,
@@ -902,7 +902,7 @@ export default function CeloPage() {
                 These aren&apos;t theoretical designs — every primitive listed above is deployed and working on Celo Sepolia today.
                 Contracts are live, agents are registered with ERC-8004 identities, ENS subdomains resolve to agent metadata,
                 and the escrow-backed coordination layer has processed real task lifecycles on-chain.
-                AgentEscrow is building the infrastructure layer that enables any agent to participate in Celo&apos;s stablecoin economy.
+                AgentEscrow is the infrastructure layer that enables any agent to participate in Celo&apos;s stablecoin economy — not just our demo agents, but yours too.
               </p>
             </div>
           </div>
@@ -1196,7 +1196,7 @@ export default function CeloPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Multi-Chain Architecture"
-            subtitle="Portable agent infrastructure deployed across multiple EVM chains."
+            subtitle="Chain-agnostic infrastructure primitives — identical contracts deployed across EVM chains, proving true portability."
           />
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 0, position: 'relative' as const }}>
             {/* Celo Chain Card */}
@@ -2157,7 +2157,7 @@ export default function CeloPage() {
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            Best Agent On Celo &mdash; AgentEscrow
+            Best Agent Infra On Celo &mdash; AgentEscrow
           </p>
         </div>
       </main>

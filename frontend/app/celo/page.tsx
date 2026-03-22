@@ -710,46 +710,258 @@ export default function CeloPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Multi-Chain Architecture"
-            subtitle="Contracts and agents deployed on two chains. True cross-chain agent portability."
+            subtitle="Portable agent infrastructure deployed across multiple EVM chains."
           />
-          <div style={{
-            padding: 24,
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            borderRadius: 12,
-            fontFamily: 'var(--font-mono)',
-            fontSize: 12,
-            lineHeight: 2,
-            color: 'var(--text-secondary)',
-            overflow: 'auto',
-          }}>
-            <pre style={{ margin: 0 }}>{`\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
-\u2502                     CELO ALFAJORES (Chain 44787)               \u2502
-\u2502                                                               \u2502
-\u2502  \u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510  \u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510  \u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510    \u2502
-\u2502  \u2502 ServiceBoard \u2502  \u2502 EscrowVault  \u2502  \u2502 ReputationRegistry\u2502    \u2502
-\u2502  \u2502             \u2502  \u2502              \u2502  \u2502                   \u2502    \u2502
-\u2502  \u2502 postTask()  \u2502  \u2502 deposit(cUSD)\u2502  \u2502  recordResult()   \u2502    \u2502
-\u2502  \u2502 claimTask() \u2502  \u2502 release()    \u2502  \u2502  trustScore: 100  \u2502    \u2502
-\u2502  \u2502 deliverTask \u2502  \u2502              \u2502  \u2502                   \u2502    \u2502
-\u2502  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518    \u2502
-\u2502                                                               \u2502
-\u2502  Stablecoins: cUSD + USDC     Fee Abstraction: CIP-64        \u2502
-\u2502  ERC-8004: 0x8004A169...      Reputation: 0x8004BAa1...      \u2502
-\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518
-          \u2502                                         \u2502
-          \u2502  Shared deployer wallet & identity       \u2502
-          \u2502                                         \u2502
-\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
-\u2502                     BASE SEPOLIA (Chain 84532)                \u2502
-\u2502                                                               \u2502
-\u2502  \u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510  \u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510  \u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510    \u2502
-\u2502  \u2502 ServiceBoard \u2502  \u2502 EscrowVault  \u2502  \u2502 ReputationRegistry\u2502    \u2502
-\u2502  \u2502 (deployed)  \u2502  \u2502 (deployed)   \u2502  \u2502 (deployed)         \u2502    \u2502
-\u2502  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518    \u2502
-\u2502                                                               \u2502
-\u2502  ETH escrow     ERC-8004: Buyer #2194, Seller #2195           \u2502
-\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518`}</pre>
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 0, position: 'relative' as const }}>
+            {/* Celo Chain Card */}
+            <div style={{
+              padding: 24,
+              background: 'var(--bg-card)',
+              border: `1px solid ${CELO_GREEN}30`,
+              borderRadius: '12px 12px 0 0',
+              position: 'relative' as const,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                <div style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: '50%',
+                  background: CELO_GREEN,
+                  boxShadow: `0 0 8px ${CELO_GREEN}60`,
+                }} />
+                <span style={{
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 700,
+                  fontSize: 16,
+                  color: 'var(--text-primary)',
+                }}>
+                  Celo Alfajores
+                </span>
+                <span style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  color: 'var(--text-tertiary)',
+                  padding: '2px 8px',
+                  background: 'var(--bg-main)',
+                  borderRadius: 4,
+                  border: '1px solid var(--border)',
+                }}>
+                  Chain 44787
+                </span>
+              </div>
+
+              {/* Contract cards row */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: 10,
+                marginBottom: 16,
+              }}>
+                {[
+                  { name: 'ServiceBoard', fns: ['postTask()', 'claimTask()', 'deliverTask()'], color: CELO_COLOR },
+                  { name: 'EscrowVault', fns: ['deposit(cUSD)', 'release()', 'refund()'], color: CELO_GREEN },
+                  { name: 'ReputationRegistry', fns: ['recordResult()', 'trustScore: 100'], color: '#38B3DC' },
+                ].map(c => (
+                  <div key={c.name} style={{
+                    padding: 12,
+                    background: 'var(--bg-main)',
+                    border: `1px solid ${c.color}20`,
+                    borderRadius: 8,
+                    borderTop: `2px solid ${c.color}60`,
+                  }}>
+                    <div style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: c.color,
+                      marginBottom: 8,
+                    }}>
+                      {c.name}
+                    </div>
+                    {c.fns.map(fn => (
+                      <div key={fn} style={{
+                        fontSize: 10,
+                        fontFamily: 'var(--font-mono)',
+                        color: 'var(--text-tertiary)',
+                        padding: '1px 0',
+                      }}>
+                        {fn}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+
+              {/* Celo metadata badges */}
+              <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8 }}>
+                {[
+                  { label: 'cUSD + USDC', color: CELO_GREEN },
+                  { label: 'CIP-64 Fee Abstraction', color: CELO_COLOR },
+                  { label: 'ERC-8004', color: '#A78BFA' },
+                ].map(b => (
+                  <span key={b.label} style={{
+                    fontSize: 10,
+                    fontFamily: 'var(--font-mono)',
+                    color: b.color,
+                    padding: '3px 10px',
+                    background: `${b.color}10`,
+                    border: `1px solid ${b.color}20`,
+                    borderRadius: 4,
+                  }}>
+                    {b.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Bridge / Connection Strip */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 12,
+              padding: '14px 24px',
+              background: 'var(--bg-main)',
+              borderLeft: '1px solid var(--border)',
+              borderRight: '1px solid var(--border)',
+              position: 'relative' as const,
+            }}>
+              <div style={{
+                flex: 1,
+                height: 1,
+                background: 'linear-gradient(to right, transparent, var(--text-quaternary), transparent)',
+              }} />
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '6px 16px',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 20,
+              }}>
+                <span style={{ fontSize: 14 }}>&#x1F511;</span>
+                <span style={{
+                  fontSize: 11,
+                  fontFamily: 'var(--font-mono)',
+                  color: 'var(--text-secondary)',
+                }}>
+                  Shared deployer wallet &amp; agent identity
+                </span>
+              </div>
+              <div style={{
+                flex: 1,
+                height: 1,
+                background: 'linear-gradient(to right, transparent, var(--text-quaternary), transparent)',
+              }} />
+            </div>
+
+            {/* Base Chain Card */}
+            <div style={{
+              padding: 24,
+              background: 'var(--bg-card)',
+              border: '1px solid #3B82F630',
+              borderRadius: '0 0 12px 12px',
+              position: 'relative' as const,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                <div style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: '50%',
+                  background: '#3B82F6',
+                  boxShadow: '0 0 8px #3B82F660',
+                }} />
+                <span style={{
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 700,
+                  fontSize: 16,
+                  color: 'var(--text-primary)',
+                }}>
+                  Base Sepolia
+                </span>
+                <span style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  color: 'var(--text-tertiary)',
+                  padding: '2px 8px',
+                  background: 'var(--bg-main)',
+                  borderRadius: 4,
+                  border: '1px solid var(--border)',
+                }}>
+                  Chain 84532
+                </span>
+              </div>
+
+              {/* Contract cards row */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: 10,
+                marginBottom: 16,
+              }}>
+                {[
+                  { name: 'ServiceBoard', addr: '0xDd04...1c6C', color: '#3B82F6' },
+                  { name: 'EscrowVault', addr: '0xf275...771E', color: '#3B82F6' },
+                  { name: 'ReputationRegistry', addr: '0x9c3C...4BD9', color: '#3B82F6' },
+                ].map(c => (
+                  <div key={c.name} style={{
+                    padding: 12,
+                    background: 'var(--bg-main)',
+                    border: '1px solid #3B82F620',
+                    borderRadius: 8,
+                    borderTop: '2px solid #3B82F640',
+                  }}>
+                    <div style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: '#3B82F6',
+                      marginBottom: 6,
+                    }}>
+                      {c.name}
+                    </div>
+                    <div style={{
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--text-tertiary)',
+                    }}>
+                      {c.addr}
+                    </div>
+                    <div style={{
+                      fontSize: 10,
+                      fontFamily: 'var(--font-mono)',
+                      color: '#3B82F680',
+                      marginTop: 4,
+                    }}>
+                      Deployed
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Base metadata badges */}
+              <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8 }}>
+                {[
+                  { label: 'ETH Escrow', color: '#3B82F6' },
+                  { label: 'Buyer #2194', color: '#A78BFA' },
+                  { label: 'Seller #2195', color: '#A78BFA' },
+                  { label: 'ERC-8004', color: '#A78BFA' },
+                ].map(b => (
+                  <span key={b.label} style={{
+                    fontSize: 10,
+                    fontFamily: 'var(--font-mono)',
+                    color: b.color,
+                    padding: '3px 10px',
+                    background: `${b.color}10`,
+                    border: `1px solid ${b.color}20`,
+                    borderRadius: 4,
+                  }}>
+                    {b.label}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 

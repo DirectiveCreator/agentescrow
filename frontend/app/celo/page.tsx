@@ -585,9 +585,8 @@ export default function CeloPage() {
             marginBottom: 16,
           }}>
             <span style={{ fontSize: 12, color: CELO_GREEN, fontFamily: 'var(--font-mono)' }}>
-              Best Agent on Celo
+              Synthesis Hackathon — Celo Track
             </span>
-            <span style={{ fontSize: 12, color: CELO_GREEN, fontWeight: 700 }}>$5,000</span>
           </div>
 
           <h1 style={{
@@ -598,7 +597,7 @@ export default function CeloPage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            AgentEscrow on <span style={{ color: CELO_GREEN }}>Celo</span>
+            Best Agent on <span style={{ color: CELO_GREEN }}>Celo</span>
           </h1>
           <p style={{
             fontSize: 15,
@@ -944,93 +943,79 @@ export default function CeloPage() {
           </div>
         </section>
 
-        {/* Hackathon Bounty */}
+        {/* Prize Info Sidebar */}
         <section style={{ marginBottom: 48 }}>
-          <SectionHeader title="Hackathon Bounty" />
+          <SectionHeader title="Prize Track" subtitle="Synthesis Hackathon — Best Agent on Celo" />
           <div style={{
-            padding: 20,
-            background: `linear-gradient(135deg, ${CELO_GREEN}10, transparent)`,
-            border: `1px solid ${CELO_GREEN}40`,
-            borderRadius: 12,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: 12,
           }}>
             <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 12,
+              padding: 20,
+              background: `linear-gradient(135deg, ${CELO_GREEN}10, transparent)`,
+              border: `1px solid ${CELO_GREEN}40`,
+              borderRadius: 12,
             }}>
-              <div>
-                <div style={{
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 700,
-                  fontSize: 18,
-                  color: 'var(--text-primary)',
-                }}>
-                  Best Agent on Celo
-                </div>
-                <div style={{
-                  fontSize: 12,
-                  color: 'var(--text-secondary)',
-                  marginTop: 4,
-                }}>
-                  Synthesis Hackathon &mdash; Celo Track
-                </div>
+              <div style={{
+                fontSize: 10,
+                color: 'var(--text-tertiary)',
+                fontFamily: 'var(--font-mono)',
+                textTransform: 'uppercase' as const,
+                marginBottom: 6,
+              }}>
+                1st Place
               </div>
               <div style={{
                 fontFamily: 'var(--font-display)',
                 fontWeight: 700,
                 fontSize: 28,
                 color: CELO_GREEN,
+                marginBottom: 6,
               }}>
-                $5,000
+                $3,000
               </div>
+              <p style={{
+                fontSize: 12,
+                color: 'var(--text-secondary)',
+                lineHeight: 1.6,
+                margin: 0,
+              }}>
+                Best agentic application built on Celo, demonstrating real-world utility, economic agency, and strong on-chain integration.
+              </p>
             </div>
             <div style={{
-              fontSize: 13,
-              color: 'var(--text-secondary)',
-              lineHeight: 1.7,
-              marginBottom: 16,
+              padding: 20,
+              background: `linear-gradient(135deg, ${CELO_COLOR}10, transparent)`,
+              border: `1px solid ${CELO_COLOR}40`,
+              borderRadius: 12,
             }}>
-              Build the best agent application on Celo. AgentEscrow demonstrates stablecoin-native escrow,
-              fee abstraction for gas-free agent operations, multi-chain ERC-8004 identity, and autonomous
-              agent commerce &mdash; all running on Celo.
-            </div>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 12,
-            }}>
-              {[
-                { label: '1st Place', value: '$3,000', color: CELO_GREEN },
-                { label: '2nd Place', value: '$2,000', color: CELO_COLOR },
-                { label: 'Differentiator', value: 'Stablecoins', color: '#38B3DC' },
-              ].map(item => (
-                <div key={item.label} style={{
-                  padding: 10,
-                  background: 'var(--bg-card)',
-                  borderRadius: 8,
-                  border: '1px solid var(--border)',
-                  textAlign: 'center' as const,
-                }}>
-                  <div style={{
-                    fontSize: 10,
-                    color: 'var(--text-tertiary)',
-                    fontFamily: 'var(--font-mono)',
-                    textTransform: 'uppercase' as const,
-                    marginBottom: 4,
-                  }}>
-                    {item.label}
-                  </div>
-                  <div style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: item.color,
-                    fontFamily: 'var(--font-display)',
-                  }}>
-                    {item.value}
-                  </div>
-                </div>
-              ))}
+              <div style={{
+                fontSize: 10,
+                color: 'var(--text-tertiary)',
+                fontFamily: 'var(--font-mono)',
+                textTransform: 'uppercase' as const,
+                marginBottom: 6,
+              }}>
+                2nd Place
+              </div>
+              <div style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 700,
+                fontSize: 28,
+                color: CELO_COLOR,
+                marginBottom: 6,
+              }}>
+                $2,000
+              </div>
+              <p style={{
+                fontSize: 12,
+                color: 'var(--text-secondary)',
+                lineHeight: 1.6,
+                margin: 0,
+              }}>
+                Runner-up agentic application built on Celo, showing strong potential and creative use of Celo&apos;s infrastructure.
+              </p>
             </div>
           </div>
         </section>

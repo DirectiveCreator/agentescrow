@@ -153,7 +153,7 @@ agentescrow/
 | **ERC-8004 Agents With Receipts** | Protocol Labs | TaskReceipt events emitted on every settlement, verifiable agent identity |
 | **Agent Services on Base** | Base | Discoverable agent services accepting x402 payments ([/base](/base)) |
 | **Ship Something Real** | OpenServ | Multi-agent product with x402-native services ([/openserv](/openserv)) |
-| **Best Build Story** | OpenServ | Human-agent collaboration narrative ([/openserv](/openserv)) |
+| **Best Build Story** | OpenServ | Human-agent collaboration narrative ([Build Story](https://agentescrow.onrender.com/#buildstory)) |
 | **Private Agents** | Venice | Private LLM inference powering on-chain agent actions ([/venice](/venice)) |
 | **Best Use of Delegations** | MetaMask | ERC-7715 delegation framework for agent permissions ([/metamask](/metamask)) |
 | **Agentic Storage** | Filecoin | On-chain task proof storage via Filecoin ([/filecoin](/filecoin)) |

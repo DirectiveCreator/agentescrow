@@ -453,7 +453,7 @@ export default function Dashboard() {
             {/* Hero */}
             <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
               {/* Shader: Light leaks hero — Swirl + Blobs + ChromaticAberration + FilmGrain */}
-              <div className="absolute inset-0" style={{ zIndex: 0 }}>
+              <div className="absolute inset-0" style={{ zIndex: 0, opacity: 0.55 }}>
                 <Shader>
                   <Swirl blend={40} colorA="#0a1628" colorB="#b54a98" colorSpace="oklch" detail={2.5} speed={0.5} />
                   <Blob center={{ x: 0.32, y: 0.68 }} colorA="#01dcfe" colorB="#b7fba0" colorSpace="oklch" deformation={1.5} highlightColor="#ffffff" highlightIntensity={0.6} opacity={0.55} size={0.6} softness={3} speed={0.8} visible={true} />

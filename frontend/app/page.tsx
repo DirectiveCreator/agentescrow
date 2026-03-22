@@ -272,6 +272,7 @@ export default function Dashboard() {
                   { label: 'ENS', href: '/ens', icon: '🔵' },
                   { label: 'Filecoin', href: '/filecoin', icon: '🔷' },
                   { label: 'MetaMask Delegation', href: '/metamask', icon: '🦊' },
+                  { label: 'Venice AI', href: '/venice', icon: '🟣' },
                   { label: 'Ampersend', href: '/ampersend', icon: '⚡' },
                 ].map(item => (
                   <a

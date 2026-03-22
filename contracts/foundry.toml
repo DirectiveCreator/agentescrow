@@ -9,4 +9,10 @@ remappings = [
     "forge-std/=lib/forge-std/src/"
 ]
 
+[rpc_endpoints]
+base_mainnet = "https://mainnet.base.org"
+celo_mainnet = "https://forno.celo.org"
+base_sepolia = "https://sepolia.base.org"
+celo_sepolia = "https://forno.celo-sepolia.celo-testnet.org"
+
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

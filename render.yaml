@@ -15,3 +15,5 @@ services:
         value: 0.0.0.0
       - key: NEXT_PUBLIC_CHAIN
         value: demo
+      - key: NEXT_PUBLIC_ENABLE_MAINNET
+        value: "false"

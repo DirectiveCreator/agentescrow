@@ -1,5 +1,5 @@
 import { createPublicClient, createWalletClient, custom, http, type WalletClient } from 'viem';
-import { baseSepolia, celoAlfajores, foundry } from 'viem/chains';
+import { base, baseSepolia, celoAlfajores, foundry } from 'viem/chains';
 
 // Celo Sepolia chain definition (not in viem yet — chain ID 11142220)
 export const celoSepolia = {
@@ -15,10 +15,17 @@ export const celoSepolia = {
   testnet: true,
 } as const;
 
+// Mainnet toggle — keep false until contracts are deployed + verified
+const isMainnet = process.env.NEXT_PUBLIC_ENABLE_MAINNET === 'true';
+
 // Supported chains for wallet connection
 export const SUPPORTED_CHAINS = [
-  { id: 84532, name: 'Base Sepolia', chain: baseSepolia, explorer: 'https://sepolia.basescan.org', currency: 'ETH' },
-  { id: 11142220, name: 'Celo Sepolia', chain: celoSepolia, explorer: 'https://celo-sepolia.blockscout.com', currency: 'CELO' },
+  ...(isMainnet ? [
+    { id: 8453, name: 'Base', chain: base, explorer: 'https://basescan.org', currency: 'ETH' },
+  ] : [
+    { id: 84532, name: 'Base Sepolia', chain: baseSepolia, explorer: 'https://sepolia.basescan.org', currency: 'ETH' },
+    { id: 11142220, name: 'Celo Sepolia', chain: celoSepolia, explorer: 'https://celo-sepolia.blockscout.com', currency: 'CELO' },
+  ]),
 ] as const;
 
 // === DEPLOYMENT HISTORY ===
@@ -48,8 +55,19 @@ const CELO_SEPOLIA_CONTRACTS = {
   reputationRegistry: '0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c',
 };
 
-// Active contracts — defaults to Base Sepolia V2
-const CONTRACTS = {
+// Base Mainnet contracts (filled after deployment)
+const BASE_MAINNET_CONTRACTS = {
+  serviceBoard: process.env.NEXT_PUBLIC_BASE_MAINNET_SERVICE_BOARD || '',
+  escrowVault: process.env.NEXT_PUBLIC_BASE_MAINNET_ESCROW_VAULT || '',
+  reputationRegistry: process.env.NEXT_PUBLIC_BASE_MAINNET_REPUTATION_REGISTRY || '',
+};
+
+// Active contracts — defaults to Base Sepolia V2, switches to mainnet when enabled
+const CONTRACTS = isMainnet ? {
+  serviceBoard: BASE_MAINNET_CONTRACTS.serviceBoard || BASE_SEPOLIA_CONTRACTS.serviceBoard,
+  escrowVault: BASE_MAINNET_CONTRACTS.escrowVault || BASE_SEPOLIA_CONTRACTS.escrowVault,
+  reputationRegistry: BASE_MAINNET_CONTRACTS.reputationRegistry || BASE_SEPOLIA_CONTRACTS.reputationRegistry,
+} : {
   serviceBoard: process.env.NEXT_PUBLIC_SERVICE_BOARD_ADDRESS || BASE_SEPOLIA_CONTRACTS.serviceBoard,
   escrowVault: process.env.NEXT_PUBLIC_ESCROW_VAULT_ADDRESS || BASE_SEPOLIA_CONTRACTS.escrowVault,
   reputationRegistry: process.env.NEXT_PUBLIC_REPUTATION_REGISTRY_ADDRESS || BASE_SEPOLIA_CONTRACTS.reputationRegistry,
@@ -109,8 +127,12 @@ export const DEPLOYMENT_HISTORY = {
 };
 
 const isLocal = process.env.NEXT_PUBLIC_CHAIN === 'local';
-const chain = isLocal ? foundry : baseSepolia;
-const rpcUrl = isLocal ? 'http://127.0.0.1:8545' : (process.env.NEXT_PUBLIC_RPC_URL || 'https://sepolia.base.org');
+const chain = isMainnet ? base : (isLocal ? foundry : baseSepolia);
+const rpcUrl = isMainnet
+  ? (process.env.NEXT_PUBLIC_RPC_URL || 'https://mainnet.base.org')
+  : isLocal
+    ? 'http://127.0.0.1:8545'
+    : (process.env.NEXT_PUBLIC_RPC_URL || 'https://sepolia.base.org');
 
 export const publicClient = createPublicClient({
   chain,
@@ -213,11 +235,12 @@ export const EscrowVaultABI = [
 
 // Get the correct contract addresses for a given chain
 export function getContractsForChain(chainId: number) {
+  if (isMainnet && chainId === 8453) return BASE_MAINNET_CONTRACTS;
   if (chainId === 11142220) return CELO_SEPOLIA_CONTRACTS;
   return BASE_SEPOLIA_CONTRACTS; // default
 }
 
-export { CONTRACTS, BASE_SEPOLIA_CONTRACTS, CELO_SEPOLIA_CONTRACTS, chain };
+export { CONTRACTS, BASE_SEPOLIA_CONTRACTS, CELO_SEPOLIA_CONTRACTS, BASE_MAINNET_CONTRACTS, isMainnet, chain };
 
 // TypeScript declaration for window.ethereum
 declare global {

@@ -566,12 +566,12 @@ export default function Dashboard() {
                     </span>
                   </div>
                   <h4 className="text-[13px] font-semibold mb-2" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                    Venice TEE + Alkahest Arbiter
+                    Venice TEE Private Cognition
                   </h4>
                   <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                     Agent reasoning runs inside hardware enclaves (Venice TEE) — no one sees the strategy.
-                    Escrow release is gated by Alkahest&apos;s ERC8004Arbiter, which validates agent identity
-                    scores cryptographically. Private cognition + attestation-gated settlement.
+                    Cryptographic attestations prove work was done correctly without revealing the process.
+                    Private cognition meets on-chain settlement for trustless agent services.
                   </p>
                 </div>
                 <div className="rounded-xl p-6" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>

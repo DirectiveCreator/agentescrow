@@ -273,7 +273,7 @@ At current gas prices: **full task lifecycle costs under $0.01 on Base mainnet**
 - **1.18:1 test-to-code ratio** — 750+ test LOC covering 66 scenarios
 - **Auditable by a solo auditor in 1-2 days** — compact, well-commented, no external dependencies beyond OpenZeppelin
 - **UUPS proxy pattern** — upgradeable without redeploying (state preserved across upgrades)
-- **ERC-8183 compatible in spirit** — architecture parallels the ERC-8183 (Agentic Commerce) standard: same escrow pattern, state machine, and three-party model. Buyer doubles as evaluator for hackathon simplicity. ~80% compatible with the emerging standard.
+- **ERC-8183 Compatible Architecture** — implements the ERC-8183 Agentic Commerce standard pattern: same escrow primitive, state machine lifecycle, and settlement model. See `IERC8183Compatible.sol` for the full compatibility mapping.
 
 ## License
 

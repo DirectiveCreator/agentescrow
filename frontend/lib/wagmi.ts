@@ -1,5 +1,5 @@
 import { http, createConfig } from 'wagmi';
-import { baseSepolia } from 'wagmi/chains';
+import { base, baseSepolia } from 'wagmi/chains';
 import { injected } from 'wagmi/connectors';
 
 // Celo Sepolia chain definition
@@ -16,20 +16,40 @@ export const celoSepolia = {
   testnet: true as const,
 } as const;
 
+// Enable mainnet chains via env var (default: false)
+const enableMainnet = process.env.NEXT_PUBLIC_ENABLE_MAINNET === 'true';
+
+const chains = enableMainnet
+  ? [base, baseSepolia, celoSepolia] as const
+  : [baseSepolia, celoSepolia] as const;
+
+const transports: Record<number, ReturnType<typeof http>> = {
+  [baseSepolia.id]: http('https://sepolia.base.org'),
+  [celoSepolia.id]: http('https://forno.celo-sepolia.celo-testnet.org'),
+};
+if (enableMainnet) {
+  transports[base.id] = http('https://mainnet.base.org');
+}
+
 export const config = createConfig({
-  chains: [baseSepolia, celoSepolia],
+  chains: chains as any,
   connectors: [injected()],
-  transports: {
-    [baseSepolia.id]: http('https://sepolia.base.org'),
-    [celoSepolia.id]: http('https://forno.celo-sepolia.celo-testnet.org'),
-  },
+  transports: transports as any,
 });
 
 // Re-export chain helpers
-export const SUPPORTED_CHAINS = [
+const testnetChains = [
   { id: 84532, name: 'Base Sepolia', explorer: 'https://sepolia.basescan.org', currency: 'ETH' },
   { id: 11142220, name: 'Celo Sepolia', explorer: 'https://celo-sepolia.blockscout.com', currency: 'CELO' },
 ] as const;
+
+const mainnetChains = [
+  { id: 8453, name: 'Base', explorer: 'https://basescan.org', currency: 'ETH' },
+] as const;
+
+export const SUPPORTED_CHAINS = enableMainnet
+  ? [...mainnetChains, ...testnetChains]
+  : [...testnetChains];
 
 export function getExplorerUrl(chainId: number) {
   return SUPPORTED_CHAINS.find(c => c.id === chainId)?.explorer || 'https://sepolia.basescan.org';

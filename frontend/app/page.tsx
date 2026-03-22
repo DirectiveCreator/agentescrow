@@ -876,6 +876,7 @@ export default function Dashboard() {
                     { name: 'Solidity', cat: 'contract' },
                     { name: 'Foundry', cat: 'contract' },
                     { name: 'ERC-8004', cat: 'standard' },
+                    { name: 'ERC-8183', cat: 'standard' },
                     { name: 'Venice TEE', cat: 'standard' },
                     { name: 'Base Chain', cat: 'chain' },
                     { name: 'Celo Chain', cat: 'chain' },
@@ -1686,6 +1687,7 @@ export default function Dashboard() {
                   {[
                     { label: 'TaskReceipt Events', color: '#FF8800' },
                     { label: 'ERC-8004 Compatible', color: '#A78BFA' },
+                    { label: 'ERC-8183 Compatible', color: '#818CF8' },
                     { label: 'On-chain Escrow', color: '#34D399' },
                   ].map(b => (
                     <span key={b.label} style={{

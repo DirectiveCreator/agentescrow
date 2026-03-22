@@ -100,7 +100,9 @@ export default function Dashboard() {
   const [agents, setAgents] = useState<Map<string, AgentReputation>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [isDemo, setIsDemo] = useState(true);
-  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'events' | 'architecture' | 'delegation' | 'ens' | 'filecoin' | 'celo' | 'summary' | 'build-story' | 'join'>('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'events' | 'architecture' | 'summary' | 'build-story' | 'join'>('overview');
+  const [integrationsOpen, setIntegrationsOpen] = useState(false);
+  const integrationsRef = useRef<HTMLDivElement>(null);
   // Human→Agent hire form state
   const [hireForm, setHireForm] = useState({ taskType: 'text_summary', description: '', reward: '0.001', deadline: '24' });
   const [walletConnected, setWalletConnected] = useState(false);
@@ -173,6 +175,17 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, [fetchData]);
 
+  // Close integrations dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (integrationsRef.current && !integrationsRef.current.contains(e.target as Node)) {
+        setIntegrationsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const displayTasks = isDemo ? DEMO_TASKS : tasks;
   const completedTasks = displayTasks.filter(t => Number(t.status) === 3).length;
   const totalReward = displayTasks.reduce((sum, t) => sum + t.reward, 0n);
@@ -224,10 +237,10 @@ export default function Dashboard() {
       {/* ── Navigation ── */}
       <nav className="border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 flex gap-0">
-          {(['overview', 'hire', 'board', 'events', 'architecture', 'delegation', 'ens', 'filecoin', 'celo', 'summary', 'build-story', 'join'] as const).map(section => (
+          {(['overview', 'hire', 'board', 'events', 'architecture', 'summary', 'build-story', 'join'] as const).map(section => (
             <button
               key={section}
-              onClick={() => setActiveSection(section)}
+              onClick={() => { setActiveSection(section); setIntegrationsOpen(false); }}
               className="px-4 py-3 text-[12px] tracking-wide transition-colors relative"
               style={{
                 color: activeSection === section ? 'var(--accent)' : 'var(--text-tertiary)',
@@ -240,6 +253,41 @@ export default function Dashboard() {
               )}
             </button>
           ))}
+          {/* Integrations Dropdown */}
+          <div className="relative" ref={integrationsRef}>
+            <button
+              onClick={() => setIntegrationsOpen(!integrationsOpen)}
+              className="px-4 py-3 text-[12px] tracking-wide transition-colors relative flex items-center gap-1"
+              style={{ color: 'var(--text-tertiary)', fontWeight: 400 }}
+            >
+              INTEGRATIONS
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ transform: integrationsOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            {integrationsOpen && (
+              <div className="absolute top-full left-0 mt-[1px] rounded-lg py-2 z-50 min-w-[180px] border" style={{ background: 'var(--bg-card)', borderColor: 'var(--border)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+                {[
+                  { label: 'Celo', href: '/celo', icon: '🟢' },
+                  { label: 'ENS', href: '/ens', icon: '🔵' },
+                  { label: 'Filecoin', href: '/filecoin', icon: '🔷' },
+                  { label: 'MetaMask Delegation', href: '/metamask', icon: '🦊' },
+                  { label: 'Ampersend', href: '/ampersend', icon: '⚡' },
+                ].map(item => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center gap-3 px-4 py-2.5 text-[12px] tracking-wide transition-colors hover:bg-white/5"
+                    style={{ color: 'var(--text-secondary)' }}
+                    onClick={() => setIntegrationsOpen(false)}
+                  >
+                    <span>{item.icon}</span>
+                    {item.label.toUpperCase()}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
@@ -1427,401 +1475,6 @@ export default function Dashboard() {
     └── lib/
         └── contracts.ts            # ABIs + viem client config`}
               </pre>
-            </div>
-          </div>
-        )}
-
-        {/* ── Delegation Section ── */}
-        {activeSection === 'delegation' && (
-          <div className="space-y-8">
-            <SectionHeader title="MetaMask Delegation Framework" subtitle="Scoped, time-limited, chainable permissions for autonomous agent operations" />
-
-            {/* Delegation Hero */}
-            <div className="relative overflow-hidden rounded-lg border" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
-              <div className="absolute inset-0 opacity-20">
-                <Metaballs
-                  speed={0.3}
-                  scale={1.2}
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </div>
-              <div className="relative p-8 md:p-12">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">🔐</span>
-                  <h3 className="text-2xl font-semibold" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-heading)' }}>Delegated Agent Autonomy</h3>
-                </div>
-                <p className="text-lg mb-6" style={{ color: 'var(--text-secondary)' }}>
-                  Humans set policy. Agents execute autonomously. All within cryptographically enforced guardrails.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[
-                    { icon: '👤', label: 'Human Sets Policy', desc: 'Define spending limits, allowed functions, time windows, and call counts' },
-                    { icon: '🤖', label: 'Agent Operates Freely', desc: 'Redeem delegations to post tasks, confirm deliveries — no human approval per-action' },
-                    { icon: '⛓️', label: 'Chain of Trust', desc: 'Buyer can re-delegate to mediator — authority narrows, never widens' },
-                  ].map((item, i) => (
-                    <div key={i} className="rounded-lg border p-4" style={{ borderColor: 'var(--border)', background: 'var(--bg-primary)' }}>
-                      <div className="text-2xl mb-2">{item.icon}</div>
-                      <div className="text-sm font-semibold mb-1" style={{ color: 'var(--accent)' }}>{item.label}</div>
-                      <div className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{item.desc}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Delegation Types */}
-            <div className="space-y-6">
-              <h4 className="text-sm font-semibold tracking-wide" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>DELEGATION TYPES</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                  {
-                    title: 'Spending Delegation',
-                    chain: 'Human → Buyer Agent',
-                    color: '#06B6D4',
-                    desc: 'postTask() with ETH budget',
-                    caveats: ['AllowedTargets: ServiceBoard only', 'AllowedMethods: postTask()', 'ValueLte: 0.005 ETH per task', 'NativeTokenTransfer: 0.02 ETH total', 'LimitedCalls: 10 max', 'Timestamp: 24h expiry'],
-                  },
-                  {
-                    title: 'Confirmation Delegation',
-                    chain: 'Human → Buyer Agent',
-                    color: '#8B5CF6',
-                    desc: 'confirmDelivery() authorization',
-                    caveats: ['AllowedTargets: ServiceBoard only', 'AllowedMethods: confirmDelivery()', 'LimitedCalls: 10 max', 'Timestamp: 24h expiry'],
-                  },
-                  {
-                    title: 'Mediator Re-Delegation',
-                    chain: 'Human → Buyer → Mediator',
-                    color: '#F59E0B',
-                    desc: 'Chainable confirmation authority',
-                    caveats: ['Inherits ALL parent restrictions', 'AllowedMethods: confirmDelivery()', 'LimitedCalls: 5 max (narrowed)', 'Timestamp: 12h expiry (narrowed)'],
-                  },
-                ].map((del, i) => (
-                  <div key={i} className="rounded-lg border p-5" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 rounded-full" style={{ background: del.color }} />
-                      <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{del.title}</span>
-                    </div>
-                    <div className="text-xs mb-3 px-2 py-1 rounded inline-block" style={{ background: `${del.color}15`, color: del.color, fontFamily: 'var(--font-mono)' }}>
-                      {del.chain}
-                    </div>
-                    <p className="text-xs mb-3" style={{ color: 'var(--text-tertiary)' }}>{del.desc}</p>
-                    <div className="space-y-1">
-                      {del.caveats.map((caveat, j) => (
-                        <div key={j} className="text-[10px] flex items-center gap-1.5" style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
-                          <span style={{ color: del.color }}>▸</span> {caveat}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* How It Works Flow */}
-            <div className="rounded-lg border p-6" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
-              <h4 className="text-sm font-semibold tracking-wide mb-4" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>DELEGATION LIFECYCLE</h4>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                {[
-                  { step: '01', title: 'Create Smart Accounts', desc: 'HybridDeleGator accounts for human + all agents. Counterfactual — deployed only on first use.', icon: '🔑' },
-                  { step: '02', title: 'Sign Delegations', desc: 'Human signs EIP-712 typed data off-chain. Zero gas cost. Creates spending + confirmation policies.', icon: '✍️' },
-                  { step: '03', title: 'Agents Redeem', desc: 'Agents submit delegations to DelegationManager. All caveats validated on-chain before execution.', icon: '⚡' },
-                  { step: '04', title: 'Transparent Execution', desc: 'Call executes FROM human\'s smart account. msg.sender = human. ServiceBoard sees no difference.', icon: '🎯' },
-                ].map((item, i) => (
-                  <div key={i} className="text-center">
-                    <div className="text-2xl mb-2">{item.icon}</div>
-                    <div className="text-xs font-mono mb-1" style={{ color: 'var(--accent)' }}>STEP {item.step}</div>
-                    <div className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>{item.title}</div>
-                    <div className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{item.desc}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Technical Details */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="rounded-lg border p-5" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
-                <h4 className="text-sm font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>On-Chain Infrastructure</h4>
-                <div className="space-y-2">
-                  {[
-                    { label: 'DelegationManager', value: '0xdb9B...7dB3', desc: 'Validates & redeems delegations' },
-                    { label: 'EntryPoint (ERC-4337)', value: '0x0000...0032', desc: 'UserOperation execution' },
-                    { label: 'Enforcers', value: '31 deployed', desc: 'Caveat enforcement contracts' },
-                    { label: 'Chain', value: 'Base Sepolia (84532)', desc: 'Native MetaMask support' },
-                  ].map((item, i) => (
-                    <div key={i} className="flex justify-between items-start">
-                      <div>
-                        <div className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>{item.label}</div>
-                        <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>{item.desc}</div>
-                      </div>
-                      <span className="text-xs font-mono" style={{ color: 'var(--accent)' }}>{item.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="rounded-lg border p-5" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
-                <h4 className="text-sm font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Key Insight: Zero Contract Changes</h4>
-                <p className="text-xs mb-3" style={{ color: 'var(--text-tertiary)' }}>
-                  When a delegation is redeemed, the call executes from the delegator&apos;s smart account.
-                  This means <code style={{ color: 'var(--accent)' }}>msg.sender == buyer</code> still passes at the ServiceBoard level.
-                </p>
-                <div className="rounded border p-3" style={{ borderColor: 'var(--border)', background: 'var(--bg-primary)' }}>
-                  <div className="text-[10px] font-mono space-y-1" style={{ color: 'var(--text-tertiary)' }}>
-                    <div><span style={{ color: '#8B5CF6' }}>// Before: Human approves every tx</span></div>
-                    <div>Human EOA → ServiceBoard.postTask()</div>
-                    <div className="mt-2"><span style={{ color: '#06B6D4' }}>// After: Agent redeems delegation</span></div>
-                    <div>Agent → DelegationManager → Human Smart Account → ServiceBoard.postTask()</div>
-                    <div className="mt-1"><span style={{ color: '#34D399' }}>// Result: msg.sender = Human Smart Account ✓</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bounty Target */}
-            <div className="rounded-lg border p-4 flex items-center justify-between" style={{ borderColor: '#8B5CF620', background: '#8B5CF608' }}>
-              <div className="flex items-center gap-3">
-                <span className="text-xl">🏆</span>
-                <div>
-                  <div className="text-sm font-semibold" style={{ color: '#8B5CF6' }}>MetaMask: Best Use of Delegations</div>
-                  <div className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Creative, novel use of the MetaMask Delegation Framework</div>
-                </div>
-              </div>
-              <div className="text-lg font-bold" style={{ color: '#8B5CF6', fontFamily: 'var(--font-mono)' }}>$5,000</div>
-            </div>
-
-            {/* SDK Info */}
-            <div className="rounded-lg border p-4" style={{ borderColor: 'var(--border)', background: 'var(--bg-secondary)' }}>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-sm" style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>npm</span>
-                <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>@metamask/delegation-toolkit@0.13.0</span>
-              </div>
-              <div className="text-[10px] font-mono" style={{ color: 'var(--text-tertiary)' }}>
-                Demo: <code style={{ color: 'var(--accent)' }}>node agents/src/delegation/demo.js</code> — runs full 4-phase lifecycle in simulation mode
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── ENS Identity Section ── */}
-        {activeSection === 'ens' && (
-          <div className="space-y-8">
-            <SectionHeader title="ENS Identity Layer" subtitle="Human-readable names for AI agents — powered by ENS + ENSIP-25" />
-
-            <div className="text-center py-12">
-              <span className="text-4xl mb-4 block">🏷️</span>
-              <h2 className="text-lg font-bold mb-2" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                ENS Names as Agent Identity
-              </h2>
-              <p className="text-[13px] mb-6 max-w-md mx-auto" style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-                Human-readable names, ENSIP-25 bidirectional verification, and encrypted agent communication via ENS.
-              </p>
-              <a href="/ens" className="inline-flex items-center gap-2 px-8 py-3 rounded-lg text-[14px] font-semibold transition-all hover:opacity-90" style={{
-                background: '#5B8DEF',
-                color: '#FFFFFF',
-                fontFamily: '"Space Grotesk", sans-serif',
-                textDecoration: 'none',
-              }}>
-                View ENS Integration &rarr;
-              </a>
-            </div>
-          </div>
-        )}
-
-        {/* ── Celo Integration Section ── */}
-        {activeSection === 'celo' && (
-          <div className="space-y-8">
-            <SectionHeader title="Celo Integration" subtitle="Stablecoin-native agent commerce on the home of stablecoins" />
-
-            <div className="text-center py-12">
-              <span className="text-4xl mb-4 block">&#x1F7E2;</span>
-              <h2 className="text-lg font-bold mb-2" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                AgentEscrow on Celo
-              </h2>
-              <p className="text-[13px] mb-6 max-w-md mx-auto" style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-                Same contracts, same agents — deployed on Celo with cUSD escrow and CIP-64 fee abstraction.
-              </p>
-              <a href="/celo" className="inline-flex items-center gap-2 px-8 py-3 rounded-lg text-[14px] font-semibold transition-all hover:opacity-90" style={{
-                background: '#35D07F',
-                color: '#0C0C0C',
-                fontFamily: '"Space Grotesk", sans-serif',
-                textDecoration: 'none',
-              }}>
-                View Celo Integration &rarr;
-              </a>
-            </div>
-          </div>
-        )}
-
-        {/* ── Summary Section ── */}
-        {activeSection === 'summary' && (
-          <div className="space-y-8">
-            <SectionHeader title="Hackathon Summary" subtitle="Overview of everything built during The Synthesis Hackathon" />
-
-            {/* Timeline */}
-            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
-                BUILD TIMELINE
-              </h3>
-              <div className="space-y-4">
-                {[
-                  { date: 'Mar 17', title: 'Smart Contracts Built', detail: '3 Solidity contracts (ServiceBoard, EscrowVault, ReputationRegistry) + 8 Foundry tests passing', color: 'var(--accent)' },
-                  { date: 'Mar 17', title: 'Agent Harness Created', detail: 'Buyer + Seller agents in Node.js with autonomous task lifecycle — post, claim, execute, deliver, confirm', color: '#A78BFA' },
-                  { date: 'Mar 17', title: 'Local Demo Complete', detail: '5/5 tasks completed successfully on local Anvil chain, full lifecycle verified', color: '#34D399' },
-                  { date: 'Mar 18', title: 'Base Sepolia Deployment', detail: 'All 3 contracts deployed and wired up. 3 on-chain task completions verified.', color: '#FF8800' },
-                  { date: 'Mar 18', title: 'Frontend Dashboard', detail: 'Next.js dashboard with Socialure-style dark theme — live data from chain, 4-tab layout', color: 'var(--accent)' },
-                  { date: 'Mar 18', title: 'ERC-8004 Identity', detail: 'Both agents registered on Base Sepolia — Buyer #2194, Seller #2195 with IPFS avatars', color: '#A78BFA' },
-                  { date: 'Mar 18', title: 'Frontend Deployed', detail: 'Live dashboard at agentescrow.onrender.com — accessible for demo and judging', color: '#34D399' },
-                  { date: 'Mar 18', title: 'Bounty Track Analysis', detail: '26+ hackathon tracks analyzed, PoC submissions drafted for Open Track ($20K) and Build Story ($500)', color: '#FF8800' },
-                  { date: 'Mar 18', title: 'x402 Integration Started', detail: 'HTTP 402 payment protocol implementation for agent-to-agent micropayments via USDC on Base', color: 'var(--accent)' },
-                  { date: 'Mar 19', title: 'x402 Official SDK Integrated', detail: 'Upgraded to @x402/express + @x402/fetch — real USDC payment verification via Coinbase facilitator', color: '#34D399' },
-                  { date: 'Mar 19', title: 'OpenServ Integration', detail: 'Registered AgentEscrow on OpenServ orchestration platform — 6 capabilities exposed for cross-agent collaboration via @openserv-labs/sdk', color: '#FF8800' },
-                  { date: 'Mar 19', title: 'Venice Private Cognition', detail: 'Full TEE integration — private task evaluation (seller strategy hidden), private work execution (enclave-protected), private delivery verification (buyer criteria hidden), attestation-backed deliveries with cryptographic proofs', color: '#A78BFA' },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-4 p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                    <div className="text-[11px] font-mono w-16 flex-shrink-0 pt-0.5" style={{ color: item.color }}>{item.date}</div>
-                    <div className="w-2 h-2 rounded-full flex-shrink-0 mt-1.5" style={{ background: item.color }} />
-                    <div className="flex-1">
-                      <div className="text-[13px] font-semibold mb-1" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>{item.title}</div>
-                      <div className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>{item.detail}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Stats Overview */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <MetricCard label="CONTRACTS" value="3" accent />
-              <MetricCard label="TESTS PASSING" value="8/8" />
-              <MetricCard label="ON-CHAIN TASKS" value="8+" />
-              <MetricCard label="INTEGRATIONS" value="4" />
-            </div>
-
-            {/* What We Built */}
-            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
-                WHAT WE BUILT
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                  { title: 'On-Chain Escrow', desc: 'Trustless ETH escrow that locks buyer funds on task creation and releases to seller on verified completion. Timeout refunds protect both parties.', status: 'DEPLOYED' },
-                  { title: 'Agent Marketplace', desc: 'ServiceBoard contract enables agents to discover, claim, and execute tasks autonomously. Full lifecycle from posting to settlement.', status: 'DEPLOYED' },
-                  { title: 'Reputation System', desc: 'On-chain trust scores computed from task history. Agents build verifiable reputation that persists across interactions.', status: 'DEPLOYED' },
-                  { title: 'ERC-8004 Identity', desc: 'Both agents have on-chain identity NFTs on Base Sepolia with IPFS-hosted avatars and machine-readable metadata.', status: 'REGISTERED' },
-                  { title: 'Autonomous Agents', desc: 'Buyer and Seller agents operate autonomously — discovering tasks, executing work, and settling payments without human intervention.', status: 'RUNNING' },
-                  { title: 'x402 Payments', desc: 'Official @x402/* SDK integration. Seller exposes services behind HTTP 402 paywalls, Buyer auto-pays USDC on Base Sepolia via facilitator.', status: 'INTEGRATED' },
-                  { title: 'OpenServ Agent', desc: 'Registered on OpenServ orchestration platform. 6 capabilities (discover, post, claim, deliver, confirm, reputation) available for cross-agent collaboration.', status: 'INTEGRATED' },
-                  { title: 'Venice Private Cognition', desc: 'TEE-protected agent reasoning via Venice AI. Seller strategy evaluation, work execution, and buyer quality verification all run inside hardware enclaves with cryptographic attestation proofs.', status: 'INTEGRATED' },
-                ].map(item => (
-                  <div key={item.title} className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-[12px] font-semibold" style={{ color: 'var(--accent)' }}>{item.title}</h4>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded font-semibold tracking-wider"
-                            style={{
-                              background: item.status === 'IN PROGRESS' ? '#FF880015' : item.status === 'INTEGRATED' ? '#818CF815' : '#34D39915',
-                              color: item.status === 'IN PROGRESS' ? '#FF8800' : item.status === 'INTEGRATED' ? '#818CF8' : '#34D399',
-                              border: `1px solid ${item.status === 'IN PROGRESS' ? '#FF880040' : item.status === 'INTEGRATED' ? '#818CF840' : '#34D39940'}`,
-                            }}>
-                        {item.status}
-                      </span>
-                    </div>
-                    <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Bounty Targets */}
-            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
-                TARGET BOUNTY TRACKS
-              </h3>
-              <div className="space-y-3">
-                {[
-                  { track: 'Open Track', prize: '$28,000', fit: 5, status: 'Draft Ready', desc: 'Community-funded pool. 1st $15K · 2nd $8K · 3rd $5K.' },
-                  { track: 'PL: Let the Agent Cook', prize: '$4,000', fit: 5, status: 'Strong Fit', desc: 'Fully autonomous agents: discover → plan → execute → verify → submit. Shared w/ PL_Genesis. 1st $2K · 2nd $1.5K · 3rd $500' },
-                  { track: 'PL: Agents With Receipts', prize: '$4,000', fit: 5, status: 'ERC-8004 ✅', desc: 'Trusted agent systems using ERC-8004 for identity, reputation & validation. Shared w/ PL_Genesis.' },
-                  { track: 'Base: Agent Services', prize: '$5,000', fit: 5, status: 'x402 ✅', desc: 'Build discoverable agent services on Base accepting payments via x402. 3 equal prizes of ~$1.67K. Only eligible Base sub-track — Trading Agent ($5K) not eligible.' },
-                  { track: 'OpenServ Build Story', prize: '$500', fit: 5, status: 'Draft Ready', desc: 'Content challenge: build log of our OpenServ integration journey — from SDK setup to Agent #3973 live on platform.' },
-                  { track: 'OpenServ Full', prize: '$4,500', fit: 5, status: 'Integrated', desc: '' },
-                  { track: 'Venice AI', prize: '$11,500', fit: 5, status: 'Integrated', desc: '' },
-                ].map(item => (
-                  <div key={item.track} className="flex flex-col gap-1 px-4 py-3 rounded-lg"
-                       style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                    <div className="flex items-center gap-4">
-                      <div className="flex-1">
-                        <span className="text-[12px] font-semibold">{item.track}</span>
-                      </div>
-                      <span className="text-[12px] font-mono" style={{ color: '#34D399' }}>{item.prize}</span>
-                      <div className="flex gap-0.5">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <span key={i} className="text-[10px]" style={{ color: i < item.fit ? '#FF8800' : 'var(--text-quaternary)' }}>★</span>
-                        ))}
-                      </div>
-                      <span className="text-[10px] px-2 py-0.5 rounded" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
-                        {item.status}
-                      </span>
-                    </div>
-                    {item.desc && (
-                      <span className="text-[10px] pl-1" style={{ color: 'var(--text-tertiary)' }}>{item.desc}</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Human-Agent Collaboration */}
-            <div className="rounded-xl p-8" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <h3 className="text-[12px] tracking-[0.15em] font-semibold mb-6" style={{ color: 'var(--text-secondary)' }}>
-                HUMAN + AGENT COLLABORATION
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                  <h4 className="text-[12px] font-semibold mb-2" style={{ color: 'var(--accent)' }}>The Human</h4>
-                  <ul className="space-y-1.5 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
-                    <li>▸ Strategic direction and architecture decisions</li>
-                    <li>▸ Avatar design and visual identity (IPFS uploads)</li>
-                    <li>▸ Deployment approvals and mainnet gating</li>
-                    <li>▸ Bounty track selection and submission timing</li>
-                    <li>▸ Quality review before each public-facing push</li>
-                  </ul>
-                </div>
-                <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-                  <h4 className="text-[12px] font-semibold mb-2" style={{ color: '#34D399' }}>The Hacker (AI Agent)</h4>
-                  <ul className="space-y-1.5 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
-                    <li>▸ Smart contract development (Solidity + Foundry)</li>
-                    <li>▸ Agent harness coding (Node.js + viem)</li>
-                    <li>▸ Frontend dashboard (Next.js + Tailwind)</li>
-                    <li>▸ On-chain deployment and testing</li>
-                    <li>▸ ERC-8004 registration and x402 integration</li>
-                    <li>▸ Venice TEE private cognition integration</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── Filecoin Onchain Cloud Section ── */}
-        {activeSection === 'filecoin' && (
-          <div className="space-y-8">
-            <SectionHeader title="Filecoin Onchain Cloud" subtitle="Autonomous decentralized storage for agent task results, memory, and attestations" />
-
-            <div className="text-center py-12">
-              <span className="text-4xl mb-4 block">&#x1F5C4;&#xFE0F;</span>
-              <h2 className="text-lg font-bold mb-2" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                Agentic Storage on Filecoin
-              </h2>
-              <p className="text-[13px] mb-6 max-w-md mx-auto" style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-                Task deliveries, agent memory, and TEE attestations stored permanently on Filecoin Onchain Cloud with PDP proofs.
-              </p>
-              <a href="/filecoin" className="inline-flex items-center gap-2 px-8 py-3 rounded-lg text-[14px] font-semibold transition-all hover:opacity-90" style={{
-                background: '#0090FF',
-                color: '#FFFFFF',
-                fontFamily: '"Space Grotesk", sans-serif',
-                textDecoration: 'none',
-              }}>
-                View Filecoin Integration &rarr;
-              </a>
             </div>
           </div>
         )}

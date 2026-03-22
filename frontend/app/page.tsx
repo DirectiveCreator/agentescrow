@@ -70,55 +70,6 @@ const DEMO_TASKS: Task[] = [
   { id: 8n, buyer: DEPLOYER, seller: DEPLOYER, taskType: 'name_generation', description: 'Generate branding names for a cross-chain agent marketplace', reward: 500000000000000n, deadline: 1710000000n, status: 3, deliveryHash: 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn', createdAt: 1709998000n, claimedAt: 1709998060n, deliveredAt: 1709998120n },
 ];
 
-// Generate events dynamically from task data
-function generateEventsFromTasks(taskList: Task[]): Array<{ type: string; taskId: number; detail: string; time: string }> {
-  const events: Array<{ type: string; taskId: number; detail: string; time: string }> = [];
-  const completedTasks = [...taskList].filter(t => Number(t.status) === 3).sort((a, b) => Number(b.deliveredAt) - Number(a.deliveredAt));
-  const openTasks = taskList.filter(t => Number(t.status) === 0);
-
-  // Generate events for completed tasks (newest first)
-  completedTasks.forEach((task, idx) => {
-    const baseMinute = idx * 6;
-    const reward = formatEther(task.reward);
-    events.push(
-      { type: 'ReputationUpdated', taskId: Number(task.id), detail: `Score updated after ${task.taskType} completion`, time: formatTimeOffset(baseMinute) },
-      { type: 'TaskCompleted', taskId: Number(task.id), detail: `${task.taskType} — ${reward} ETH settled`, time: formatTimeOffset(baseMinute) },
-      { type: 'EscrowReleased', taskId: Number(task.id), detail: `${reward} ETH → seller ${shortenAddress(task.seller)}`, time: formatTimeOffset(baseMinute + 1) },
-      { type: 'TaskDelivered', taskId: Number(task.id), detail: `Delivery hash: ${task.deliveryHash.slice(0, 8)}...${task.deliveryHash.slice(-6)}`, time: formatTimeOffset(baseMinute + 2) },
-      { type: 'TaskClaimed', taskId: Number(task.id), detail: `Claimed by ${shortenAddress(task.seller)}`, time: formatTimeOffset(baseMinute + 3) },
-      { type: 'EscrowCreated', taskId: Number(task.id), detail: `${reward} ETH locked for task #${Number(task.id)}`, time: formatTimeOffset(baseMinute + 4) },
-      { type: 'TaskPosted', taskId: Number(task.id), detail: `${task.taskType} — ${reward} ETH bounty`, time: formatTimeOffset(baseMinute + 5) },
-    );
-  });
-
-  // Open tasks just have posting events
-  openTasks.forEach(task => {
-    const reward = formatEther(task.reward);
-    events.push(
-      { type: 'TaskPosted', taskId: Number(task.id), detail: `${task.taskType} — ${reward} ETH bounty (awaiting claim)`, time: 'Earlier' },
-    );
-  });
-
-  return events;
-}
-
-function formatTimeOffset(minutesAgo: number): string {
-  const now = new Date();
-  const t = new Date(now.getTime() - minutesAgo * 60000);
-  return t.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-}
-
-const EVENT_ICON_MAP: Record<string, string> = {
-  TaskPosted: '◈', TaskClaimed: '◇', TaskDelivered: '◆', TaskCompleted: '●',
-  TaskCancelled: '○', EscrowCreated: '▣', EscrowReleased: '▢', ReputationUpdated: '★',
-};
-
-const EVENT_COLOR_MAP: Record<string, string> = {
-  TaskPosted: 'text-[var(--accent)]', TaskClaimed: 'text-[#FF8800]',
-  TaskDelivered: 'text-[#A78BFA]', TaskCompleted: 'text-[#34D399]',
-  TaskCancelled: 'text-[#EF4444]', EscrowCreated: 'text-[var(--accent)]',
-  EscrowReleased: 'text-[#34D399]', ReputationUpdated: 'text-[#FBBF24]',
-};
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -136,7 +87,7 @@ export default function Dashboard() {
   const [agentScores, setAgentScores] = useState<Map<string, number>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [isDemo, setIsDemo] = useState(true);
-  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'events' | 'architecture' | 'summary' | 'build-story' | 'join'>('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'board' | 'architecture' | 'summary' | 'build-story' | 'join'>('overview');
   const [integrationsOpen, setIntegrationsOpen] = useState(false);
   const integrationsRef = useRef<HTMLDivElement>(null);
   // Human→Agent hire form state
@@ -253,9 +204,6 @@ export default function Dashboard() {
     ? { tasks: Number(agentRep.tasksCompleted), spent: formatEther(agentRep.totalSpent), earned: formatEther(agentRep.totalEarned), score: agentScore ?? 100 }
     : { tasks: demoCompleted, spent: '0', earned: formatEther(demoTotalReward), score: 100 };
 
-  // Dynamic events: generated from whichever task list we're displaying
-  const displayEvents = generateEventsFromTasks(displayTasks);
-
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg-main)', color: 'var(--text-primary)' }}>
       {/* ── Header ── */}
@@ -303,7 +251,7 @@ export default function Dashboard() {
       {/* ── Navigation ── */}
       <nav className="border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 flex gap-0">
-          {(['overview', 'hire', 'board', 'events', 'architecture', 'summary', 'build-story', 'join'] as const).map(section => (
+          {(['overview', 'hire', 'board', 'architecture', 'summary', 'build-story', 'join'] as const).map(section => (
             <button
               key={section}
               onClick={() => { setActiveSection(section); setIntegrationsOpen(false); }}
@@ -1273,41 +1221,6 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ── Events Section ── */}
-        {activeSection === 'events' && (
-          <div className="space-y-4">
-            <SectionHeader
-              title="Event Feed"
-              subtitle={`${isDemo ? 'Demo' : 'Live'} on-chain events — ${displayEvents.length} events from ${displayTasks.length} tasks`}
-            />
-            <div className="space-y-1 mt-4">
-              {displayEvents.map((event, i) => (
-                <div key={i} className="flex items-center gap-4 px-4 py-3 rounded-lg transition-colors"
-                     style={{ border: '1px solid var(--border)' }}
-                     onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--border-secondary)')}
-                     onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border)')}>
-                  <span className={`text-base ${EVENT_COLOR_MAP[event.type] || ''}`}>
-                    {EVENT_ICON_MAP[event.type] || '◌'}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[12px] font-medium">
-                      {event.type.replace(/([A-Z])/g, ' $1').trim()}
-                    </span>
-                    <span className="text-[11px] ml-2" style={{ color: 'var(--text-tertiary)' }}>
-                      #{event.taskId}
-                    </span>
-                  </div>
-                  <span className="text-[11px] truncate max-w-xs" style={{ color: 'var(--text-secondary)' }}>
-                    {event.detail}
-                  </span>
-                  <span className="text-[11px] whitespace-nowrap" style={{ color: 'var(--text-quaternary)' }}>
-                    {event.time}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* ── Architecture Section ── */}
         {activeSection === 'architecture' && (

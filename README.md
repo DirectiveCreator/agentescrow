@@ -151,22 +151,22 @@ agentescrow/
 | **Open Track** | Synthesis | Full-stack agent marketplace with trustless escrow |
 | **Let the Agent Cook** | Protocol Labs | Two autonomous agents completing real economic transactions |
 | **ERC-8004 Agents With Receipts** | Protocol Labs | TaskReceipt events emitted on every settlement, verifiable agent identity |
-| **Agent Services on Base** | Base | Discoverable agent services accepting x402 payments ([agentescrow.onrender.com/base](https://agentescrow.onrender.com/base)) |
-| **Ship Something Real** | OpenServ | Multi-agent product with x402-native services ([agentescrow.onrender.com/openserv](https://agentescrow.onrender.com/openserv)) |
-| **Best Build Story** | OpenServ | Human-agent collaboration narrative ([agentescrow.onrender.com/build-story](https://agentescrow.onrender.com/build-story)) |
-| **Private Agents** | Venice | Private LLM inference powering on-chain agent actions ([agentescrow.onrender.com/venice](https://agentescrow.onrender.com/venice)) |
-| **Best Use of Delegations** | MetaMask | ERC-7715 delegation framework for agent permissions ([agentescrow.onrender.com/metamask](https://agentescrow.onrender.com/metamask)) |
-| **Agentic Storage** | Filecoin | On-chain task proof storage via Filecoin ([agentescrow.onrender.com/filecoin](https://agentescrow.onrender.com/filecoin)) |
-| **ENS Identity** | ENS | Agent ENS names for discoverable on-chain identity ([agentescrow.onrender.com/ens](https://agentescrow.onrender.com/ens)) |
-| **Best Agent with Ampersend** | Ampersend | Agent-to-agent communication via Ampersend SDK ([agentescrow.onrender.com/ampersend](https://agentescrow.onrender.com/ampersend)) |
+| **Agent Services on Base** | Base | Discoverable agent services accepting x402 payments ([agentescrow.directivecreator.com/base](https://agentescrow.directivecreator.com/base)) |
+| **Ship Something Real** | OpenServ | Multi-agent product with x402-native services ([agentescrow.directivecreator.com/openserv](https://agentescrow.directivecreator.com/openserv)) |
+| **Best Build Story** | OpenServ | Human-agent collaboration narrative ([agentescrow.directivecreator.com/build-story](https://agentescrow.directivecreator.com/build-story)) |
+| **Private Agents** | Venice | Private LLM inference powering on-chain agent actions ([agentescrow.directivecreator.com/venice](https://agentescrow.directivecreator.com/venice)) |
+| **Best Use of Delegations** | MetaMask | ERC-7715 delegation framework for agent permissions ([agentescrow.directivecreator.com/metamask](https://agentescrow.directivecreator.com/metamask)) |
+| **Agentic Storage** | Filecoin | On-chain task proof storage via Filecoin ([agentescrow.directivecreator.com/filecoin](https://agentescrow.directivecreator.com/filecoin)) |
+| **ENS Identity** | ENS | Agent ENS names for discoverable on-chain identity ([agentescrow.directivecreator.com/ens](https://agentescrow.directivecreator.com/ens)) |
+| **Best Agent with Ampersend** | Ampersend | Agent-to-agent communication via Ampersend SDK ([agentescrow.directivecreator.com/ampersend](https://agentescrow.directivecreator.com/ampersend)) |
 
 ### Celo Hackathon V2 — Build Agents for the Real World
 
 | Track | Sponsor | Description |
 |-------|---------|-------------|
-| **Best Agent on Celo** | Celo | Agent marketplace with on-chain escrow on Celo Sepolia ([agentescrow.onrender.com/celo](https://agentescrow.onrender.com/celo)) |
-| **Best Agent Infra on Celo** | Celo | Multi-chain agent infrastructure (same contracts, both chains) ([agentescrow.onrender.com/celo](https://agentescrow.onrender.com/celo)) |
-| **Highest Rank in 8004scan** | Celo | ERC-8004 registered agents on Celo ([agentescrow.onrender.com/celo](https://agentescrow.onrender.com/celo)) |
+| **Best Agent on Celo** | Celo | Agent marketplace with on-chain escrow on Celo Sepolia ([agentescrow.directivecreator.com/celo](https://agentescrow.directivecreator.com/celo)) |
+| **Best Agent Infra on Celo** | Celo | Multi-chain agent infrastructure (same contracts, both chains) ([agentescrow.directivecreator.com/celo](https://agentescrow.directivecreator.com/celo)) |
+| **Highest Rank in 8004scan** | Celo | ERC-8004 registered agents on Celo ([agentescrow.directivecreator.com/celo](https://agentescrow.directivecreator.com/celo)) |
 
 ## Multi-Chain Deployment
 

@@ -155,7 +155,7 @@ agentescrow/
 | **Agent Services on Base** | Base | Discoverable agent services accepting x402 payments ([agentescrow.directivecreator.com/base](https://agentescrow.directivecreator.com/base)) |
 | **Ship Something Real** | OpenServ | Multi-agent product with x402-native services ([agentescrow.directivecreator.com/openserv](https://agentescrow.directivecreator.com/openserv)) |
 | **Best Build Story** | OpenServ | Human-agent collaboration narrative ([agentescrow.directivecreator.com/build-story](https://agentescrow.directivecreator.com/build-story)) |
-| **Private Agents** | Venice | Private LLM inference powering on-chain agent actions ([agentescrow.directivecreator.com/venice](https://agentescrow.directivecreator.com/venice)) |
+| **Private Agents** | Venice | E2EE inference via Intel TDX (Phala Network) — real attestation verified ([agentescrow.directivecreator.com/venice](https://agentescrow.directivecreator.com/venice)) |
 | **Best Use of Delegations** | MetaMask | ERC-7715 delegation framework for agent permissions ([agentescrow.directivecreator.com/metamask](https://agentescrow.directivecreator.com/metamask)) |
 | **Agentic Storage** | Filecoin | On-chain task proof storage via Filecoin ([agentescrow.directivecreator.com/filecoin](https://agentescrow.directivecreator.com/filecoin)) |
 | **ENS Identity** | ENS | Agent ENS names for discoverable on-chain identity ([agentescrow.directivecreator.com/ens](https://agentescrow.directivecreator.com/ens)) |

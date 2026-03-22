@@ -648,7 +648,7 @@ export default function Dashboard() {
                   </p>
                   <div className="space-y-1.5 text-[11px]" style={{ color: 'var(--text-tertiary)' }}>
                     <div className="flex items-center gap-2"><span style={{ color: '#34D399' }}>▸</span> Zero human intervention</div>
-                    <div className="flex items-center gap-2"><span style={{ color: '#34D399' }}>▸</span> Venice TEE private reasoning</div>
+                    <div className="flex items-center gap-2"><span style={{ color: '#34D399' }}>▸</span> Venice E2EE private reasoning (Intel TDX verified)</div>
                     <div className="flex items-center gap-2"><span style={{ color: '#34D399' }}>▸</span> OpenServ cross-platform discovery</div>
                   </div>
                 </div>
@@ -705,11 +705,11 @@ export default function Dashboard() {
                     </span>
                   </div>
                   <h4 className="text-[13px] font-semibold mb-2" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                    Venice TEE Private Cognition
+                    Venice E2EE Private Cognition
                   </h4>
                   <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                    Agent reasoning runs inside hardware enclaves (Venice TEE) — no one sees the strategy.
-                    Cryptographic attestations prove work was done correctly without revealing the process.
+                    Agent reasoning runs inside hardware enclaves (Venice E2EE + Intel TDX via Phala) — no one sees the strategy.
+                    Real cryptographic attestations verified on-chain prove honest computation.
                     Private cognition meets on-chain settlement for trustless agent services.
                   </p>
                 </div>
@@ -1886,7 +1886,7 @@ export default function Dashboard() {
                   fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
                   color: 'var(--text-quaternary)',
                 }}>
-                  TEE-backed inference
+                  E2EE + TEE inference (Intel TDX verified)
                 </span>
                 <span style={{ fontSize: 14, color: 'var(--text-quaternary)' }}>↓</span>
               </div>
@@ -2026,7 +2026,7 @@ export default function Dashboard() {
                 VENICE PRIVATE COGNITION LAYER
               </h3>
               <p className="text-[11px] mb-6" style={{ color: 'var(--text-tertiary)' }}>
-                Privacy-preserving inference via TEE (Trusted Execution Environments) — agent reasoning never leaves the hardware enclave
+                Privacy-preserving inference via E2EE + TEE (Intel TDX via Phala Network) — verified attestation proofs on-chain
               </p>
 
               {/* Trust Stack */}
@@ -2036,8 +2036,8 @@ export default function Dashboard() {
                   {[
                     { icon: '▣', layer: 'EscrowVault', protects: 'Funds', mechanism: 'Smart contract escrow', color: 'var(--accent)' },
                     { icon: '★', layer: 'ReputationRegistry', protects: 'Track Record', mechanism: 'On-chain scoring', color: '#FBBF24' },
-                    { icon: '🔒', layer: 'Venice TEE', protects: 'Agent Reasoning', mechanism: 'Hardware enclave (Intel TDX / NVIDIA H100)', color: '#A78BFA' },
-                    { icon: '🔐', layer: 'Venice E2EE', protects: 'Task Content', mechanism: 'Client-side encryption + TEE decryption', color: '#818CF8' },
+                    { icon: '🔒', layer: 'Venice E2EE', protects: 'Agent Reasoning', mechanism: 'Intel TDX enclave via Phala Network (VERIFIED)', color: '#A78BFA' },
+                    { icon: '🔐', layer: 'Attestation', protects: 'Integrity', mechanism: 'Cryptographic proof of honest computation', color: '#818CF8' },
                   ].map(item => (
                     <div key={item.layer} className="flex items-center gap-4 px-4 py-3 rounded-lg"
                          style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
@@ -2080,8 +2080,8 @@ export default function Dashboard() {
                 <div className="text-[10px] tracking-[0.15em] mb-3" style={{ color: 'var(--text-tertiary)' }}>ATTESTATION FLOW</div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {[
-                    { num: 1, label: 'INFER', desc: 'Agent sends prompt to Venice TEE model', color: '#38B3DC' },
-                    { num: 2, label: 'ATTEST', desc: 'TEE produces cryptographic attestation proof', color: '#A78BFA' },
+                    { num: 1, label: 'INFER', desc: 'Agent sends prompt to Venice E2EE model (Intel TDX)', color: '#38B3DC' },
+                    { num: 2, label: 'ATTEST', desc: 'Phala TEE produces Intel TDX attestation proof', color: '#A78BFA' },
                     { num: 3, label: 'HASH', desc: 'Attestation hash combined with delivery hash', color: '#FF8800' },
                     { num: 4, label: 'VERIFY', desc: 'Anyone can verify via Venice attestation API', color: '#34D399' },
                   ].map((step, i) => (

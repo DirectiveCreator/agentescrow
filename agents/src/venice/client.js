@@ -15,11 +15,13 @@
 
 const VENICE_BASE_URL = 'https://api.venice.ai/api/v1';
 
-// TEE-enabled models available on Venice
+// Privacy-enabled models available on Venice
+// E2EE = End-to-End Encrypted (highest privacy tier)
+// Client-side encryption → TEE decryption inside enclave → re-encryption of output
 const TEE_MODELS = {
-  reasoning: 'tee-deepseek-r1-671b',
-  general: 'tee-qwen-2.5-vl-72b',
-  fast: 'tee-llama-3.3-70b',
+  reasoning: 'e2ee-gpt-oss-120b-p',    // Large reasoning model, E2EE protected
+  general: 'e2ee-gemma-3-27b-p',       // General purpose, E2EE protected
+  fast: 'e2ee-qwen-2-5-7b-p',          // Fast inference, E2EE protected
 };
 
 // Privacy tiers

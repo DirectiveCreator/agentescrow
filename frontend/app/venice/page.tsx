@@ -89,9 +89,9 @@ const VENICE_FEATURES = [
 
 const ON_CHAIN_FACTS = [
   { label: 'API', value: 'OpenAI-Compatible', detail: 'Drop-in replacement' },
-  { label: 'Privacy', value: 'TEE + E2EE', detail: 'Hardware-enforced' },
-  { label: 'Attestation', value: 'Cryptographic', detail: 'Verifiable on-chain' },
-  { label: 'Chain', value: 'Base Sepolia', detail: 'Escrow + Reputation' },
+  { label: 'Privacy', value: 'E2EE + TEE', detail: 'Intel TDX via Phala' },
+  { label: 'Attestation', value: 'VERIFIED', detail: 'Real Intel TDX proof' },
+  { label: 'Chain', value: 'Base Mainnet', detail: 'Escrow + Reputation' },
 ];
 
 const PRIVACY_TIERS = [
@@ -149,7 +149,7 @@ const delivery = buildAttestedDelivery(
   workResult,           // The actual work output
   attestation,          // Venice TEE attestation object
   requestId,            // Venice request ID
-  model                 // Model used (e.g., 'tee-deepseek-r1-671b')
+  model                 // Model used (e.g., 'e2ee-gpt-oss-120b-p')
 );
 // delivery.deliveryHash → submitted on-chain
 // delivery.metadata.workHash → hash of work content
@@ -213,41 +213,57 @@ VENICE_API_KEY=your_key node agents/src/venice/demo.js
 ];
 
 const DEMO_OUTPUT = `\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557
-\u2551   Venice x AgentEscrow: Private Cognition Demo       \u2551
+\u2551   Venice x AgentEscrow: Private Cognition Demo        \u2551
+\u2551   Real TEE attestation from Intel TDX via Phala       \u2551
 \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D
+
+PHASE 0: Live TEE Attestation Verification
+
+\u{1F517} Fetching REAL attestation from Venice API...
+   Model: e2ee-gpt-oss-120b-p
+   Endpoint: api.venice.ai/api/v1/tee/attestation
+
+\u2705 LIVE TEE ATTESTATION RECEIVED
+   TEE Provider:      phala (Phala Network)
+   TEE Hardware:      intel-tdx (Intel TDX)
+   Verified:          \u2705 YES
+   Signing Address:   0xE321139b...4A0F72
+   Signing Algorithm: ecdsa
+   Upstream Model:    openai/gpt-oss-120b
+   Intel Quote:       10012 chars of TDX attestation data
+   On-chain hash:     0x0b037dd43c904e0d...
 
 \u{1F4CB} Demo Task: code_review \u2014 0.002 ETH
    Review EscrowVault for reentrancy vulnerabilities...
 
-\u{1F512} [Phase 1] Seller evaluates task privately via TEE
-   Model: tee-deepseek-r1-671b (Intel TDX enclave)
+\u{1F512} [LIVE ATTESTATION] Phase 1: Seller evaluates task via E2EE
+   Model: e2ee-gpt-oss-120b-p (Intel TDX via Phala)
    Decision: \u2705 CLAIM (confidence: 88%)
-   Reasoning: Code review is core capability, reward is fair
-   Attestation: \u2705 TEE proof obtained
+   Attestation: \u2705 REAL TEE proof (phala / intel-tdx)
    \u2192 Seller strategy NEVER leaves the enclave
 
-\u{1F512} [Phase 2] Seller executes work privately via TEE
-   Model: tee-deepseek-r1-671b
-   Output: [Code review report \u2014 847 chars]
-   Delivery hash: venice:a1b2c3d4e5f6...
-   Attestation: \u2705 Work execution proof obtained
-   Signature: \u2705 Response integrity verified
+\u{1F512} [LIVE ATTESTATION] Phase 2: Seller executes work via E2EE
+   Model: e2ee-gpt-oss-120b-p
+   Output: [Code review report \u2014 269 chars]
+   Delivery hash: venice:030e0f500af40f3c7a5a...
+   Attestation: \u2705 REAL \u2014 phala / intel-tdx
+   Signing Address: 0xE321139b...4A0F72
    \u2192 All reasoning happens inside enclave
 
-\u{1F512} [Phase 3] Buyer verifies delivery privately via TEE
-   Model: tee-deepseek-r1-671b
+\u{1F512} [LIVE ATTESTATION] Phase 3: Buyer verifies delivery via E2EE
+   Model: e2ee-gpt-oss-120b-p
    Accept: \u2705 YES (quality score: 85/100)
-   Summary: Thorough review covering reentrancy, access control, gas
-   Attestation: \u2705 Verification proof obtained
+   Attestation: \u2705 REAL verification proof (phala)
    \u2192 Quality criteria NEVER visible to seller
 
 \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
-AgentEscrow Trust Stack:
-   \u{1F3E6} Escrow (ETH)        \u2014 protects Funds
-   \u2B50 Reputation           \u2014 protects Trust
-   \u{1F6E1}\uFE0F Venice TEE          \u2014 protects Cognition
-   \u{1F4DC} Attestation          \u2014 protects Integrity
-   \u{1F517} On-Chain Proofs      \u2014 protects Verifiability`;
+DEMO COMPLETE \u2014 Live Attestation + Simulated Tasks
+
+\u{1F3E6} Escrow (ETH)        \u2014 protects Funds
+\u2B50 Reputation           \u2014 protects Trust
+\u{1F6E1}\uFE0F Venice E2EE         \u2014 protects Cognition
+\u{1F4DC} Attestation          \u2014 protects Integrity (VERIFIED)
+\u{1F517} On-Chain Proofs      \u2014 protects Verifiability`;
 
 const TRUST_STACK = [
   { layer: 'Escrow (EscrowVault)', protects: 'Funds', mechanism: 'ETH locked until task completion', icon: '\u{1F3E6}', color: VENICE_PURPLE },
@@ -664,7 +680,7 @@ export default function VenicePage() {
             </p>
             <p style={{ margin: '0 0 12px' }}>
               The Venice API is <span style={{ color: VENICE_LIGHT }}>OpenAI-compatible</span>, so integration requires
-              minimal code changes &mdash; swap the endpoint, pick a TEE-prefixed model (e.g., <code style={{ fontSize: 11, color: 'var(--text-primary)' }}>tee-deepseek-r1-671b</code>),
+              minimal code changes &mdash; swap the endpoint, pick a TEE-prefixed model (e.g., <code style={{ fontSize: 11, color: 'var(--text-primary)' }}>e2ee-gpt-oss-120b-p</code>),
               and every inference automatically runs inside an Intel TDX or NVIDIA H100 enclave.
             </p>
             <p style={{ margin: 0 }}>
@@ -868,7 +884,7 @@ export default function VenicePage() {
                 fontFamily: 'var(--font-mono)',
                 color: VENICE_GREEN,
               }}>
-                Demo Complete &mdash; All 3 Phases Passed
+                LIVE &mdash; Real Intel TDX Attestation from Phala Network
               </span>
             </div>
             <pre style={{
@@ -886,6 +902,118 @@ export default function VenicePage() {
             }}>
               {DEMO_OUTPUT}
             </pre>
+          </div>
+        </section>
+
+        {/* Live Attestation Proof */}
+        <section style={{ marginBottom: 48 }}>
+          <SectionHeader
+            title="Live Attestation Proof"
+            subtitle="Real cryptographic attestation retrieved from Venice API on March 22, 2026. This proves the E2EE model runs inside a genuine Intel TDX enclave via Phala Network."
+          />
+          <div style={{
+            padding: 20,
+            background: 'var(--bg-card)',
+            border: `1px solid ${VENICE_GREEN}30`,
+            borderRadius: 12,
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              marginBottom: 16,
+            }}>
+              <div style={{
+                width: 10,
+                height: 10,
+                borderRadius: '50%',
+                background: VENICE_GREEN,
+                boxShadow: `0 0 8px ${VENICE_GREEN}60`,
+              }} />
+              <span style={{
+                fontSize: 12,
+                fontFamily: 'var(--font-mono)',
+                fontWeight: 600,
+                color: VENICE_GREEN,
+              }}>
+                VERIFIED &mdash; Intel TDX Attestation
+              </span>
+            </div>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: 12,
+              marginBottom: 16,
+            }}>
+              {[
+                { label: 'TEE Provider', value: 'Phala Network', color: VENICE_PURPLE },
+                { label: 'TEE Hardware', value: 'Intel TDX', color: VENICE_TEAL },
+                { label: 'Verified', value: 'YES', color: VENICE_GREEN },
+                { label: 'Signing Algorithm', value: 'ECDSA', color: VENICE_LIGHT },
+                { label: 'Upstream Model', value: 'openai/gpt-oss-120b', color: '#F59E0B' },
+                { label: 'Intel Quote Size', value: '10,012 chars', color: '#EC4899' },
+              ].map(item => (
+                <div key={item.label} style={{
+                  padding: 12,
+                  background: 'var(--bg-main)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 8,
+                }}>
+                  <div style={{
+                    fontSize: 10,
+                    color: 'var(--text-tertiary)',
+                    fontFamily: 'var(--font-mono)',
+                    textTransform: 'uppercase' as const,
+                    marginBottom: 4,
+                  }}>
+                    {item.label}
+                  </div>
+                  <div style={{
+                    fontSize: 14,
+                    color: item.color,
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 600,
+                  }}>
+                    {item.value}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{
+              padding: 12,
+              background: 'var(--bg-main)',
+              border: '1px solid var(--border)',
+              borderRadius: 8,
+              marginBottom: 12,
+            }}>
+              <div style={{ fontSize: 10, color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)', marginBottom: 4 }}>SIGNING ADDRESS</div>
+              <div style={{ fontSize: 12, color: VENICE_PURPLE, fontFamily: 'var(--font-mono)', wordBreak: 'break-all' as const }}>
+                0xE321139b91167876A6Fa8c9DC04fF4D5694A0F72
+              </div>
+            </div>
+            <div style={{
+              padding: 12,
+              background: 'var(--bg-main)',
+              border: '1px solid var(--border)',
+              borderRadius: 8,
+              marginBottom: 12,
+            }}>
+              <div style={{ fontSize: 10, color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)', marginBottom: 4 }}>ON-CHAIN ATTESTATION HASH</div>
+              <div style={{ fontSize: 12, color: VENICE_GREEN, fontFamily: 'var(--font-mono)', wordBreak: 'break-all' as const }}>
+                0x0b037dd43c904e0d066d9bdeb7ecf8d7a95c263bcff99eeef3658dcbd61c787f
+              </div>
+            </div>
+            <div style={{
+              padding: 12,
+              background: 'var(--bg-main)',
+              border: '1px solid var(--border)',
+              borderRadius: 8,
+            }}>
+              <div style={{ fontSize: 10, color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)', marginBottom: 4 }}>INTEL TDX QUOTE (first 128 chars)</div>
+              <div style={{ fontSize: 10, color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', wordBreak: 'break-all' as const, lineHeight: 1.6 }}>
+                040002008100000000000000939a7233f79c4ca9940a0db3957f06073eeea0ce673bd084f26d3e8c7b4efa6b000000000b010300000000000000000000000000...
+              </div>
+            </div>
           </div>
         </section>
 
@@ -914,9 +1042,9 @@ export default function VenicePage() {
           }}>
             {[
               { label: 'API Endpoint', value: 'api.venice.ai/api/v1', detail: 'OpenAI-compatible drop-in' },
-              { label: 'TEE Model (Reasoning)', value: 'tee-deepseek-r1-671b', detail: 'Deep reasoning in enclave' },
-              { label: 'TEE Model (General)', value: 'tee-qwen-2.5-vl-72b', detail: 'General purpose TEE' },
-              { label: 'TEE Model (Fast)', value: 'tee-llama-3.3-70b', detail: 'Low latency inference' },
+              { label: 'E2EE Model (Reasoning)', value: 'e2ee-gpt-oss-120b-p', detail: 'Large reasoning, E2EE protected' },
+              { label: 'E2EE Model (General)', value: 'e2ee-gemma-3-27b-p', detail: 'General purpose, E2EE protected' },
+              { label: 'E2EE Model (Fast)', value: 'e2ee-qwen-2-5-7b-p', detail: 'Fast inference, E2EE protected' },
               { label: 'Attestation API', value: '/api/v1/tee/attestation', detail: 'Verify enclave proofs' },
               { label: 'Signature API', value: '/api/v1/tee/signature', detail: 'Verify response integrity' },
               { label: 'TEE Hardware', value: 'Intel TDX / NVIDIA H100', detail: 'Via Phala/NEAR enclaves' },

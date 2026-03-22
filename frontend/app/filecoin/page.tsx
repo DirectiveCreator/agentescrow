@@ -144,7 +144,7 @@ const cost = await storage.estimateCost(1024 * 1024); // 1 MB
 const TECH_STACK = [
   { label: 'SDK', value: '@filoz/synapse-sdk', detail: 'v0.40.0' },
   { label: 'Storage', value: 'Filecoin Onchain Cloud', detail: 'Warm storage + PDP' },
-  { label: 'Network', value: 'Filecoin Mainnet', detail: 'Chain 314' },
+  { label: 'Network', value: 'Filecoin Calibration', detail: 'Testnet (Chain 314159)' },
   { label: 'Payment', value: 'USDFC', detail: 'Stablecoin for storage fees' },
   { label: 'Escrow Chain', value: 'Base Sepolia', detail: 'Chain 84532' },
   { label: 'Bridge', value: 'PieceCID', detail: 'Content identifier cross-chain' },
@@ -513,7 +513,7 @@ export default function FilecoinPage() {
             {[
               { label: 'SDK', value: '@filoz/synapse-sdk' },
               { label: 'Version', value: 'v0.40.0' },
-              { label: 'Storage', value: 'Filecoin Mainnet' },
+              { label: 'Storage', value: 'Filecoin Calibration' },
               { label: 'Escrow', value: 'Base Sepolia' },
             ].map(item => (
               <div key={item.label} style={{ textAlign: 'center' as const }}>
@@ -535,6 +535,64 @@ export default function FilecoinPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Demo Status Banner */}
+        <div style={{
+          marginBottom: 32,
+          padding: 20,
+          background: 'rgba(255, 136, 0, 0.06)',
+          border: '1px solid rgba(255, 136, 0, 0.25)',
+          borderRadius: 12,
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            marginBottom: 10,
+          }}>
+            <span style={{
+              padding: '2px 8px',
+              background: 'rgba(255, 136, 0, 0.15)',
+              border: '1px solid rgba(255, 136, 0, 0.3)',
+              borderRadius: 6,
+              fontSize: 11,
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 700,
+              color: '#FF8800',
+            }}>
+              SIMULATION MODE
+            </span>
+            <span style={{
+              fontSize: 13,
+              fontFamily: 'var(--font-display)',
+              fontWeight: 600,
+              color: 'var(--text-primary)',
+            }}>
+              Integration Built — Awaiting Filecoin Funding
+            </span>
+          </div>
+          <p style={{
+            fontSize: 12,
+            color: 'var(--text-secondary)',
+            lineHeight: 1.6,
+            margin: '0 0 12px',
+          }}>
+            The full Filecoin Onchain Cloud integration is <span style={{ color: 'var(--text-primary)' }}>code-complete</span> — SDK wrapper, enhanced seller/buyer agents, demo script, and API endpoint are all built and tested.
+            Currently running in <span style={{ color: '#FF8800' }}>simulation mode</span> which generates deterministic mock PieceCIDs for the full task lifecycle.
+          </p>
+          <div style={{
+            fontSize: 12,
+            color: 'var(--text-secondary)',
+            lineHeight: 1.8,
+          }}>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>To go live:</span>
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 2, marginTop: 4 }}>
+              <span>{'1.'} Fund deployer wallet with FIL (gas) + USDFC (storage fees) on Filecoin Calibration testnet</span>
+              <span>{'2.'} Set <code style={{ color: '#0090FF', fontSize: 11, fontFamily: 'var(--font-mono)' }}>FILECOIN_PRIVATE_KEY</code> environment variable</span>
+              <span>{'3.'} Run <code style={{ color: '#0090FF', fontSize: 11, fontFamily: 'var(--font-mono)' }}>node agents/src/filecoin/demo.js</code> — switches to real mode automatically</span>
+            </div>
           </div>
         </div>
 
@@ -863,6 +921,76 @@ export default function FilecoinPage() {
               <SdkCard key={component.name} component={component} />
             ))}
           </div>
+        </section>
+
+        {/* Demo Output */}
+        <section style={{ marginBottom: 48 }}>
+          <SectionHeader
+            title="Demo Output"
+            subtitle="What the simulation demo produces — run it yourself with: npm run filecoin:demo"
+          />
+          <div style={{
+            padding: 20,
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
+            borderRadius: 12,
+          }}>
+            <pre style={{
+              margin: 0,
+              padding: 16,
+              background: 'var(--bg-main)',
+              border: '1px solid var(--border)',
+              borderRadius: 8,
+              fontSize: 11,
+              color: 'var(--text-secondary)',
+              overflow: 'auto',
+              lineHeight: 1.7,
+              fontFamily: 'var(--font-mono)',
+            }}>{`$ node agents/src/filecoin/demo.js
+
+╔══════════════════════════════════════════════════════════════╗
+║   AgentEscrow + Filecoin Onchain Cloud Demo                 ║
+║   Mode: SIMULATION (no FILECOIN_PRIVATE_KEY set)            ║
+╚══════════════════════════════════════════════════════════════╝
+
+[Step 1/6] Store task delivery (text_summary)
+  ✓ Stored on FOC → PieceCID: baga6ea4seaqsim_text_summary_42_1711065600000
+  ✓ Metadata: taskId=42, type=text_summary, agent=0xC07b...96cC
+
+[Step 2/6] Store code review delivery
+  ✓ Stored on FOC → PieceCID: baga6ea4seaqsim_code_review_43_1711065600000
+  ✓ Metadata: taskId=43, type=code_review, agent=0xC07b...96cC
+
+[Step 3/6] Store agent memory snapshot
+  ✓ Stored on FOC → PieceCID: baga6ea4seaqsim_agent_memory_0_1711065600000
+  ✓ Type: agent_memory (session state backup)
+
+[Step 4/6] Store Venice TEE attestation
+  ✓ Stored on FOC → PieceCID: baga6ea4seaqsim_tee_attestation_0_1711065600000
+  ✓ TEE model: tee-deepseek-r1-671b, provider: venice.ai
+
+[Step 5/6] Retrieve and verify content
+  ✓ Retrieved content for PieceCID: baga6ea4seaqsim_text_summary_42_...
+  ✓ Verified: taskId=42, type=text_summary ✓
+
+[Step 6/6] Cost estimation
+  ✓ 1 MB storage: ~$0.000002/month ($2.50/TiB)
+  ✓ 1000 task deliveries (~5 KB each): ~$0.00001/month
+
+═══════════════════════════════════════════════════════════════
+  Demo complete. 4 items stored, 1 retrieved, costs estimated.
+  Set FILECOIN_PRIVATE_KEY to run against real Filecoin network.
+═══════════════════════════════════════════════════════════════`}</pre>
+          </div>
+          <p style={{
+            marginTop: 10,
+            fontSize: 11,
+            color: 'var(--text-tertiary)',
+            fontFamily: 'var(--font-mono)',
+          }}>
+            Simulation mode generates deterministic PieceCIDs prefixed with &quot;baga6ea4seaqsim_&quot;.
+            Real mode uses actual Filecoin storage via Synapse SDK and returns real content-addressed PieceCIDs.
+          </p>
         </section>
 
         {/* Quick Start */}

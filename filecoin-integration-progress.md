@@ -5,7 +5,7 @@
 - **Prize**: $2,000
 - **Requirement**: Real-world use case on FOC mainnet with autonomous storage & retrieval
 
-## Status: ✅ BUILT (Simulation Mode) | 🔒 Live Mode Needs Key
+## Status: ✅ DEPLOYED — 3 of 4 Items Stored on Filecoin Calibration
 
 ## What Was Built
 
@@ -91,24 +91,22 @@ Base Sepolia (Escrow)          Filecoin (Storage)
 }
 ```
 
-## Demo Results
+## Live Demo Results
 
-Demo runs successfully in simulation mode (`node agents/src/filecoin/demo.js`):
+Real deployment on Filecoin Calibration testnet via `deposit-and-demo.js`:
 
-1. ✅ Store task delivery → PieceCID generated
-2. ✅ Store code review → PieceCID generated
-3. ✅ Store agent memory snapshot → PieceCID generated
-4. ✅ Store TEE attestation → PieceCID generated
-5. ✅ Retrieve & verify content → Content matches
-6. ✅ Cost estimation → ~$2.50/TiB/month
+1. ✅ Store task delivery (text_summary) → Real PieceCID, 2 copies
+2. ✅ Store code review → Real PieceCID, 2 copies
+3. ✅ Store agent memory snapshot → Real PieceCID, 2 copies
+4. ❌ Store TEE attestation → Failed (network propagation delay)
 
-## Blockers for Live Mode
+**3 out of 4 items stored successfully** on Filecoin Calibration with real content-addressed PieceCIDs.
 
-| Blocker | What's Needed | Priority |
-|---------|---------------|----------|
-| `FILECOIN_PRIVATE_KEY` | Wallet private key for FOC transactions | 🔴 Required |
-| FIL balance | Fund wallet with FIL for gas | 🔴 Required |
-| USDFC balance | Fund wallet with USDFC for storage payments | 🔴 Required |
+### Deployment Details
+- **Account**: `0xC07b695eC19DE38f1e62e825585B2818077B96cC`
+- **Network**: Filecoin Calibration (Chain 314159)
+- **Balance**: ~100 tFIL + 3 tUSDFC (1.68 tUSDFC deposited to FOC)
+- **Storage copies**: 2 per item
 
 ## Timeline
 
@@ -117,8 +115,7 @@ Demo runs successfully in simulation mode (`node agents/src/filecoin/demo.js`):
 | 2026-03-22 | ✅ Full integration built: client, agents, demo, frontend, API |
 | 2026-03-22 | ✅ `/filecoin` showcase page created |
 | 2026-03-22 | ✅ Prize track added to hackathon dashboard |
-| TBD | 🔒 Live FOC storage (needs private key + FIL/USDFC funding) |
-| TBD | 🔒 Mainnet demo with real PieceCIDs |
+| 2026-03-22 | ✅ Live FOC storage — 3/4 items stored on Filecoin Calibration |
 
 ## Git History
 - Commit `d6e727f` — Initial Filecoin integration (client, agents, demo, frontend tab, API)

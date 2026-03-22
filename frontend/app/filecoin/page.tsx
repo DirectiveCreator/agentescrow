@@ -100,7 +100,7 @@ console.log(receipt.pieceCid); // baga6ea4seaq...`,
     usage: `import { EnhancedSeller } from './filecoin/enhanced-seller.js';
 
 const seller = new EnhancedSeller({
-  privateKey: '0x...',
+  privateKey: process.env.AGENT_PRIVATE_KEY,
   filecoinKey: process.env.FILECOIN_PRIVATE_KEY,
 });
 
@@ -115,7 +115,7 @@ const { receipt, deliveryHash } = await seller.executeAndStore(taskId);
     usage: `import { EnhancedBuyer } from './filecoin/enhanced-buyer.js';
 
 const buyer = new EnhancedBuyer({
-  privateKey: '0x...',
+  privateKey: process.env.AGENT_PRIVATE_KEY,
   filecoinKey: process.env.FILECOIN_PRIVATE_KEY,
 });
 
@@ -588,45 +588,250 @@ export default function FilecoinPage() {
             title="Cross-Chain Architecture"
             subtitle="PieceCID is the bridge between Filecoin storage and Base escrow."
           />
-          <div style={{
-            padding: 24,
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            borderRadius: 12,
-            fontFamily: 'var(--font-mono)',
-            fontSize: 12,
-            lineHeight: 2,
-            color: 'var(--text-secondary)',
-            overflow: 'auto',
-          }}>
-            <pre style={{ margin: 0 }}>{`┌───────────────────────────────────────────────────────────────┐
-│                     BASE SEPOLIA (Chain 84532)                │
-│                                                               │
-│  ┌─────────────┐  ┌──────────────┐  ┌───────────────────┐    │
-│  │ ServiceBoard │  │ EscrowVault  │  │ ReputationRegistry│    │
-│  │             │  │              │  │                   │    │
-│  │ postTask()  │  │  deposit()   │  │  recordResult()   │    │
-│  │ deliverTask │  │  release()   │  │  trustScore: 100  │    │
-│  │ (pieceCID)  │  │              │  │                   │    │
-│  └──────┬──────┘  └──────────────┘  └───────────────────┘    │
-│         │                                                     │
-│         │  deliveryHash = PieceCID                            │
-└─────────┼─────────────────────────────────────────────────────┘
-          │
-          │  PieceCID bridges both chains
-          │
-┌─────────┼─────────────────────────────────────────────────────┐
-│         ▼                                                     │
-│  ┌──────────────┐  ┌──────────────┐  ┌───────────────────┐   │
-│  │ Synapse SDK  │  │   Storage    │  │   PDP Proofs      │   │
-│  │              │  │              │  │                   │   │
-│  │  upload()    │  │  Warm tier   │  │  Verifiable data  │   │
-│  │  download()  │  │  Always hot  │  │  possession       │   │
-│  │  balance()   │  │  ~$2.50/TiB  │  │                   │   │
-│  └──────────────┘  └──────────────┘  └───────────────────┘   │
-│                                                               │
-│                  FILECOIN MAINNET (Chain 314)                  │
-└───────────────────────────────────────────────────────────────┘`}</pre>
+          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 0, position: 'relative' as const }}>
+            {/* Base Sepolia Card */}
+            <div style={{
+              padding: 24,
+              background: 'var(--bg-card)',
+              border: '1px solid #3B82F630',
+              borderRadius: '12px 12px 0 0',
+              position: 'relative' as const,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                <div style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: '50%',
+                  background: '#3B82F6',
+                  boxShadow: '0 0 8px #3B82F660',
+                }} />
+                <span style={{
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 700,
+                  fontSize: 16,
+                  color: 'var(--text-primary)',
+                }}>
+                  Base Sepolia
+                </span>
+                <span style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  color: 'var(--text-tertiary)',
+                  padding: '2px 8px',
+                  background: 'var(--bg-main)',
+                  borderRadius: 4,
+                  border: '1px solid var(--border)',
+                }}>
+                  Chain 84532
+                </span>
+              </div>
+
+              {/* Contract cards row */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: 10,
+                marginBottom: 16,
+              }}>
+                {[
+                  { name: 'ServiceBoard', fns: ['postTask()', 'deliverTask(pieceCID)', 'claimTask()'], color: '#FF8800' },
+                  { name: 'EscrowVault', fns: ['deposit()', 'release()', 'refund()'], color: '#3B82F6' },
+                  { name: 'ReputationRegistry', fns: ['recordResult()', 'trustScore: 100'], color: '#A78BFA' },
+                ].map(c => (
+                  <div key={c.name} style={{
+                    padding: 12,
+                    background: 'var(--bg-main)',
+                    border: `1px solid ${c.color}20`,
+                    borderRadius: 8,
+                    borderTop: `2px solid ${c.color}60`,
+                  }}>
+                    <div style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: c.color,
+                      marginBottom: 8,
+                    }}>
+                      {c.name}
+                    </div>
+                    {c.fns.map(fn => (
+                      <div key={fn} style={{
+                        fontSize: 10,
+                        fontFamily: 'var(--font-mono)',
+                        color: 'var(--text-tertiary)',
+                        padding: '1px 0',
+                      }}>
+                        {fn}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+
+              {/* Metadata badges */}
+              <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8 }}>
+                {[
+                  { label: 'deliveryHash = PieceCID', color: '#0090FF' },
+                  { label: 'ERC-8004 Identity', color: '#A78BFA' },
+                  { label: 'On-chain Escrow', color: '#34D399' },
+                ].map(b => (
+                  <span key={b.label} style={{
+                    fontSize: 10,
+                    fontFamily: 'var(--font-mono)',
+                    color: b.color,
+                    padding: '3px 10px',
+                    background: `${b.color}10`,
+                    border: `1px solid ${b.color}20`,
+                    borderRadius: 4,
+                  }}>
+                    {b.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* PieceCID Bridge Strip */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 12,
+              padding: '14px 24px',
+              background: 'var(--bg-main)',
+              borderLeft: '1px solid var(--border)',
+              borderRight: '1px solid var(--border)',
+              position: 'relative' as const,
+            }}>
+              <div style={{
+                flex: 1,
+                height: 1,
+                background: 'linear-gradient(to right, transparent, #0090FF60, transparent)',
+              }} />
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '6px 16px',
+                background: 'var(--bg-card)',
+                border: '1px solid #0090FF30',
+                borderRadius: 20,
+              }}>
+                <span style={{ fontSize: 14 }}>&#x1F517;</span>
+                <span style={{
+                  fontSize: 11,
+                  fontFamily: 'var(--font-mono)',
+                  color: '#0090FF',
+                }}>
+                  PieceCID bridges both chains
+                </span>
+              </div>
+              <div style={{
+                flex: 1,
+                height: 1,
+                background: 'linear-gradient(to right, transparent, #0090FF60, transparent)',
+              }} />
+            </div>
+
+            {/* Filecoin Mainnet Card */}
+            <div style={{
+              padding: 24,
+              background: 'var(--bg-card)',
+              border: '1px solid #0090FF30',
+              borderRadius: '0 0 12px 12px',
+              position: 'relative' as const,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                <div style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: '50%',
+                  background: '#0090FF',
+                  boxShadow: '0 0 8px #0090FF60',
+                }} />
+                <span style={{
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 700,
+                  fontSize: 16,
+                  color: 'var(--text-primary)',
+                }}>
+                  Filecoin Mainnet
+                </span>
+                <span style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  color: 'var(--text-tertiary)',
+                  padding: '2px 8px',
+                  background: 'var(--bg-main)',
+                  borderRadius: 4,
+                  border: '1px solid var(--border)',
+                }}>
+                  Chain 314
+                </span>
+              </div>
+
+              {/* Filecoin component cards row */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: 10,
+                marginBottom: 16,
+              }}>
+                {[
+                  { name: 'Synapse SDK', fns: ['upload()', 'download()', 'balance()'], color: '#0090FF' },
+                  { name: 'Storage', fns: ['Warm tier', 'Always hot', '~$2.50/TiB'], color: '#34D399' },
+                  { name: 'PDP Proofs', fns: ['Verifiable data', 'possession proofs', 'Cryptographic integrity'], color: '#A78BFA' },
+                ].map(c => (
+                  <div key={c.name} style={{
+                    padding: 12,
+                    background: 'var(--bg-main)',
+                    border: `1px solid ${c.color}20`,
+                    borderRadius: 8,
+                    borderTop: `2px solid ${c.color}60`,
+                  }}>
+                    <div style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: c.color,
+                      marginBottom: 8,
+                    }}>
+                      {c.name}
+                    </div>
+                    {c.fns.map(fn => (
+                      <div key={fn} style={{
+                        fontSize: 10,
+                        fontFamily: 'var(--font-mono)',
+                        color: 'var(--text-tertiary)',
+                        padding: '1px 0',
+                      }}>
+                        {fn}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+
+              {/* Filecoin metadata badges */}
+              <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8 }}>
+                {[
+                  { label: 'USDFC Payments', color: '#0090FF' },
+                  { label: 'Provable Data Possession', color: '#34D399' },
+                  { label: 'Content-Addressed', color: '#FF8800' },
+                ].map(b => (
+                  <span key={b.label} style={{
+                    fontSize: 10,
+                    fontFamily: 'var(--font-mono)',
+                    color: b.color,
+                    padding: '3px 10px',
+                    background: `${b.color}10`,
+                    border: `1px solid ${b.color}20`,
+                    borderRadius: 4,
+                  }}>
+                    {b.label}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -686,7 +891,7 @@ export default function FilecoinPage() {
               {
                 step: '3',
                 title: 'Run with real Filecoin storage',
-                code: 'FILECOIN_PRIVATE_KEY=0x... node agents/src/filecoin/demo.js\n# Fund wallet with FIL + USDFC on Filecoin Mainnet or Calibration',
+                code: '# Add your key to .env — never pass private keys inline\n# FILECOIN_PRIVATE_KEY=<your-key>\nsource .env && node agents/src/filecoin/demo.js\n# Fund wallet with FIL + USDFC on Filecoin Mainnet or Calibration',
               },
               {
                 step: '4',

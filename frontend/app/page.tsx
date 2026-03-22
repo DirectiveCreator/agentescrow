@@ -273,7 +273,7 @@ export default function Dashboard() {
                   { label: 'ENS', icon: '🔵', href: '/ens' },
                   { label: 'Filecoin', icon: '🔷', href: '/filecoin' },
                   { label: 'MetaMask', icon: '🦊', href: '/metamask' },
-                  { label: 'OpenServ', icon: '🤖', section: 'build-story' as const },
+                  { label: 'OpenServ', icon: '🤖', href: '/openserv' },
                   { label: 'Venice AI', icon: '🟣', href: '/venice' },
                   { label: 'Ampersend', icon: '⚡', href: '/ampersend' },
                 ].map(item => (

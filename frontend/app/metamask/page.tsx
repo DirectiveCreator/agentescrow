@@ -721,7 +721,6 @@ export default function MetaMaskDelegationPage() {
             <span style={{ fontSize: 12, color: '#F6851B', fontFamily: 'var(--font-mono)' }}>
               Synthesis Hackathon — Best Use of Delegations
             </span>
-            <span style={{ fontSize: 12, color: '#F6851B', fontWeight: 700 }}>$5,000</span>
           </div>
 
           <h1 style={{
@@ -1249,88 +1248,6 @@ export default function MetaMaskDelegationPage() {
           </div>
         </section>
 
-        {/* Hackathon Prize */}
-        <section style={{ marginBottom: 48 }}>
-          <SectionHeader title="Hackathon Prize" />
-          <div style={{
-            padding: 20,
-            background: 'linear-gradient(135deg, rgba(246, 133, 27, 0.08), transparent)',
-            border: '1px solid rgba(246, 133, 27, 0.3)',
-            borderRadius: 12,
-          }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 12,
-            }}>
-              <div>
-                <div style={{
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 700,
-                  fontSize: 18,
-                  color: 'var(--text-primary)',
-                }}>
-                  Best Use of Delegations
-                </div>
-                <div style={{
-                  fontSize: 12,
-                  color: 'var(--text-secondary)',
-                  marginTop: 4,
-                }}>
-                  MetaMask — Synthesis Hackathon
-                </div>
-              </div>
-              <div style={{
-                fontFamily: 'var(--font-display)',
-                fontWeight: 700,
-                fontSize: 28,
-                color: '#F6851B',
-              }}>
-                $5,000
-              </div>
-            </div>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: 12,
-              marginTop: 16,
-            }}>
-              {[
-                { label: 'Effort', value: '6-10 hours', color: '#FBBF24' },
-                { label: 'Status', value: 'Built & Deployed', color: '#34D399' },
-                { label: 'Contract Changes', value: 'Zero', color: '#34D399' },
-                { label: 'Chains', value: 'Polia + CLO', color: '#A78BFA' },
-              ].map(item => (
-                <div key={item.label} style={{
-                  padding: 10,
-                  background: 'var(--bg-card)',
-                  borderRadius: 8,
-                  border: '1px solid var(--border)',
-                  textAlign: 'center' as const,
-                }}>
-                  <div style={{
-                    fontSize: 10,
-                    color: 'var(--text-tertiary)',
-                    fontFamily: 'var(--font-mono)',
-                    textTransform: 'uppercase' as const,
-                    marginBottom: 4,
-                  }}>
-                    {item.label}
-                  </div>
-                  <div style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: item.color,
-                    fontFamily: 'var(--font-display)',
-                  }}>
-                    {item.value}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Multi-Chain Deployment */}
         <section style={{ marginBottom: 48 }}>

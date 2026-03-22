@@ -91,6 +91,7 @@ export default function Dashboard() {
   const [agentScores, setAgentScores] = useState<Map<string, number>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
   const [isDemo, setIsDemo] = useState(true);
+  const [boardChainId, setBoardChainId] = useState<number>(11142220); // Default to Celo Sepolia
   const [activeSection, setActiveSection] = useState<'overview' | 'hire' | 'join' | 'board' | 'architecture' | 'build-story'>('overview');
   const [integrationsOpen, setIntegrationsOpen] = useState(false);
   const integrationsRef = useRef<HTMLDivElement>(null);
@@ -241,9 +242,11 @@ export default function Dashboard() {
 
   const walletBalance = balanceData ? formatEther(balanceData.value) : '';
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (chainId?: number) => {
+    const targetChainId = chainId ?? boardChainId;
+    const client = getPublicClientForChain(targetChainId);
     try {
-      const count = await publicClient.readContract({
+      const count = await client.readContract({
         address: CONTRACTS.serviceBoard as `0x${string}`,
         abi: ServiceBoardABI,
         functionName: 'getTaskCount',
@@ -252,7 +255,7 @@ export default function Dashboard() {
       const taskPromises = [];
       for (let i = 0; i < Number(count); i++) {
         taskPromises.push(
-          publicClient.readContract({
+          client.readContract({
             address: CONTRACTS.serviceBoard as `0x${string}`,
             abi: ServiceBoardABI,
             functionName: 'getTask',
@@ -264,7 +267,7 @@ export default function Dashboard() {
       prevTaskCountRef.current = fetchedTasks.length;
       setTasks(fetchedTasks);
 
-      const balance = await publicClient.readContract({
+      const balance = await client.readContract({
         address: CONTRACTS.escrowVault as `0x${string}`,
         abi: EscrowVaultABI,
         functionName: 'getBalance',
@@ -281,13 +284,13 @@ export default function Dashboard() {
       const newScores = new Map<string, number>();
       for (const addr of agentAddrs) {
         const [rep, score] = await Promise.all([
-          publicClient.readContract({
+          client.readContract({
             address: CONTRACTS.reputationRegistry as `0x${string}`,
             abi: ReputationRegistryABI,
             functionName: 'getReputation',
             args: [addr as `0x${string}`],
           }),
-          publicClient.readContract({
+          client.readContract({
             address: CONTRACTS.reputationRegistry as `0x${string}`,
             abi: ReputationRegistryABI,
             functionName: 'getScore',
@@ -308,7 +311,7 @@ export default function Dashboard() {
       setTasks(DEMO_TASKS);
       setEscrowBalance(0n);
     }
-  }, []);
+  }, [boardChainId]);
 
   useEffect(() => {
     fetchData();
@@ -1467,29 +1470,84 @@ export default function Dashboard() {
         )}
 
         {/* ── Task Board Section ── */}
-        {activeSection === 'board' && (
+        {activeSection === 'board' && (() => {
+          const boardChain = SUPPORTED_CHAINS.find(c => c.id === boardChainId) || SUPPORTED_CHAINS[0];
+          const currency = boardChain.currency || 'ETH';
+          const explorerBase = boardChain.explorer || '';
+          return (
           <div className="space-y-4">
             <SectionHeader
               title="Task Board"
-              subtitle={`${displayTasks.length} tasks — ${completedTasks} completed — ${formatEther(totalReward)} ETH total volume`}
+              subtitle={`${displayTasks.length} tasks — ${completedTasks} completed — ${formatEther(totalReward)} ${currency} total volume`}
             />
+            {/* Chain selector */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-tertiary)' }}>CHAIN:</span>
+              {SUPPORTED_CHAINS.map(ch => (
+                <button
+                  key={ch.id}
+                  onClick={() => { setBoardChainId(ch.id as number); fetchData(ch.id as number); }}
+                  style={{
+                    padding: '4px 12px',
+                    borderRadius: 6,
+                    border: `1px solid ${boardChainId === ch.id ? 'var(--accent)' : 'var(--border)'}`,
+                    background: boardChainId === ch.id ? 'var(--accent)10' : 'var(--bg-card)',
+                    color: boardChainId === ch.id ? 'var(--accent)' : 'var(--text-secondary)',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 12,
+                    fontWeight: boardChainId === ch.id ? 700 : 400,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {ch.name}
+                </button>
+              ))}
+              {isDemo && (
+                <span style={{
+                  padding: '3px 8px',
+                  borderRadius: 4,
+                  background: '#F59E0B20',
+                  color: '#F59E0B',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  fontWeight: 600,
+                }}>
+                  DEMO MODE
+                </span>
+              )}
+              {!isDemo && (
+                <span style={{
+                  padding: '3px 8px',
+                  borderRadius: 4,
+                  background: '#34D39920',
+                  color: '#34D399',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  fontWeight: 600,
+                }}>
+                  ● LIVE
+                </span>
+              )}
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
               <MetricCard label="TOTAL TASKS" value={displayTasks.length.toString()} accent />
               <MetricCard label="COMPLETED" value={completedTasks.toString()} />
-              <MetricCard label="VOLUME" value={`${formatEther(totalReward)} ETH`} />
-              <MetricCard label="IN ESCROW" value={isDemo ? '0 ETH' : `${formatEther(escrowBalance)} ETH`} />
+              <MetricCard label="VOLUME" value={`${formatEther(totalReward)} ${currency}`} />
+              <MetricCard label="IN ESCROW" value={isDemo ? `0 ${currency}` : `${formatEther(escrowBalance)} ${currency}`} />
             </div>
             <div className="space-y-2 mt-4">
               {displayTasks.length === 0 ? (
-                <EmptyState message="No tasks yet. Run the agent demo to see activity." />
+                <EmptyState message="No tasks yet. Run the agent demo to see on-chain activity." />
               ) : (
                 [...displayTasks].reverse().map((task) => (
-                  <TaskRow key={Number(task.id)} task={task} />
+                  <TaskRow key={Number(task.id)} task={task} explorerUrl={explorerBase} currency={currency} />
                 ))
               )}
             </div>
           </div>
-        )}
+          );
+        })()}
 
 
         {/* ── Architecture Section ── */}
@@ -2959,8 +3017,9 @@ function AgentProfileCard({ role, address, agentId, avatarUrl, stats, actions }:
   );
 }
 
-function TaskRow({ task }: { task: Task }) {
+function TaskRow({ task, explorerUrl, currency }: { task: Task; explorerUrl?: string; currency?: string }) {
   const status = Number(task.status);
+  const unit = currency || 'ETH';
   const typeIcons: Record<string, string> = {
     text_summary: '◈', code_review: '◆', name_generation: '◇', translation: '○',
   };
@@ -2985,7 +3044,7 @@ function TaskRow({ task }: { task: Task }) {
         </div>
       </div>
       <div className="text-[12px] font-mono" style={{ color: 'var(--text-secondary)' }}>
-        {formatEther(task.reward)} ETH
+        {formatEther(task.reward)} {unit}
       </div>
       <div className="flex items-center gap-2">
         <span className="text-[11px] font-mono" style={{ color: 'var(--accent)' }}>

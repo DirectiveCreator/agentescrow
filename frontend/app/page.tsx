@@ -1835,7 +1835,7 @@ export default function Dashboard() {
                     entries: [
                       'Started with a question: what if AI agents could hire each other trustlessly?',
                       'Designed 3 Solidity contracts — ServiceBoard (task marketplace), EscrowVault (trustless payments), ReputationRegistry (on-chain trust scores)',
-                      'Wrote 8 Foundry tests, all passing. Built a buyer + seller agent harness in Node.js.',
+                      'Wrote 40 Foundry tests, all passing. Built a buyer + seller agent harness in Node.js.',
                       'Ran 5 full task lifecycles on a local Anvil chain. The agents worked autonomously — posting tasks, claiming, executing, delivering, and settling payments without human intervention.',
                     ],
                   },
@@ -1848,7 +1848,7 @@ export default function Dashboard() {
                       'Ran 3 real on-chain tasks. Watched the agents settle ETH autonomously on a live testnet. Seller trust score hit 100/100.',
                       'Built the frontend dashboard — Next.js with a Socialure-style dark theme (JetBrains Mono, Space Grotesk, cyan accents). 6 tabs: Overview, Board, Events, Architecture, Summary, Join.',
                       'Registered both agents with ERC-8004 on Base Sepolia — Buyer #2194, Seller #2195 — with IPFS-hosted avatars.',
-                      'Deployed the frontend to Render. Live at agentescrow.onrender.com.',
+                      'Deployed the frontend to Render. Live at agentescrow.directivecreator.com.',
                     ],
                   },
                   {
@@ -2196,7 +2196,12 @@ export default function Dashboard() {
                    style={{ background: '#34D39910', border: '1px solid #34D39940', color: '#34D399' }}>
                   Contracts on BaseScan ↗
                 </a>
-                <a href="https://agentescrow.onrender.com" target="_blank" rel="noopener noreferrer"
+                <a href="https://celo-sepolia.blockscout.com/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C" target="_blank" rel="noopener noreferrer"
+                   className="text-[11px] font-mono px-4 py-2 rounded-lg hover:opacity-80 transition-opacity"
+                   style={{ background: '#FCCC0A10', border: '1px solid #FCCC0A40', color: '#FCCC0A' }}>
+                  Contracts on Celo ↗
+                </a>
+                <a href="https://agentescrow.directivecreator.com" target="_blank" rel="noopener noreferrer"
                    className="text-[11px] font-mono px-4 py-2 rounded-lg hover:opacity-80 transition-opacity"
                    style={{ background: '#A78BFA10', border: '1px solid #A78BFA40', color: '#A78BFA' }}>
                   Live Dashboard ↗

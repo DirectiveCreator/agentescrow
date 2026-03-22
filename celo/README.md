@@ -51,8 +51,6 @@ Both agents are registered on the ERC-8004 IdentityRegistry on Celo Sepolia:
 
 These agents also have identities on Base Sepolia (Buyer #2194, Seller #2195) — true multi-chain identity.
 
-Verify on [agentscan.info](https://agentscan.info/)
-
 ## On-Chain Demo Results
 
 6 completed task lifecycles on Celo Sepolia (post -> claim -> deliver -> confirm):
@@ -189,13 +187,11 @@ agents/src/celo/
 
 Same addresses on both chains (deterministic deployment with same nonce).
 
-## Hackathon Tracks
+## Hackathon Track
 
 | Track | Prize | Fit |
 |-------|-------|-----|
 | **Best Agent Infra on Celo** | $2,000 | **PRIMARY** — AgentEscrow IS infrastructure: escrow, reputation, identity, and discovery primitives deployed on Celo for any agent to use |
-| Best Agent on Celo | $6,000 | Secondary — demo agents (Buyer #225, Seller #226) showcase the infra stack |
-| Highest Rank in 8004scan | $500 | ERC-8004 registered agents on Celo |
 
 ### Why This Is Infrastructure, Not Just An Agent
 
@@ -210,11 +206,10 @@ This is the missing middleware between "I have an AI agent" and "my agent can tr
 
 ## Links
 
-- **Live Frontend**: [agentescrow.onrender.com](https://agentescrow.onrender.com)
-- **Celo Page**: [agentescrow.onrender.com/celo](https://agentescrow.onrender.com/celo)
+- **Live Frontend**: [agentescrow.directivecreator.com](https://agentescrow.directivecreator.com)
+- **Celo Page**: [agentescrow.directivecreator.com/celo](https://agentescrow.directivecreator.com/celo)
 - **GitHub**: [DirectiveCreator/agentescrow](https://github.com/DirectiveCreator/agentescrow)
-- **Karma Project**: [karmahq.xyz](https://www.karmahq.xyz/community/celo?programId=1059)
-- **agentscan**: [agentscan.info](https://agentscan.info/)
+- **Karma Project**: [karmahq.xyz/project/agentescrow](https://www.karmahq.xyz/project/agentescrow)
 - **Celo Docs**: [docs.celo.org](https://docs.celo.org/build-on-celo/build-with-ai/overview)
 
 ## License

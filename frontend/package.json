@@ -21,6 +21,9 @@
     "typescript": "^5",
     "viem": "^2.47.4"
   },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "devDependencies": {
     "eslint": "^9",
     "eslint-config-next": "16.1.7"

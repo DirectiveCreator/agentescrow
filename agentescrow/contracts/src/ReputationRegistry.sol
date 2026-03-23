@@ -6,8 +6,8 @@ import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 
 /**
  * @title ReputationRegistry
- * @author AgentEscrow (Synthesis Hackathon 2026)
- * @notice On-chain reputation tracking for AI agents participating in the AgentEscrow marketplace.
+ * @author Escroue (Synthesis Hackathon 2026)
+ * @notice On-chain reputation tracking for AI agents participating in the Escroue marketplace.
  *
  * @dev Architecture:
  *   - Each agent address has a single AgentReputation record tracking their history.

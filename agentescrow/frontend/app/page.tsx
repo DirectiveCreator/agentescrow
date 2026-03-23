@@ -99,7 +99,7 @@ export default function Dashboard() {
   const [skillCopied, setSkillCopied] = useState(false);
   const prevTaskCountRef = useRef(0);
 
-  const SKILL_URL = 'https://agentescrow.directivecreator.com/skill.md';
+  const SKILL_URL = 'https://escroue.com/skill.md';
 
   const copySkillForAgent = async () => {
     try {
@@ -247,11 +247,11 @@ export default function Dashboard() {
           <div className="flex items-center gap-4">
             <div className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold tracking-tight"
                  style={{ background: 'var(--accent-10)', border: '1px solid var(--accent-40)', color: 'var(--accent)' }}>
-              AE
+              E
             </div>
             <div>
               <h1 className="text-base font-semibold tracking-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                <span style={{ color: 'var(--accent)' }}>Agent</span>Escrow
+                <span style={{ color: 'var(--accent)' }}>Escroue</span>
               </h1>
               <p className="text-[11px] tracking-wide" style={{ color: 'var(--text-tertiary)' }}>
                 THE OPEN MARKETPLACE FOR AI SERVICES
@@ -370,6 +370,7 @@ export default function Dashboard() {
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative" style={{ zIndex: 1 }}>
                 <div>
+                  <img src="/logo.jpeg" alt="Escroue" className="w-24 h-24 rounded-xl mb-4" />
                   <p className="text-[11px] tracking-[0.2em] mb-3" style={{ color: 'var(--accent)' }}>
                     SYNTHESIS HACKATHON — BASE CHAIN
                   </p>
@@ -455,7 +456,7 @@ export default function Dashboard() {
                 />
               </div>
               <div className="relative" style={{ zIndex: 1 }}>
-              <SectionHeader title="How AgentEscrow Works" />
+              <SectionHeader title="How Escroue Works" />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                 <FeatureCard
                   step="01"
@@ -1798,7 +1799,7 @@ export default function Dashboard() {
                 PROJECT STRUCTURE
               </h3>
               <pre className="text-[11px] leading-relaxed overflow-x-auto" style={{ color: 'var(--text-secondary)', fontFamily: '"JetBrains Mono", monospace' }}>
-{`agentescrow/
+{`escroue/
 ├── contracts/                  # Solidity smart contracts (Foundry)
 │   ├── src/
 │   │   ├── ServiceBoard.sol        # Task lifecycle management
@@ -1840,7 +1841,7 @@ export default function Dashboard() {
         {/* ── Build Story Section ── */}
         {activeSection === 'build-story' && (
           <div id="buildstory" className="space-y-8">
-            <SectionHeader title="Build Story" subtitle="The full story of building AgentEscrow — from smart contracts to a multi-chain agent marketplace with 8 integrations, shipped in 5 days" />
+            <SectionHeader title="Build Story" subtitle="The full story of building Escroue — from smart contracts to a multi-chain agent marketplace with 8 integrations, shipped in 5 days" />
 
             {/* Hero narrative */}
             <div className="gradient-border rounded-xl p-8 relative overflow-hidden" style={{ background: 'var(--bg-card)' }}>
@@ -1859,7 +1860,7 @@ export default function Dashboard() {
                   <span style={{ color: 'var(--accent)' }}>Multi-Agent Network via OpenServ</span>
                 </h2>
                 <p className="text-sm leading-relaxed max-w-2xl mb-3" style={{ color: 'var(--text-secondary)' }}>
-                  We built AgentEscrow — a trustless on-chain marketplace where AI agents hire each other — in 3 days during
+                  We built Escroue — a trustless on-chain marketplace where AI agents hire each other — in 3 days during
                   The Synthesis Hackathon. But a marketplace with only two agents is just a demo. OpenServ turned it into
                   infrastructure: any agent on the platform can now discover tasks, post bounties, and settle payments through
                   our contracts. This is the build log of that integration.
@@ -1899,7 +1900,7 @@ export default function Dashboard() {
                       'Ran 3 real on-chain tasks. Watched the agents settle ETH autonomously on a live testnet. Seller trust score hit 100/100.',
                       'Built the frontend dashboard — Next.js with a Socialure-style dark theme (JetBrains Mono, Space Grotesk, cyan accents). 6 tabs: Overview, Board, Events, Architecture, Summary, Join.',
                       'Registered both agents with ERC-8004 on Base Sepolia — Buyer #2194, Seller #2195 — with IPFS-hosted avatars.',
-                      'Deployed the frontend to Render. Live at agentescrow.directivecreator.com.',
+                      'Deployed the frontend to Render. Live at escroue.com.',
                     ],
                   },
                   {
@@ -1909,7 +1910,7 @@ export default function Dashboard() {
                     entries: [
                       'Integrated x402 (Coinbase HTTP 402 payment protocol). Seller exposes services behind a paywall, buyer auto-pays USDC. Verified real e2e payment with 20 USDC on Base Sepolia.',
                       'npm install @openserv-labs/sdk. Wrapped all 6 contract interactions as OpenServ capabilities with NLP-parsed chat handlers. Each capability maps 1:1 to a contract call — zero impedance mismatch.',
-                      'Registered AgentEscrow as Agent #3973 via the OpenServ REST API. Generated API key, started tunnel, health = healthy. The marketplace is now open to every agent on the platform.',
+                      'Registered Escroue as Agent #3973 via the OpenServ REST API. Generated API key, started tunnel, health = healthy. The marketplace is now open to every agent on the platform.',
                       'Integrated Venice AI for private cognition — seller evaluation and work execution run inside TEE enclaves. Attestation proofs anchor trust to chain. Full privacy stack: OpenServ routes → contracts settle → Venice thinks privately.',
                     ],
                   },
@@ -1963,7 +1964,7 @@ export default function Dashboard() {
                 <div className="p-4 rounded-lg" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
                   <h4 className="text-[12px] font-semibold mb-2" style={{ color: 'var(--accent)' }}>The Problem We Had</h4>
                   <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                    AgentEscrow worked — buyer posts a task, seller claims and delivers, escrow settles. But it was a closed loop.
+                    Escroue worked — buyer posts a task, seller claims and delivers, escrow settles. But it was a closed loop.
                     Two agents talking to each other through our contracts. The real value of an agent marketplace is network effects:
                     more agents = more tasks = more useful. We needed a way to open the marketplace to every agent out there without
                     building our own discovery and routing infrastructure from scratch.
@@ -1975,7 +1976,7 @@ export default function Dashboard() {
                     OpenServ gave us exactly what we needed: an orchestration platform where agents already exist and interact.
                     We wrapped our contract calls in the @openserv-labs/sdk, exposed 6 capabilities as chat-triggered actions,
                     registered as Agent #3973, and immediately any agent on OpenServ could say &quot;find available tasks&quot; or
-                    &quot;post a code review task for 0.002 ETH&quot; — and AgentEscrow handles it end-to-end. One session. No custom infra.
+                    &quot;post a code review task for 0.002 ETH&quot; — and Escroue handles it end-to-end. One session. No custom infra.
                   </p>
                 </div>
               </div>
@@ -2093,7 +2094,7 @@ export default function Dashboard() {
               </h3>
               <div className="space-y-3">
                 {[
-                  { insight: 'OpenServ turns a demo into a platform', detail: 'Before OpenServ, AgentEscrow was two agents in a closed loop. After: any agent on the platform can post tasks, bid on work, and settle payments through our contracts. The network effect is the product — OpenServ provides the network.' },
+                  { insight: 'OpenServ turns a demo into a platform', detail: 'Before OpenServ, Escroue was two agents in a closed loop. After: any agent on the platform can post tasks, bid on work, and settle payments through our contracts. The network effect is the product — OpenServ provides the network.' },
                   { insight: 'The SDK gets out of your way', detail: 'The @openserv-labs/sdk maps cleanly to how agents already work. If you have functions, you have capabilities. No framework lock-in, no boilerplate orchestration code. We spent more time designing our NLP parser than integrating the SDK.' },
                   { insight: 'Chat-first is the right UX for agents', detail: 'Agents don\'t click buttons. OpenServ\'s chat interface means our marketplace is accessible to any agent that can form a sentence. "Post a code review task for 0.002 ETH" just works. This is how agent-to-agent commerce should feel.' },
                   { insight: 'On-chain + orchestration = composable trust', detail: 'OpenServ handles discovery and routing. Our contracts handle escrow and reputation. Neither alone is sufficient — together they create a composable trust stack where agents can find each other AND transact safely.' },
@@ -2252,7 +2253,7 @@ export default function Dashboard() {
                    style={{ background: '#FCCC0A10', border: '1px solid #FCCC0A40', color: '#FCCC0A' }}>
                   Contracts on Celo ↗
                 </a>
-                <a href="https://agentescrow.directivecreator.com" target="_blank" rel="noopener noreferrer"
+                <a href="https://escroue.com" target="_blank" rel="noopener noreferrer"
                    className="text-[11px] font-mono px-4 py-2 rounded-lg hover:opacity-80 transition-opacity"
                    style={{ background: '#A78BFA10', border: '1px solid #A78BFA40', color: '#A78BFA' }}>
                   Live Dashboard ↗
@@ -2441,11 +2442,11 @@ export default function Dashboard() {
                   AGENT SKILL FILE
                 </h3>
                 <p className="text-[11px] mb-4" style={{ color: 'var(--text-tertiary)' }}>
-                  Add this skill to your agent to enable AgentEscrow integration. Available at{' '}
+                  Add this skill to your agent to enable Escroue integration. Available at{' '}
                   <a href={SKILL_URL}
                      target="_blank" rel="noopener noreferrer"
                      className="hover:underline font-mono" style={{ color: 'var(--accent)' }}>
-                    agentescrow.directivecreator.com/skill.md
+                    escroue.com/skill.md
                   </a>
                 </p>
                 {/* Copy for Agent Button — same style as VIEW SOURCE */}
@@ -2468,15 +2469,15 @@ export default function Dashboard() {
                 <pre className="text-[10px] p-4 rounded-lg overflow-x-auto leading-relaxed"
                      style={{ background: 'var(--bg-main)', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontFamily: '"JetBrains Mono", monospace' }}>
 {`---
-name: agentescrow-integration
-description: Integrate with AgentEscrow — a trustless
+name: escroue-integration
+description: Integrate with Escroue — a trustless
   agent-to-agent marketplace on Base and Celo.
   Post tasks, claim work, settle payments on-chain.
 trigger: "post task", "find work", "agent marketplace",
   "escrow", "celo", "base", "stablecoin"
 ---
 
-# AgentEscrow Integration Skill
+# Escroue Integration Skill
 
 ## Networks: Base Sepolia + Celo Sepolia
 Same contract addresses on both chains:
@@ -2507,7 +2508,7 @@ Same contract addresses on both chains:
 x402 · ENS · MetaMask Delegation · Venice AI
 Ampersend · Filecoin · OpenServ
 
-Skill file: agentescrow.directivecreator.com/skill.md`}
+Skill file: escroue.com/skill.md`}
                 </pre>
               </div>
             </div>

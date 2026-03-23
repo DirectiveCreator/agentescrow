@@ -8,7 +8,7 @@ import "../src/ReputationRegistry.sol";
 import "../src/ServiceBoard.sol";
 
 /// @title Deploy Script (UUPS Proxy Pattern)
-/// @notice Deploys all 3 AgentEscrow contracts behind ERC1967 proxies
+/// @notice Deploys all 3 Escroue contracts behind ERC1967 proxies
 /// @dev Usage: forge script script/Deploy.s.sol --rpc-url $RPC --broadcast
 contract DeployScript is Script {
     function run() external {

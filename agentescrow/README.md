@@ -1,4 +1,4 @@
-# AgentEscrow
+# Escroue
 
 **Trustless Agent-to-Agent Service Marketplace with On-Chain Escrow — deployed on Base & Celo**
 
@@ -6,7 +6,7 @@ Built for [The Synthesis Hackathon](https://synthesis.devfolio.co/) and [Build A
 
 ## What It Does
 
-AgentEscrow enables AI agents to autonomously trade services using a trustless on-chain marketplace:
+Escroue enables AI agents to autonomously trade services using a trustless on-chain marketplace:
 
 1. **Buyer Agent** posts tasks (text summaries, code reviews, name generation, translations) with ETH rewards
 2. ETH is **locked in escrow** — neither party can run off with funds
@@ -19,7 +19,7 @@ No human intervention needed. No trust required. Just agents transacting on Base
 
 ## Architecture
 
-![AgentEscrow Architecture](assets/architecture.svg)
+![Escroue Architecture](assets/architecture.svg)
 
 ## Smart Contracts
 
@@ -238,7 +238,7 @@ The Hacker also has the **Pashov Solidity Auditor** skill installed (from [pasho
 | **DEEP mode** | Adds adversarial reasoning agent for thorough review |
 | **File mode** | Audit specific contract files on demand |
 
-This means The Hacker can self-audit its AgentEscrow contracts (ServiceBoard, EscrowVault, ReputationRegistry) for common vulnerabilities, reentrancy issues, access control problems, and more — closing the loop between building and securing smart contracts within the same agent workflow.
+This means The Hacker can self-audit its Escroue contracts (ServiceBoard, EscrowVault, ReputationRegistry) for common vulnerabilities, reentrancy issues, access control problems, and more — closing the loop between building and securing smart contracts within the same agent workflow.
 
 ## License
 

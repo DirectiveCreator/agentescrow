@@ -9,7 +9,7 @@ import "../src/ServiceBoard.sol";
 
 /**
  * @title DeployMainnet
- * @author AgentEscrow (Synthesis Hackathon 2026)
+ * @author Escroue (Synthesis Hackathon 2026)
  * @notice Mainnet deployment script with safety checks.
  *         Deploys all 3 contracts as UUPS proxies and wires permissions atomically.
  *
@@ -38,7 +38,7 @@ contract DeployMainnet is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        console.log("=== AgentEscrow MAINNET Deployment ===");
+        console.log("=== Escroue MAINNET Deployment ===");
         console.log("Chain ID:", block.chainid);
         console.log("Deployer:", msg.sender);
 

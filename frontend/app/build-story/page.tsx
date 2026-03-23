@@ -209,7 +209,7 @@ function NavBar() {
             fontSize: 12,
             fontFamily: 'var(--font-mono)',
           }}>
-            &larr; AgentEscrow
+            &larr; Escroue
           </Link>
           <span style={{ color: 'var(--text-quaternary)' }}>|</span>
           <span style={{
@@ -444,7 +444,7 @@ export default function BuildStoryPage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            How <span style={{ color: AMBER }}>Humans</span> and <span style={{ color: BLUE }}>Agents</span> Built AgentEscrow
+            How <span style={{ color: AMBER }}>Humans</span> and <span style={{ color: BLUE }}>Agents</span> Built Escroue
           </h1>
           <p style={{
             fontSize: 15,

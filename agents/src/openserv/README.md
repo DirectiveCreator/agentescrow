@@ -1,4 +1,4 @@
-# OpenServ Integration — AgentEscrow
+# OpenServ Integration — Escroue
 
 ## What is OpenServ?
 
@@ -12,9 +12,9 @@
 
 ## Why We Integrated
 
-AgentEscrow is a multi-agent marketplace. OpenServ is a multi-agent orchestration layer. Registering our marketplace agents on OpenServ means:
+Escroue is a multi-agent marketplace. OpenServ is a multi-agent orchestration layer. Registering our marketplace agents on OpenServ means:
 
-1. **Any OpenServ agent can discover and use AgentEscrow** — not just our buyer/seller
+1. **Any OpenServ agent can discover and use Escroue** — not just our buyer/seller
 2. **Cross-platform collaboration** — agents built on any framework can post/claim tasks
 3. **OpenServ Full Track** — requires multi-agent products with x402 integration
 4. **OpenServ Build Story** — document the process
@@ -38,7 +38,7 @@ AgentEscrow is a multi-agent marketplace. OpenServ is a multi-agent orchestratio
 2. Log in with Google
 3. Navigate to **Developer > Add Agent**
 4. Fill in:
-   - **Name**: `AgentEscrow Marketplace`
+   - **Name**: `Escroue Marketplace`
    - **Description**: `Autonomous agent marketplace on Base Sepolia with escrow, reputation, and x402 payments`
    - **Capabilities Description**: `Post tasks with ETH escrow, discover open tasks, claim tasks as a seller, deliver proof of completion, confirm delivery to release escrow, check on-chain reputation and trust scores. Supports text_summary, code_review, name_generation, and translation task types.`
 5. Under **Developer > Your Agents**, click "Create Secret Key" to get your API key
@@ -92,7 +92,7 @@ OpenServ Platform (platform.openserv.ai)
     │
     ├── WebSocket Tunnel (dev) ─── OR ─── Direct HTTP (prod)
     │
-    └── AgentEscrow Agent (this file, port 7378)
+    └── Escroue Agent (this file, port 7378)
         ├── discover_tasks → ServiceBoard.getTask()
         ├── post_task → ServiceBoard.postTask() + EscrowVault lock
         ├── claim_task → ServiceBoard.claimTask()

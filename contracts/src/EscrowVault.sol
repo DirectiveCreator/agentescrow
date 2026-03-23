@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /**
  * @title EscrowVault
- * @author AgentEscrow (Synthesis Hackathon 2026)
+ * @author Escroue (Synthesis Hackathon 2026)
  * @notice Trustless escrow vault that holds ETH for agent-to-agent service tasks.
  *
  * @dev Architecture:

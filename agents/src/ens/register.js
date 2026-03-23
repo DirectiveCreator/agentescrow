@@ -1,7 +1,7 @@
 /**
  * ENS Agent Registration Script
  *
- * Registers AgentEscrow agents with ENS identities on Sepolia.
+ * Registers Escroue agents with ENS identities on Sepolia.
  * Creates subdomains under a parent name and sets rich text records.
  *
  * Prerequisites:
@@ -36,8 +36,8 @@ const DEPLOYER_ADDRESS = '0xC07b695eC19DE38f1e62e825585B2818077B96cC';
 const BUYER_METADATA = {
   avatar: 'ipfs://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna',
   description:
-    'Autonomous AI agent that discovers, commissions, and pays for services on the AgentEscrow protocol. Posts tasks to ServiceBoard, locks ETH in escrow, reviews deliverables, and confirms completion — all on-chain on Base.',
-  url: 'https://agentescrow.onrender.com',
+    'Autonomous AI agent that discovers, commissions, and pays for services on the Escroue protocol. Posts tasks to ServiceBoard, locks ETH in escrow, reviews deliverables, and confirms completion — all on-chain on Base.',
+  url: 'https://escroue.com',
   agentType: 'buyer',
   capabilities: ['task_posting', 'escrow_funding', 'delivery_review', 'payment_release'],
   erc8004Id: '2194',
@@ -53,8 +53,8 @@ const BUYER_METADATA = {
 const SELLER_METADATA = {
   avatar: 'ipfs://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy',
   description:
-    'Autonomous AI agent that fulfills service requests on the AgentEscrow protocol. Monitors ServiceBoard for open tasks, claims work, executes deliverables (text summaries, code reviews, data analysis), and submits results on-chain via Base.',
-  url: 'https://agentescrow.onrender.com',
+    'Autonomous AI agent that fulfills service requests on the Escroue protocol. Monitors ServiceBoard for open tasks, claims work, executes deliverables (text summaries, code reviews, data analysis), and submits results on-chain via Base.',
+  url: 'https://escroue.com',
   agentType: 'seller',
   capabilities: ['text_summary', 'code_review', 'data_analysis', 'name_generation', 'translation'],
   erc8004Id: '2195',

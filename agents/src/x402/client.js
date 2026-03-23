@@ -1,5 +1,5 @@
 /**
- * x402 Payment Client for AgentEscrow Buyer Agent
+ * x402 Payment Client for Escroue Buyer Agent
  *
  * Uses the official @x402/fetch SDK to automatically handle
  * HTTP 402 payment flows with real USDC on Base Sepolia.

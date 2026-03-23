@@ -195,7 +195,7 @@ async function main() {
   console.log('   agent commerce. Agents earn in USD, pay gas in USD, operate');
   console.log('   without volatile token exposure. Perfect for autonomous agents.');
   console.log('');
-  console.log('   AgentEscrow CeloClient supports fee abstraction via:');
+  console.log('   Escroue CeloClient supports fee abstraction via:');
   console.log('   client.sendWithFeeAbstraction({ to, data, value, feeCurrency: "cUSD" })');
   console.log('');
 }

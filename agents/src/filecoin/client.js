@@ -35,7 +35,7 @@ export function createFOCClient({ privateKey, network = 'calibration' }) {
   const synapse = Synapse.create({
     chain: net.chain,
     account,
-    source: 'agentescrow',
+    source: 'escroue',
   });
 
   console.log(`🗄️  FOC client initialized on ${net.name}`);
@@ -81,7 +81,7 @@ export class AgentStorage {
   async storeDelivery(delivery) {
     const payload = {
       version: '1.0',
-      protocol: 'agentescrow',
+      protocol: 'escroue',
       type: 'task_delivery',
       timestamp: new Date().toISOString(),
       taskId: delivery.taskId,
@@ -119,7 +119,7 @@ export class AgentStorage {
   async storeData({ type, content, metadata = {} }) {
     const payload = {
       version: '1.0',
-      protocol: 'agentescrow',
+      protocol: 'escroue',
       type,
       timestamp: new Date().toISOString(),
       content: typeof content === 'string' ? content : JSON.stringify(content),

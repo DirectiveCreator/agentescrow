@@ -89,8 +89,8 @@ const ENS_FEATURES = [
 
 const TEXT_RECORDS = [
   { key: 'avatar', description: 'IPFS avatar image', example: 'ipfs://bafybei...' },
-  { key: 'description', description: 'Agent role description', example: 'Autonomous buyer agent for AgentEscrow marketplace' },
-  { key: 'url', description: 'Agent service URL', example: 'https://agentescrow.directivecreator.com' },
+  { key: 'description', description: 'Agent role description', example: 'Autonomous buyer agent for Escroue marketplace' },
+  { key: 'url', description: 'Agent service URL', example: 'https://escroue.com' },
   { key: 'ai.agent.type', description: 'Agent classification', example: 'buyer | seller' },
   { key: 'ai.agent.capabilities', description: 'What the agent can do', example: 'text_summary,code_review,data_analysis' },
   { key: 'ai.agent.erc8004.id', description: 'ERC-8004 agent ID', example: '2194' },
@@ -182,7 +182,7 @@ messenger.onMessage((msg) => {
     file: 'agents/src/ens/setup-ens.js',
     description: 'One-command full ENS setup: register .eth name, create subdomains, set 16+ text records, configure ENSIP-25 verification.',
     usage: `# Full setup (register + subdomains + records + ENSIP-25)
-DEPLOYER_PRIVATE_KEY=0x... node agents/src/ens/setup-ens.js agentescrow
+DEPLOYER_PRIVATE_KEY=0x... node agents/src/ens/setup-ens.js escroue
 
 # Steps executed:
 # 1. Register agentescrow.eth (commit → wait 60s → reveal)
@@ -241,7 +241,7 @@ function NavBar() {
             fontSize: 12,
             fontFamily: 'var(--font-mono)',
           }}>
-            &larr; AgentEscrow
+            &larr; Escroue
           </Link>
           <span style={{ color: 'var(--text-quaternary)' }}>|</span>
           <span style={{
@@ -552,7 +552,7 @@ export default function ENSPage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            AgentEscrow on <span style={{ color: ENS_BLUE }}>ENS</span>
+            Escroue on <span style={{ color: ENS_BLUE }}>ENS</span>
           </h1>
           <p style={{
             fontSize: 15,
@@ -1158,7 +1158,7 @@ export default function ENSPage() {
               { label: 'ENS Documentation', url: 'https://docs.ens.domains/', icon: '\u{1F4D6}' },
               { label: 'Sepolia ENS App', url: 'https://sepolia.app.ens.domains/', icon: '\u{1F310}' },
               { label: 'ENSIP-25 Standard', url: 'https://docs.ens.domains/ensip/25', icon: '\u{1F517}' },
-              { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
+              { label: 'Escroue Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
               { label: 'ERC-8004 Standard', url: 'https://eips.ethereum.org/EIPS/eip-8004', icon: '\u{1F4CB}' },
               { label: 'XMTP Documentation', url: 'https://xmtp.org/docs', icon: '\u{1F4EC}' },
             ].map(link => (
@@ -1202,7 +1202,7 @@ export default function ENSPage() {
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            Built for The Synthesis Hackathon &mdash; AgentEscrow ENS Integration
+            Built for The Synthesis Hackathon &mdash; Escroue ENS Integration
           </p>
         </div>
       </main>

@@ -7,7 +7,7 @@ import "../src/EscrowVault.sol";
 import "../src/ReputationRegistry.sol";
 import "../src/ServiceBoard.sol";
 
-contract AgentEscrowTest is Test {
+contract EscroueTest is Test {
     EscrowVault public vault;
     ReputationRegistry public reputation;
     ServiceBoard public board;

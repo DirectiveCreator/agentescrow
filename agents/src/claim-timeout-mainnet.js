@@ -45,7 +45,7 @@ const STUCK_TASKS = [0, 1, 3];
 async function main() {
   console.log('');
   console.log('🔧 ═══════════════════════════════════════════');
-  console.log('   AgentEscrow — Claim Timed-Out Tasks');
+  console.log('   Escroue — Claim Timed-Out Tasks');
   console.log('🔧 ═══════════════════════════════════════════');
   console.log('');
   console.log(`   ServiceBoard: ${SERVICE_BOARD}`);

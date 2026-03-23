@@ -1,5 +1,5 @@
 /**
- * Celo Integration for AgentEscrow
+ * Celo Integration for Escroue
  *
  * Provides stablecoin-native agent commerce on Celo:
  * - CeloClient with stablecoin helpers and fee abstraction

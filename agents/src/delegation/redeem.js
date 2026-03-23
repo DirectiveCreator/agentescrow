@@ -24,7 +24,7 @@ import {
   parseEther,
   getAddress,
 } from 'viem';
-import { publicClient, getBundlerClient, getEnvironment, AGENTESCROW_CONTRACTS } from './setup.js';
+import { publicClient, getBundlerClient, getEnvironment, ESCROUE_CONTRACTS } from './setup.js';
 
 // ServiceBoard ABI fragments for encoding calldata
 const SERVICE_BOARD_ABI = [
@@ -76,7 +76,7 @@ export function buildPostTaskExecution({ taskType, description, deadlineSeconds 
   });
 
   return createExecution({
-    target: getAddress(AGENTESCROW_CONTRACTS.serviceBoard),
+    target: getAddress(ESCROUE_CONTRACTS.serviceBoard),
     value: parseEther(rewardEth),
     callData,
   });
@@ -96,7 +96,7 @@ export function buildConfirmDeliveryExecution(taskId) {
   });
 
   return createExecution({
-    target: getAddress(AGENTESCROW_CONTRACTS.serviceBoard),
+    target: getAddress(ESCROUE_CONTRACTS.serviceBoard),
     value: 0n,
     callData,
   });

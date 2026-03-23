@@ -1,5 +1,5 @@
 /**
- * XMTP Agent Messaging for AgentEscrow
+ * XMTP Agent Messaging for Escroue
  *
  * Encrypted agent-to-agent communication using ENS names.
  * Powers the ENS Communication prize track ($600).
@@ -116,7 +116,7 @@ export const MessageTypes = {
  */
 export function buildAgentMessage(type, payload, metadata = {}) {
   return JSON.stringify({
-    protocol: 'agentescrow',
+    protocol: 'escroue',
     version: '1.0',
     type,
     payload,
@@ -133,7 +133,7 @@ export function buildAgentMessage(type, payload, metadata = {}) {
 export function parseAgentMessage(content) {
   try {
     const msg = JSON.parse(content);
-    if (msg.protocol === 'agentescrow') return msg;
+    if (msg.protocol === 'escroue') return msg;
     return { protocol: 'unknown', type: 'text', payload: { text: content } };
   } catch {
     return { protocol: 'unknown', type: 'text', payload: { text: content } };

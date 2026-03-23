@@ -32,7 +32,7 @@ const PRIVACY_TIERS = {
 };
 
 /**
- * Create a Venice AI client configured for AgentEscrow
+ * Create a Venice AI client configured for Escroue
  * @param {Object} options
  * @param {string} options.apiKey - Venice API key (or VVV-staked key)
  * @param {string} [options.privacyTier='tee'] - Privacy tier: 'standard', 'tee', or 'e2ee'
@@ -189,7 +189,7 @@ class VeniceClient {
       messages: [
         {
           role: 'system',
-          content: `You are an AI agent evaluating a service task on the AgentEscrow marketplace.
+          content: `You are an AI agent evaluating a service task on the Escroue marketplace.
 Evaluate whether this task is worth claiming based on:
 1. Task complexity vs reward
 2. Capability match (you handle: text_summary, code_review, name_generation, translation)
@@ -251,7 +251,7 @@ Return ONLY valid JSON: {"claim": true/false, "confidence": 0-100, "reasoning": 
       messages: [
         {
           role: 'system',
-          content: `You are an AI quality verification agent for the AgentEscrow marketplace.
+          content: `You are an AI quality verification agent for the Escroue marketplace.
 Evaluate the delivered work against the original task requirements.
 Check for:
 1. Completeness — does it fulfill the task description?

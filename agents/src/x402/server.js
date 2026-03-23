@@ -1,5 +1,5 @@
 /**
- * x402 Payment Server for AgentEscrow Seller Agent
+ * x402 Payment Server for Escroue Seller Agent
  *
  * Uses the official Coinbase @x402/* SDK to expose seller services
  * behind real HTTP 402 paywalls with on-chain USDC payment verification.
@@ -68,7 +68,7 @@ for (const [taskType, price] of Object.entries(SERVICE_PRICES)) {
       network: NETWORK,
       payTo: SELLER_ADDRESS,
     }],
-    description: `AgentEscrow ${taskType.replace(/_/g, ' ')} service`,
+    description: `Escroue ${taskType.replace(/_/g, ' ')} service`,
     mimeType: 'application/json',
   };
 }
@@ -123,7 +123,7 @@ for (const taskType of Object.keys(SERVICE_PRICES)) {
 
 app.get(['/', '/health'], (req, res) => {
   res.json({
-    name: 'AgentEscrow Seller — x402 Payment Server',
+    name: 'Escroue Seller — x402 Payment Server',
     version: '0.2.0',
     protocol: 'x402',
     sdk: '@x402/express',

@@ -78,6 +78,6 @@ After deployment, update `frontend/lib/contracts.ts` with the new V2 proxy addre
 
 - **Compiler**: Solc 0.8.33
 - **Tests**: 79 passed, 0 failed, 0 skipped
-  - AgentEscrow.t.sol: 8 tests (core lifecycle)
-  - AgentEscrowExtended.t.sol: 47 tests (security, edge cases, pagination)
+  - Escroue.t.sol: 8 tests (core lifecycle)
+  - EscroueExtended.t.sol: 47 tests (security, edge cases, pagination)
   - PauseAndUpgrade.t.sol: 24 tests (pause, UUPS, ownership)

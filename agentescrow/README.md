@@ -108,15 +108,15 @@ Open http://localhost:3000 to see the live dashboard with task board, agent prof
 ## Project Structure
 
 ```
-agentescrow/
+escroue/
 ├── contracts/           # Solidity smart contracts (Foundry)
 │   ├── src/
 │   │   ├── ServiceBoard.sol
 │   │   ├── EscrowVault.sol
 │   │   └── ReputationRegistry.sol
 │   ├── test/
-│   │   ├── AgentEscrow.t.sol
-│   │   └── AgentEscrowExtended.t.sol
+│   │   ├── Escroue.t.sol
+│   │   └── EscroueExtended.t.sol
 │   └── script/
 │       └── Deploy.s.sol
 ├── agents/              # Node.js agent harness (viem)

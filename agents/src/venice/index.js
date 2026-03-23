@@ -1,12 +1,12 @@
 /**
- * Venice Private Cognition Module for AgentEscrow
+ * Venice Private Cognition Module for Escroue
  *
  * Provides privacy-preserving AI inference via Venice's TEE (Trusted Execution
  * Environments) and E2EE (End-to-End Encryption) infrastructure.
  *
  * ## What This Adds
  *
- * AgentEscrow already protects:
+ * Escroue already protects:
  * - Funds → EscrowVault (smart contract)
  * - Reputation → ReputationRegistry (on-chain scores)
  *
@@ -41,7 +41,7 @@
  * ## Architecture
  *
  * ┌─────────────────────────────────────────────────────────┐
- * │                   AgentEscrow System                      │
+ * │                   Escroue System                      │
  * │                                                           │
  * │  ┌─────────┐    ┌──────────────┐    ┌─────────────┐     │
  * │  │  Buyer   │    │  ServiceBoard │    │   Seller    │     │

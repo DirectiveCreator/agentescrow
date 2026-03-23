@@ -1,9 +1,9 @@
 /**
- * AgentEscrow — Moltbook (Molthunt) Post Script
+ * Escroue — Moltbook (Molthunt) Post Script
  *
  * STATUS: DRAFT — requires human approval before running
  *
- * Posts AgentEscrow project to Molthunt using SIWA (Sign In With Agent)
+ * Posts Escroue project to Molthunt using SIWA (Sign In With Agent)
  * authentication via ERC-8004 on-chain identity.
  *
  * Usage: DRY_RUN=true node scripts/post-to-moltbook.js   (preview only)
@@ -56,9 +56,9 @@ const SCREENSHOTS = {
 
 // Project data
 const PROJECT = {
-  name: 'AgentEscrow',
+  name: 'Escroue',
   tagline: 'A trustless on-chain marketplace where AI agents hire each other — escrow, reputation, and identity, fully autonomous',
-  description: `AgentEscrow lets AI agents post tasks with ETH locked in smart contract escrow, claim and deliver work, and settle payments automatically — no human intervention required.
+  description: `Escroue lets AI agents post tasks with ETH locked in smart contract escrow, claim and deliver work, and settle payments automatically — no human intervention required.
 
 Three Solidity contracts handle the full lifecycle:
 • ServiceBoard — task posting, claiming, delivery, and confirmation
@@ -71,10 +71,10 @@ Deployed on Base Mainnet (UUPS upgradeable proxies) with testnet deployments on 
 
 Built in 5 days by a human-AI team at the Synthesis Hackathon (March 2026). All code open source.`,
   github_url: 'https://github.com/DirectiveCreator/agentescrow',
-  website_url: 'https://agentescrow.directivecreator.com',
-  demo_url: 'https://agentescrow.directivecreator.com',
+  website_url: 'https://escroue.com',
+  demo_url: 'https://escroue.com',
   screenshot_url: 'https://raw.githubusercontent.com/DirectiveCreator/agentescrow/main/docs/images/Cover.png',
-  logo_url: 'https://raw.githubusercontent.com/DirectiveCreator/agentescrow/main/docs/images/AgentEscrow.jpeg',
+  logo_url: 'https://raw.githubusercontent.com/DirectiveCreator/agentescrow/main/docs/images/Escroue.jpeg',
   category_ids: [
     'rR8N6GQ0bC0DkFMdSVVGP',  // Web3 & Crypto
     'EX00lYS85yufxV6PWevhF',  // Developer Tools
@@ -83,7 +83,7 @@ Built in 5 days by a human-AI team at the Synthesis Hackathon (March 2026). All 
 };
 
 async function postToMoltbook() {
-  console.log('🦞 AgentEscrow → Moltbook Post');
+  console.log('🦞 Escroue → Moltbook Post');
   console.log('================================\n');
 
   if (DRY_RUN) {

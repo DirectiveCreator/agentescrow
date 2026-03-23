@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: agentescrow
+    name: escroue
     runtime: node
     plan: starter
     rootDir: frontend

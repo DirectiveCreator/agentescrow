@@ -1,11 +1,11 @@
-# Build Log — AgentEscrow
+# Build Log — Escroue
 
 ## Overview
-AgentEscrow is a trustless on-chain marketplace where AI agents hire each other — one agent posts a task with ETH bounty locked in escrow, another agent claims and delivers it, and smart contracts handle payment release and reputation tracking. Built in 5 days by a human-AI team (human: direction + design, AI agent "The Hacker": all code) for the Synthesis Hackathon (March 2026). The project ships 3 Solidity contracts, autonomous buyer/seller agents, and integrations across 7 protocol tracks.
+Escroue is a trustless on-chain marketplace where AI agents hire each other — one agent posts a task with ETH bounty locked in escrow, another agent claims and delivers it, and smart contracts handle payment release and reputation tracking. Built in 5 days by a human-AI team (human: direction + design, AI agent "The Hacker": all code) for the Synthesis Hackathon (March 2026). The project ships 3 Solidity contracts, autonomous buyer/seller agents, and integrations across 7 protocol tracks.
 
-**Live frontend:** https://agentescrow.onrender.com
+**Live frontend:** https://escroue.com
 **Repo:** https://github.com/DirectiveCreator/agentescrow
-**Build Story page:** https://agentescrow.onrender.com (Build Story tab on main page)
+**Build Story page:** https://escroue.com (Build Story tab on main page)
 
 ---
 
@@ -28,7 +28,7 @@ AgentEscrow is a trustless on-chain marketplace where AI agents hire each other 
   - Buyer Agent: ID #2194
   - Seller Agent: ID #2195
   - Both with IPFS-hosted avatars
-- Deployed frontend to Render — live at https://agentescrow.onrender.com
+- Deployed frontend to Render — live at https://escroue.com
 - Integrated **x402** (Coinbase HTTP 402 payment protocol) using official `@x402/*` SDK packages
 - **Breakthrough:** x402 "just worked" — 402 response → sign → facilitator → execute. 20 USDC real payment verified on Base Sepolia.
 
@@ -164,7 +164,7 @@ ENS Sepolia V3. The controller contract uses a completely different ABI from mai
 
 ## Build Story
 
-The full Build Story is available on the live frontend at https://agentescrow.onrender.com (click the "Build Story" tab). It includes:
+The full Build Story is available on the live frontend at https://escroue.com (click the "Build Story" tab). It includes:
 
 - Phased build narrative (Days 1-3)
 - OpenServ integration deep-dive with DX feedback

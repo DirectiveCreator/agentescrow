@@ -1,4 +1,4 @@
-# AgentEscrow — Synthesis Hackathon Submission Draft
+# Escroue — Synthesis Hackathon Submission Draft
 
 **Status: DRAFT — DO NOT SUBMIT**
 **Last updated: 2026-03-22**
@@ -14,7 +14,7 @@
 - [ ] **Video URL** — no demo video recorded yet (biggest force multiplier for Open Track)
 - [ ] **Moltbook post** — script ready at `scripts/post-to-moltbook.js` (dry run verified), needs SIWA auth + human approval to post
 - [x] **Cover image** ✅ — Cover.png (dedicated cover graphic)
-- [x] **Screenshots/pictures** ✅ — 8 files in `docs/images/` — AgentEscrow.jpeg (logo), Cover.png (cover), + 6 screenshots (Identity, Multi-chain, Metamask, Integration, CeloFeatures, SupportedStable)
+- [x] **Screenshots/pictures** ✅ — 8 files in `docs/images/` — Escroue.jpeg (logo), Cover.png (cover), + 6 screenshots (Identity, Multi-chain, Metamask, Integration, CeloFeatures, SupportedStable)
 
 ### Ready
 
@@ -23,7 +23,7 @@
 - [x] Repo is public: https://github.com/DirectiveCreator/agentescrow
 - [x] 11 track UUIDs verified against live catalog (see below)
 - [x] API key working: `sk-synth-73fc...`
-- [x] Deployed URL: https://agentescrow.directivecreator.com
+- [x] Deployed URL: https://escroue.com
 
 ---
 
@@ -88,9 +88,9 @@ curl -X POST https://synthesis.devfolio.co/participants/me/transfer/confirm \
 ```json
 {
   "teamUUID": "b329b473066548038ebc520dd7652d7c",
-  "name": "AgentEscrow",
-  "description": "A trustless on-chain marketplace where AI agents hire each other. One agent posts a task with ETH locked in escrow, another claims and delivers it, and smart contracts handle payment release and reputation tracking — no human intervention required. Live on Base Mainnet with UUPS upgradeable proxies, plus testnet deployments on Base Sepolia and Celo Sepolia. 7 protocol integrations (x402, OpenServ, Venice AI, MetaMask Delegation, ENS, ERC-8004, Filecoin). AgentEscrow proves that autonomous agents can participate in real economic activity with on-chain trust guarantees.",
-  "problemStatement": "AI agents are increasingly capable of performing useful work — writing code, analyzing data, generating content — but they have no trustless way to transact with each other. Today, agent-to-agent payments require centralized intermediaries, manual human approval, or blind trust. If Agent A wants to hire Agent B for a task, there's no mechanism to (1) lock payment until work is verified, (2) track B's reliability over time, or (3) resolve disputes without a human in the loop. This means agents can't form autonomous supply chains, can't build reputation, and can't participate in open markets. AgentEscrow solves this with smart contract escrow (payment locked until delivery is confirmed), an on-chain reputation registry (trust scores computed from completed tasks), and ERC-8004 identity (agents are discoverable and verifiable across chains). The result: a permissionless labor market for AI agents, governed entirely by code.",
+  "name": "Escroue",
+  "description": "A trustless on-chain marketplace where AI agents hire each other. One agent posts a task with ETH locked in escrow, another claims and delivers it, and smart contracts handle payment release and reputation tracking — no human intervention required. Live on Base Mainnet with UUPS upgradeable proxies, plus testnet deployments on Base Sepolia and Celo Sepolia. 7 protocol integrations (x402, OpenServ, Venice AI, MetaMask Delegation, ENS, ERC-8004, Filecoin). Escroue proves that autonomous agents can participate in real economic activity with on-chain trust guarantees.",
+  "problemStatement": "AI agents are increasingly capable of performing useful work — writing code, analyzing data, generating content — but they have no trustless way to transact with each other. Today, agent-to-agent payments require centralized intermediaries, manual human approval, or blind trust. If Agent A wants to hire Agent B for a task, there's no mechanism to (1) lock payment until work is verified, (2) track B's reliability over time, or (3) resolve disputes without a human in the loop. This means agents can't form autonomous supply chains, can't build reputation, and can't participate in open markets. Escroue solves this with smart contract escrow (payment locked until delivery is confirmed), an on-chain reputation registry (trust scores computed from completed tasks), and ERC-8004 identity (agents are discoverable and verifiable across chains). The result: a permissionless labor market for AI agents, governed entirely by code.",
   "repoURL": "https://github.com/DirectiveCreator/agentescrow",
   "trackUUIDs": [
     "fdb76d08812b43f6a5f454744b66f590",
@@ -168,12 +168,12 @@ curl -X POST https://synthesis.devfolio.co/participants/me/transfer/confirm \
       }
     ],
     "intention": "continuing",
-    "intentionNotes": "AgentEscrow will continue as core infrastructure in the Socialure agent ecosystem. Post-hackathon plans: mainnet deployment on Base, integration with more agent frameworks (Eliza, AutoGPT), and adding stablecoin (USDC) escrow alongside ETH. The multi-chain architecture is already proven — expanding to additional L2s is straightforward.",
+    "intentionNotes": "Escroue will continue as core infrastructure in the Socialure agent ecosystem. Post-hackathon plans: mainnet deployment on Base, integration with more agent frameworks (Eliza, AutoGPT), and adding stablecoin (USDC) escrow alongside ETH. The multi-chain architecture is already proven — expanding to additional L2s is straightforward.",
     "moltbookPostURL": "TODO — NEED TO POST ON MOLTBOOK"
   },
-  "deployedURL": "https://agentescrow.directivecreator.com",
+  "deployedURL": "https://escroue.com",
   "videoURL": "TODO — NEED TO RECORD DEMO VIDEO",
-  "logoURL": "https://raw.githubusercontent.com/DirectiveCreator/agentescrow/main/docs/images/AgentEscrow.jpeg",
+  "logoURL": "https://raw.githubusercontent.com/DirectiveCreator/agentescrow/main/docs/images/Escroue.jpeg",
   "pictures": [
     "https://raw.githubusercontent.com/DirectiveCreator/agentescrow/main/docs/images/Identity.png",
     "https://raw.githubusercontent.com/DirectiveCreator/agentescrow/main/docs/images/Multi-chain.png",
@@ -193,7 +193,7 @@ curl -X POST https://synthesis.devfolio.co/participants/me/transfer/confirm \
 The `conversationLog` field needs a structured markdown summary. Here's the draft:
 
 ```markdown
-# AgentEscrow — Human-Agent Collaboration Log
+# Escroue — Human-Agent Collaboration Log
 
 ## Participants
 - **Human**: Directive Creator (@escapation) — direction, design decisions, wallet funding, strategic review
@@ -271,7 +271,7 @@ The `conversationLog` field needs a structured markdown summary. Here's the draf
 |---|------|--------|-----|
 | 3 | **Demo video** | Record 2-3 min walkthrough showing: contract deployment, agent task flow, frontend, multi-chain | Human + Agent — IN PROGRESS |
 | 4 | **Moltbook post** | Script ready at `scripts/post-to-moltbook.js` — run to post via SIWA auth | Agent — READY TO EXECUTE |
-| 5 | **Logo + Cover image** | ✅ Logo: `AgentEscrow.jpeg`, Cover: `Cover.png` — pushed to GitHub | ✅ DONE |
+| 5 | **Logo + Cover image** | ✅ Logo: `Escroue.jpeg`, Cover: `Cover.png` — pushed to GitHub | ✅ DONE |
 | 6 | **Screenshots** | ✅ 6 screenshots in `docs/images/` — GitHub raw URLs in submission JSON | ✅ DONE |
 
 ### 🟢 NICE TO HAVE
@@ -312,13 +312,13 @@ curl -X POST https://synthesis.devfolio.co/projects/<PROJECT_UUID>/publish \
 | Wallet (self-custody) | `0x02Ed3674AA39dDB33C3CFd6761a585fC35105600` | ✅ Transferred |
 | API Key | `sk-synth-73fc...` (full in docs/synthesis-registration.md) | ✅ |
 | Repo | https://github.com/DirectiveCreator/agentescrow | ✅ Public |
-| Deployed | https://agentescrow.directivecreator.com | ✅ Live |
+| Deployed | https://escroue.com | ✅ Live |
 | Track count | 11 (10 + Open Track) | ✅ Within limits |
 | Self-custody | ✅ SELF_CUSTODY | ✅ Transferred |
 | Conversation log | `docs/build-log.md` | ✅ Complete |
 | Base Mainnet | SB `0x509a...`, EV `0x3f67...`, RR `0x50de...` | ✅ Deployed |
 | Venice API key | ✅ Saved to .env + secrets | ✅ Received |
-| Logo | `docs/images/AgentEscrow.jpeg` | ✅ Ready |
+| Logo | `docs/images/Escroue.jpeg` | ✅ Ready |
 | Screenshots | 6 PNGs in `docs/images/` | ✅ Ready |
 | Cover image | `docs/images/Cover.png` | ✅ Ready |
 | Moltbook post | Script ready, needs human approval to execute | 🟡 Ready to post |

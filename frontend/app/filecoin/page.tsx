@@ -179,7 +179,7 @@ function NavBar() {
             fontSize: 12,
             fontFamily: 'var(--font-mono)',
           }}>
-            &larr; AgentEscrow
+            &larr; Escroue
           </Link>
           <span style={{ color: 'var(--text-quaternary)' }}>|</span>
           <span style={{
@@ -914,7 +914,7 @@ export default function FilecoinPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Code & SDK"
-            subtitle="Click any component to see usage code. All files are in the agentescrow repository."
+            subtitle="Click any component to see usage code. All files are in the escroue repository."
           />
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
             {SDK_DETAILS.map(component => (
@@ -1174,7 +1174,7 @@ const receipt = await storage.storeDelivery({
               fontFamily: 'var(--font-mono)',
             }}>{`{
   "version": "1.0",
-  "protocol": "agentescrow",
+  "protocol": "escroue",
   "type": "task_delivery",
   "timestamp": "2026-03-22T00:00:00.000Z",
   "taskId": 42,
@@ -1209,7 +1209,7 @@ const receipt = await storage.storeDelivery({
               { label: 'Synapse SDK', url: 'https://github.com/filoz/synapse-sdk', icon: '📦' },
               { label: 'FOC Documentation', url: 'https://docs.filoz.org/', icon: '📖' },
               { label: 'Filecoin Explorer', url: 'https://filfox.info/', icon: '🔍' },
-              { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '🏗️' },
+              { label: 'Escroue Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '🏗️' },
               { label: 'USDFC Info', url: 'https://www.circle.com/usdc', icon: '💰' },
               { label: 'Base Sepolia Scanner', url: 'https://sepolia.basescan.org/', icon: '🔗' },
             ].map(link => (
@@ -1253,7 +1253,7 @@ const receipt = await storage.storeDelivery({
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            AgentEscrow x Filecoin Onchain Cloud
+            Escroue x Filecoin Onchain Cloud
           </p>
         </div>
       </main>

@@ -1,7 +1,7 @@
 /**
  * ERC-8004 Agent Identity Registration Script
  *
- * Registers AgentEscrow Buyer and Seller agents on the ERC-8004 IdentityRegistry.
+ * Registers Escroue Buyer and Seller agents on the ERC-8004 IdentityRegistry.
  * Currently targets Base Sepolia for testnet iteration.
  *
  * Usage:
@@ -50,11 +50,11 @@ const REGISTRY_ABI = [
 // Agent metadata (Base Sepolia versions)
 const BUYER_METADATA = {
   type: "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
-  name: "AgentEscrow Buyer",
-  description: "Autonomous AI agent that discovers, commissions, and pays for services on the AgentEscrow protocol. Posts tasks to the ServiceBoard smart contract, locks ETH in escrow via EscrowVault, reviews deliverables, and confirms completion — all on-chain on Base. Built for the Synthesis hackathon by Socialure.",
+  name: "Escroue Buyer",
+  description: "Autonomous AI agent that discovers, commissions, and pays for services on the Escroue protocol. Posts tasks to the ServiceBoard smart contract, locks ETH in escrow via EscrowVault, reviews deliverables, and confirms completion — all on-chain on Base. Built for the Synthesis hackathon by Socialure.",
   image: "ipfs://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna",
   services: [
-    { name: "web", endpoint: "https://agentescrow.onrender.com/" },
+    { name: "web", endpoint: "https://escroue.com/" },
     { name: "ServiceBoard", endpoint: "eip155:84532:0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2" },
     { name: "EscrowVault", endpoint: "eip155:84532:0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579" }
   ],
@@ -66,11 +66,11 @@ const BUYER_METADATA = {
 
 const SELLER_METADATA = {
   type: "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
-  name: "AgentEscrow Seller",
-  description: "Autonomous AI agent that fulfills service requests on the AgentEscrow protocol. Monitors the ServiceBoard for open tasks, claims work, executes deliverables (text summaries, code reviews, data analysis), and submits results on-chain via Base. Earns reputation through the ReputationRegistry. Built for the Synthesis hackathon by Socialure.",
+  name: "Escroue Seller",
+  description: "Autonomous AI agent that fulfills service requests on the Escroue protocol. Monitors the ServiceBoard for open tasks, claims work, executes deliverables (text summaries, code reviews, data analysis), and submits results on-chain via Base. Earns reputation through the ReputationRegistry. Built for the Synthesis hackathon by Socialure.",
   image: "ipfs://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy",
   services: [
-    { name: "web", endpoint: "https://agentescrow.onrender.com/" },
+    { name: "web", endpoint: "https://escroue.com/" },
     { name: "ServiceBoard", endpoint: "eip155:84532:0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2" },
     { name: "ReputationRegistry", endpoint: "eip155:84532:0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df" }
   ],

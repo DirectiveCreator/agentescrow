@@ -74,7 +74,7 @@ export function buildENSIP25Value(params) {
     chainId: params.chainId,
     agentType: params.agentType,
     timestamp: params.timestamp || new Date().toISOString(),
-    protocol: 'agentescrow',
+    protocol: 'escroue',
     version: '1.0',
   });
 }
@@ -196,7 +196,7 @@ export async function verifyMultipleAgents(publicClient, agents) {
 // ─── Full ENSIP-25 Registration Flow ─────────────────────────────────────
 
 /**
- * Complete ENSIP-25 registration for an AgentEscrow agent.
+ * Complete ENSIP-25 registration for an Escroue agent.
  *
  * Sets:
  * 1. ENSIP-25 text record (agent-registration[registry][id])
@@ -241,7 +241,7 @@ export async function registerENSIP25Agent(publicClient, walletClient, params) {
     [AGENT_TEXT_KEYS.erc8004Registry]: registryAddress,
     [AGENT_TEXT_KEYS.agentType]: agentType,
     [AGENT_TEXT_KEYS.chainId]: String(chainId),
-    [AGENT_TEXT_KEYS.protocol]: 'agentescrow',
+    [AGENT_TEXT_KEYS.protocol]: 'escroue',
     [AGENT_TEXT_KEYS.status]: 'active',
   };
 

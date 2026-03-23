@@ -21,7 +21,7 @@ const DEMO_RECEIPTS = [
     network: 'filecoin-mainnet',
     timestamp: '2026-03-22T00:38:22.215Z',
     agent: { address: '0xC07b695eC19DE38f1e62e825585B2818077B96cC', erc8004Id: '2195' },
-    preview: 'Summary: The AgentEscrow protocol enables autonomous agents to trade services...',
+    preview: 'Summary: The Escroue protocol enables autonomous agents to trade services...',
   },
   {
     pieceCid: 'baga6ea4seaqd4n8p2r6t0v4x8b2d6f0h4j8l2n6p0r4t8v2x6b0d4f8h2j6l0',

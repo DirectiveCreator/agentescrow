@@ -3,7 +3,7 @@
 /**
  * Venice Private Cognition Demo
  *
- * Demonstrates the full Venice × AgentEscrow integration:
+ * Demonstrates the full Venice × Escroue integration:
  * 1. Live TEE attestation verification (real Intel TDX proof from Phala Network)
  * 2. Simulated private task lifecycle (evaluation → execution → verification)
  * 3. Attestation-backed delivery hash generation
@@ -46,7 +46,7 @@ async function fetchLiveAttestation(apiKey, model) {
 
 async function runDemo() {
   console.log('╔══════════════════════════════════════════════════════════════╗');
-  console.log('║       Venice × AgentEscrow: Private Cognition Demo          ║');
+  console.log('║       Venice × Escroue: Private Cognition Demo          ║');
   console.log('║                                                              ║');
   console.log('║   Real TEE attestation + simulated agent task lifecycle     ║');
   console.log('║   Cryptographic proof from Intel TDX via Phala Network      ║');
@@ -185,7 +185,7 @@ async function runDemo() {
   console.log(`DEMO COMPLETE — ${hasApiKey ? 'Live Attestation + Simulated Tasks' : 'Full Simulation'}`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
-  console.log('🏗️  AgentEscrow Trust Stack:');
+  console.log('🏗️  Escroue Trust Stack:');
   for (const layer of TRUST_LAYERS) {
     console.log(`   ${layer.icon} ${layer.layer.padEnd(20)} — protects ${layer.protects.padEnd(16)} via ${layer.mechanism}`);
   }

@@ -1,5 +1,5 @@
 /**
- * Celo Client for AgentEscrow
+ * Celo Client for Escroue
  *
  * Provides Celo-specific functionality:
  * - Multi-network support (Celo mainnet + Celo Sepolia testnet)

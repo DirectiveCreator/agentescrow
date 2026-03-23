@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Runs the full AgentEscrow demo: deploys contracts, then runs buyer + seller concurrently
+// Runs the full Escroue demo: deploys contracts, then runs buyer + seller concurrently
 import { spawn, execSync } from 'child_process';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -24,7 +24,7 @@ function runProcess(name, script) {
 
 async function main() {
   console.log('═══════════════════════════════════════════════════');
-  console.log('  🏗️  AgentEscrow - Trustless Agent Marketplace');
+  console.log('  🏗️  Escroue - Trustless Agent Marketplace');
   console.log('═══════════════════════════════════════════════════\n');
 
   // Step 1: Deploy contracts

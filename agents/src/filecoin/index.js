@@ -1,7 +1,7 @@
 /**
  * Filecoin Onchain Cloud (FOC) Integration
  *
- * Provides autonomous storage and retrieval for the AgentEscrow protocol:
+ * Provides autonomous storage and retrieval for the Escroue protocol:
  * - Task delivery content stored permanently on Filecoin
  * - PieceCIDs used as verifiable delivery hashes on-chain
  * - Agent memory persistence across sessions

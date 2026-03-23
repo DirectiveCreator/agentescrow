@@ -65,7 +65,7 @@ const DEMO_AMOUNT = parseEther('0.0001'); // ~$0.03 at $1800/ETH
 async function main() {
   console.log('');
   console.log('🟢 ═══════════════════════════════════════════');
-  console.log('   AgentEscrow MAINNET Demo');
+  console.log('   Escroue MAINNET Demo');
   console.log('🟢 ═══════════════════════════════════════════');
   console.log('');
   console.log(`   Chain:        ${chain.name} (${chain.id})`);
@@ -102,7 +102,7 @@ async function main() {
   let hash = await buyerClient.writeContract({
     address: SERVICE_BOARD, abi: ServiceBoardABI,
     functionName: 'postTask',
-    args: ['text_summary', 'Mainnet demo: summarize AgentEscrow in one sentence', deadline],
+    args: ['text_summary', 'Mainnet demo: summarize Escroue in one sentence', deadline],
     value: DEMO_AMOUNT,
   });
   let receipt = await publicClient.waitForTransactionReceipt({ hash });
@@ -135,7 +135,7 @@ async function main() {
   hash = await sellerClient.writeContract({
     address: SERVICE_BOARD, abi: ServiceBoardABI,
     functionName: 'deliverTask',
-    args: [taskId, 'QmMainnetDemo_AgentEscrow_is_a_trustless_agent_marketplace'],
+    args: [taskId, 'QmMainnetDemo_Escroue_is_a_trustless_agent_marketplace'],
   });
   await publicClient.waitForTransactionReceipt({ hash });
   console.log(`   ✅ Work delivered | TX: ${hash}`);

@@ -19,7 +19,7 @@ import { dirname, join } from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 console.log('═══════════════════════════════════════════════════════');
-console.log('   AgentEscrow x402 Payment Demo (Official SDK)');
+console.log('   Escroue x402 Payment Demo (Official SDK)');
 console.log('═══════════════════════════════════════════════════════\n');
 
 // Start server in background

@@ -1,7 +1,7 @@
 /**
  * MetaMask Delegation Framework — Delegation Creation & Signing (v0.13.0 API)
  *
- * Creates scoped, time-limited, chainable delegations for the AgentEscrow system.
+ * Creates scoped, time-limited, chainable delegations for the Escroue system.
  * Human owners delegate specific authorities to AI agents with enforced guardrails.
  *
  * Delegation Types:
@@ -25,7 +25,7 @@ import {
   parseEther,
   toFunctionSelector,
 } from 'viem';
-import { getEnvironment, AGENTESCROW_CONTRACTS } from './setup.js';
+import { getEnvironment, ESCROUE_CONTRACTS } from './setup.js';
 
 // ─── Delegation Builders ────────────────────────────────────────────────────
 
@@ -56,7 +56,7 @@ export function createSpendingDelegation({
   expiryHours = 24,
 }) {
   const env = getEnvironment();
-  const serviceBoardAddr = AGENTESCROW_CONTRACTS.serviceBoard;
+  const serviceBoardAddr = ESCROUE_CONTRACTS.serviceBoard;
   const expiryTimestamp = Math.floor(Date.now() / 1000) + (expiryHours * 3600);
 
   return createDelegation({
@@ -97,7 +97,7 @@ export function createConfirmationDelegation({
   expiryHours = 24,
 }) {
   const env = getEnvironment();
-  const serviceBoardAddr = AGENTESCROW_CONTRACTS.serviceBoard;
+  const serviceBoardAddr = ESCROUE_CONTRACTS.serviceBoard;
   const expiryTimestamp = Math.floor(Date.now() / 1000) + (expiryHours * 3600);
 
   return createDelegation({
@@ -142,7 +142,7 @@ export function createMediatorDelegation({
   expiryHours = 12,
 }) {
   const env = getEnvironment();
-  const serviceBoardAddr = AGENTESCROW_CONTRACTS.serviceBoard;
+  const serviceBoardAddr = ESCROUE_CONTRACTS.serviceBoard;
   const expiryTimestamp = Math.floor(Date.now() / 1000) + (expiryHours * 3600);
 
   return createDelegation({

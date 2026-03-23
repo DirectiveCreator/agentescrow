@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Ampersend SDK Demo — AgentEscrow Integration
+ * Ampersend SDK Demo — Escroue Integration
  *
  * Demonstrates:
  * 1. Wallet creation (EOA for demo, Smart Account for production)
@@ -107,7 +107,7 @@ async function phase3_paymentRequirements() {
   const requirements = buildPaymentRequirements({
     payTo: sellerAddress,
     amount: '5000', // $0.005 USDC
-    description: 'AgentEscrow text_summary task',
+    description: 'Escroue text_summary task',
     resource: 'http://localhost:4020/api/task/text_summary',
   });
 
@@ -155,7 +155,7 @@ async function phase5_mcpServer() {
   console.log(`
   // Production usage:
   // const { mcp } = await createPaidMcpServer({
-  //   name: 'agentescrow-seller',
+  //   name: 'escroue-seller',
   //   payTo: sellerAddress,
   //   tools: [{
   //     name: 'text_summary',
@@ -173,7 +173,7 @@ async function phase5_mcpServer() {
 
 async function main() {
   console.log('╔══════════════════════════════════════════════════════════╗');
-  console.log('║     Ampersend SDK Demo — AgentEscrow Integration       ║');
+  console.log('║     Ampersend SDK Demo — Escroue Integration       ║');
   console.log('║     Managed Agent Payments via x402 + Treasurer        ║');
   console.log('╚══════════════════════════════════════════════════════════╝');
 
@@ -205,7 +205,7 @@ async function main() {
   // Summary
   divider('Summary');
   console.log(`
-  Ampersend SDK provides managed payment infrastructure for AgentEscrow:
+  Ampersend SDK provides managed payment infrastructure for Escroue:
 
   ┌─────────────────────────────────────────────────────────┐
   │  Buyer Agent                                            │

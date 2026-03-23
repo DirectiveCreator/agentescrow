@@ -3,7 +3,7 @@
 /**
  * Stablecoin Escrow Demo on Celo
  *
- * Demonstrates how AgentEscrow works with stablecoins on Celo:
+ * Demonstrates how Escroue works with stablecoins on Celo:
  * 1. Deploys a test cUSD token on Celo Sepolia
  * 2. Mints test cUSD to buyer and seller
  * 3. Shows the stablecoin escrow flow architecture

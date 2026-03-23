@@ -1,5 +1,5 @@
 /**
- * ENS Client for AgentEscrow
+ * ENS Client for Escroue
  *
  * Provides ENS identity, resolution, and text record management for AI agents.
  * Uses Ethereum Sepolia for ENS (mainnet ENS names resolve cross-chain).
@@ -241,7 +241,7 @@ export async function resolveAddress(publicClient, address) {
 // ─── Text Records ─────────────────────────────────────────────────────────
 
 /**
- * Standard text record keys for AgentEscrow agents.
+ * Standard text record keys for Escroue agents.
  * These follow ENSIP-5/ENSIP-18 conventions plus custom agent-specific keys.
  */
 export const AGENT_TEXT_KEYS = {
@@ -263,7 +263,7 @@ export const AGENT_TEXT_KEYS = {
   escrowVaultAddress: 'ai.agent.escrowVault', // EscrowVault contract
   chainId: 'ai.agent.chainId', // Operating chain (e.g., "84532" for Base Sepolia)
   status: 'ai.agent.status', // "active" | "paused" | "offline"
-  protocol: 'ai.agent.protocol', // "agentescrow"
+  protocol: 'ai.agent.protocol', // "escroue"
 };
 
 /**
@@ -484,7 +484,7 @@ export async function registerAgentENS(publicClient, walletClient, params) {
   if (metadata.escrowVaultAddress) records[AGENT_TEXT_KEYS.escrowVaultAddress] = metadata.escrowVaultAddress;
   if (metadata.chainId) records[AGENT_TEXT_KEYS.chainId] = String(metadata.chainId);
   if (metadata.status) records[AGENT_TEXT_KEYS.status] = metadata.status;
-  records[AGENT_TEXT_KEYS.protocol] = 'agentescrow';
+  records[AGENT_TEXT_KEYS.protocol] = 'escroue';
 
   if (Object.keys(records).length > 0) {
     console.log(`   ⏳ Setting ${Object.keys(records).length} text records...`);

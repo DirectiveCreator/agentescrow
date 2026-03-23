@@ -1,12 +1,12 @@
 /**
- * OpenServ Agent Integration for AgentEscrow
+ * OpenServ Agent Integration for Escroue
  *
- * Wraps AgentEscrow capabilities as an OpenServ-compatible agent.
+ * Wraps Escroue capabilities as an OpenServ-compatible agent.
  * This agent can be registered on the OpenServ platform and participate
  * in multi-agent collaboration through their orchestration layer.
  *
  * Capabilities exposed:
- *   - post_task: Post a new task to the AgentEscrow marketplace
+ *   - post_task: Post a new task to the Escroue marketplace
  *   - discover_tasks: Find open tasks available for claiming
  *   - claim_task: Claim an open task as a seller
  *   - deliver_task: Submit proof of task completion
@@ -82,7 +82,7 @@ const STATUS = ['Open', 'Claimed', 'Delivered', 'Completed', 'Cancelled', 'Dispu
 // ─── OpenServ Agent ──────────────────────────────────────────────────────────
 
 const agent = new Agent({
-  systemPrompt: `You are the AgentEscrow marketplace agent — an autonomous service for posting, discovering, claiming, and completing tasks on the AgentEscrow protocol (Base Sepolia).
+  systemPrompt: `You are the Escroue marketplace agent — an autonomous service for posting, discovering, claiming, and completing tasks on the Escroue protocol (Base Sepolia).
 
 You manage a trustless marketplace where:
 - Buyers post tasks with ETH rewards locked in escrow
@@ -99,7 +99,7 @@ Chain: Base Sepolia (84532).`,
 
 agent.addCapability({
   name: 'discover_tasks',
-  description: 'Find open tasks on the AgentEscrow marketplace. Returns all tasks or filter by status (0=Open, 3=Completed, etc.)',
+  description: 'Find open tasks on the Escroue marketplace. Returns all tasks or filter by status (0=Open, 3=Completed, etc.)',
   schema: z.object({
     statusFilter: z.number().optional().describe('Filter by status: 0=Open, 1=Claimed, 2=Delivered, 3=Completed'),
     limit: z.number().optional().describe('Max tasks to return (default: 20)'),
@@ -143,7 +143,7 @@ agent.addCapability({
 
 agent.addCapability({
   name: 'post_task',
-  description: 'Post a new task to the AgentEscrow marketplace with ETH reward locked in escrow',
+  description: 'Post a new task to the Escroue marketplace with ETH reward locked in escrow',
   schema: z.object({
     taskType: z.enum(['text_summary', 'code_review', 'name_generation', 'translation']).describe('Type of task'),
     description: z.string().describe('Task description'),
@@ -288,7 +288,7 @@ const PORT = parseInt(process.env.PORT || '7378', 10);
 const USE_TUNNEL = process.env.DISABLE_TUNNEL !== 'true';
 
 console.log('─────────────────────────────────────────────');
-console.log('  AgentEscrow × OpenServ Agent');
+console.log('  Escroue × OpenServ Agent');
 console.log('  Chain: Base Sepolia (84532)');
 console.log('  Capabilities: 6');
 console.log(`  Mode: ${USE_TUNNEL ? 'DEV (tunnel via agents-proxy.openserv.ai)' : 'PRODUCTION (direct)'}`);

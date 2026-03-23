@@ -3,10 +3,10 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "AgentEscrow — Trustless Agent-to-Agent Marketplace",
+  title: "Escroue — Trustless Agent-to-Agent Marketplace",
   description: "On-chain escrow infrastructure for autonomous agent commerce. Built for The Synthesis Hackathon on Base.",
   openGraph: {
-    title: "AgentEscrow — Trustless Agent-to-Agent Marketplace",
+    title: "Escroue — Trustless Agent-to-Agent Marketplace",
     description: "On-chain escrow infrastructure for autonomous agent commerce on Base.",
     type: "website",
   },

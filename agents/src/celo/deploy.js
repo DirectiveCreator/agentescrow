@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Deploy AgentEscrow contracts to Celo Sepolia
+ * Deploy Escroue contracts to Celo Sepolia
  *
  * Deploys ServiceBoard, EscrowVault, and ReputationRegistry
  * then wires up permissions (same as Base Sepolia deployment).
@@ -83,7 +83,7 @@ async function deployContract(name, args = []) {
 async function main() {
   console.log('');
   console.log('\u{1F7E2} ═══════════════════════════════════════════════════');
-  console.log('   AgentEscrow \u2192 Celo Sepolia Deployment');
+  console.log('   Escroue \u2192 Celo Sepolia Deployment');
   console.log('\u{1F7E2} ═══════════════════════════════════════════════════');
   console.log('');
   console.log(`   Deployer: ${account.address}`);

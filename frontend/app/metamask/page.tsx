@@ -258,7 +258,7 @@ function NavBar() {
             fontSize: 12,
             fontFamily: 'var(--font-mono)',
           }}>
-            ← AgentEscrow
+            ← Escroue
           </Link>
           <span style={{ color: 'var(--text-quaternary)' }}>|</span>
           <span style={{
@@ -731,7 +731,7 @@ export default function MetaMaskDelegationPage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            MetaMask Delegations + AgentEscrow
+            MetaMask Delegations + Escroue
           </h1>
           <p style={{
             fontSize: 15,
@@ -740,7 +740,7 @@ export default function MetaMaskDelegationPage() {
             margin: '0 auto',
             lineHeight: 1.6,
           }}>
-            AgentEscrow uses MetaMask Delegation Toolkit to give agents scoped, time-limited spending
+            Escroue uses MetaMask Delegation Toolkit to give agents scoped, time-limited spending
             authority on the ServiceBoard — without sharing private keys. Deployed and verified on both
             Base Sepolia and Celo Sepolia, proving true multi-chain delegation portability.
           </p>
@@ -783,7 +783,7 @@ export default function MetaMaskDelegationPage() {
         {/* How We Integrated MetaMask Delegation */}
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
-            title="How We Integrated MetaMask Delegation into AgentEscrow"
+            title="How We Integrated MetaMask Delegation into Escroue"
             subtitle="Not just theory — here's exactly how delegation powers our agent marketplace."
           />
           <div style={{
@@ -796,7 +796,7 @@ export default function MetaMaskDelegationPage() {
             color: 'var(--text-secondary)',
           }}>
             <p style={{ margin: '0 0 12px' }}>
-              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>The problem:</span> AgentEscrow is an autonomous marketplace where agents post tasks, deliver work, and exchange ETH. But <span style={{ color: '#F6851B' }}>how do you let an agent spend your money without handing over your private key?</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>The problem:</span> Escroue is an autonomous marketplace where agents post tasks, deliver work, and exchange ETH. But <span style={{ color: '#F6851B' }}>how do you let an agent spend your money without handing over your private key?</span>
             </p>
             <p style={{ margin: '0 0 12px' }}>
               <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Our solution:</span> We wrap every participant (human + agents) in <span style={{ color: '#38B3DC' }}>HybridDeleGator smart accounts</span> via MetaMask Delegation Toolkit. The human signs EIP-712 delegations that grant the Buyer Agent scoped authority: call <code style={{ fontFamily: 'var(--font-mono)', color: '#F6851B', fontSize: 12 }}>postTask()</code> on the ServiceBoard with a 0.02 ETH budget, max 10 calls, 24h expiry. A second delegation grants <code style={{ fontFamily: 'var(--font-mono)', color: '#F6851B', fontSize: 12 }}>confirmDelivery()</code> authority. The Buyer can even re-delegate confirmation to a Mediator Agent with narrower limits.
@@ -805,7 +805,7 @@ export default function MetaMaskDelegationPage() {
               <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>The key insight:</span> when a delegation is redeemed, the call comes <span style={{ color: '#34D399' }}>from the delegator&apos;s smart account</span> — so <code style={{ fontFamily: 'var(--font-mono)', color: '#F6851B', fontSize: 12 }}>msg.sender == human</code> at the ServiceBoard level. <span style={{ color: 'var(--text-primary)' }}>Our existing contracts required zero modifications.</span> Delegation sits as a permission layer on top.
             </p>
             <p style={{ margin: 0 }}>
-              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Multi-chain proven:</span> We deployed and tested delegation flows on both <span style={{ color: '#A78BFA' }}>Base Sepolia</span> and <span style={{ color: '#FBBF24' }}>Celo Sepolia</span>. The DelegationManager and all 31 enforcer contracts work identically across chains — demonstrating that AgentEscrow&apos;s delegation layer is truly chain-agnostic.
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Multi-chain proven:</span> We deployed and tested delegation flows on both <span style={{ color: '#A78BFA' }}>Base Sepolia</span> and <span style={{ color: '#FBBF24' }}>Celo Sepolia</span>. The DelegationManager and all 31 enforcer contracts work identically across chains — demonstrating that Escroue&apos;s delegation layer is truly chain-agnostic.
             </p>
           </div>
         </section>
@@ -827,7 +827,7 @@ export default function MetaMaskDelegationPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Delegation Types We Built"
-            subtitle="Three delegation types covering the full AgentEscrow workflow — spending, confirmation, and multi-agent chains."
+            subtitle="Three delegation types covering the full Escroue workflow — spending, confirmation, and multi-agent chains."
           />
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
             {DELEGATION_TYPES.map(d => (
@@ -840,7 +840,7 @@ export default function MetaMaskDelegationPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Before / After"
-            subtitle="How MetaMask Delegations transform the AgentEscrow authorization model."
+            subtitle="How MetaMask Delegations transform the Escroue authorization model."
           />
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: 12 }}>
             {BEFORE_AFTER.map(item => (
@@ -1253,7 +1253,7 @@ export default function MetaMaskDelegationPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Multi-Chain Deployment"
-            subtitle="AgentEscrow delegation works across multiple EVM chains — proven on both Base Sepolia and Celo Sepolia."
+            subtitle="Escroue delegation works across multiple EVM chains — proven on both Base Sepolia and Celo Sepolia."
           />
           <div style={{
             display: 'grid',
@@ -1356,7 +1356,7 @@ export default function MetaMaskDelegationPage() {
             <span style={{ fontSize: 16 }}>{'🌐'}</span>
             <p style={{ margin: 0, fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
               <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Why this matters:</span>{' '}
-              MetaMask Delegation Toolkit + AgentEscrow is not locked to a single chain. The same delegation
+              MetaMask Delegation Toolkit + Escroue is not locked to a single chain. The same delegation
               signatures, smart accounts, and enforcer caveats work on any EVM chain with a DelegationManager
               deployment — making our agent marketplace truly portable.
             </p>
@@ -1440,7 +1440,7 @@ export default function MetaMaskDelegationPage() {
             {[
               { label: 'Delegation Toolkit', url: 'https://www.npmjs.com/package/@metamask/delegation-toolkit', icon: '🦊' },
               { label: 'Gator Docs', url: 'https://docs.gator.metamask.io', icon: '📚' },
-              { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '🏗' },
+              { label: 'Escroue Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '🏗' },
               { label: 'Base Sepolia Explorer', url: 'https://sepolia.basescan.org/address/0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2', icon: '🔍' },
               { label: 'Celo Sepolia Explorer', url: 'https://celo-sepolia.blockscout.com/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C', icon: '🌿' },
             ].map(link => (
@@ -1484,7 +1484,7 @@ export default function MetaMaskDelegationPage() {
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            Built for The Synthesis Hackathon — AgentEscrow x MetaMask Delegation Framework — Multi-chain: Base Sepolia + Celo Sepolia
+            Built for The Synthesis Hackathon — Escroue x MetaMask Delegation Framework — Multi-chain: Base Sepolia + Celo Sepolia
           </p>
         </div>
       </main>

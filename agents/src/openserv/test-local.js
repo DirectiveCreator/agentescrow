@@ -67,7 +67,7 @@ async function testHealth() {
 
 async function main() {
   console.log('═══════════════════════════════════════════');
-  console.log('  AgentEscrow × OpenServ — Local Test');
+  console.log('  Escroue × OpenServ — Local Test');
   console.log('═══════════════════════════════════════════');
 
   const healthy = await testHealth();

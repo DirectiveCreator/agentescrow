@@ -1,5 +1,5 @@
 /**
- * ENS Integration Demo for AgentEscrow
+ * ENS Integration Demo for Escroue
  *
  * Demonstrates all 3 ENS hackathon prize track integrations:
  *
@@ -62,8 +62,8 @@ const SIM_AGENTS = {
     address: '0xC07b695eC19DE38f1e62e825585B2818077B96cC',
     records: {
       avatar: 'ipfs://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna',
-      description: 'Autonomous AI buyer agent for the AgentEscrow protocol.',
-      url: 'https://agentescrow.onrender.com',
+      description: 'Autonomous AI buyer agent for the Escroue protocol.',
+      url: 'https://escroue.com',
       agentType: 'buyer',
       capabilities: ['task_posting', 'escrow_funding', 'delivery_review', 'payment_release'],
       erc8004Id: '2194',
@@ -74,7 +74,7 @@ const SIM_AGENTS = {
       escrowVaultAddress: '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579',
       chainId: '84532',
       status: 'active',
-      protocol: 'agentescrow',
+      protocol: 'escroue',
     },
   },
   'seller.agentescrow.eth': {
@@ -82,8 +82,8 @@ const SIM_AGENTS = {
     address: '0xC07b695eC19DE38f1e62e825585B2818077B96cC',
     records: {
       avatar: 'ipfs://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy',
-      description: 'Autonomous AI seller agent that fulfills tasks on AgentEscrow.',
-      url: 'https://agentescrow.onrender.com',
+      description: 'Autonomous AI seller agent that fulfills tasks on Escroue.',
+      url: 'https://escroue.com',
       agentType: 'seller',
       capabilities: ['text_summary', 'code_review', 'data_analysis', 'name_generation', 'translation'],
       erc8004Id: '2195',
@@ -94,7 +94,7 @@ const SIM_AGENTS = {
       escrowVaultAddress: '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579',
       chainId: '84532',
       status: 'active',
-      protocol: 'agentescrow',
+      protocol: 'escroue',
     },
   },
 };
@@ -376,16 +376,16 @@ async function demoOpenIntegration(publicClient) {
 function demoSummary() {
   header('📊 SUBMISSION SUMMARY');
 
-  console.log('\n  Project: AgentEscrow — ENS-Powered AI Agent Marketplace');
+  console.log('\n  Project: Escroue — ENS-Powered AI Agent Marketplace');
   console.log('  Repo: https://github.com/DirectiveCreator/agentescrow');
-  console.log('  Live: https://agentescrow.onrender.com');
+  console.log('  Live: https://escroue.com');
   console.log(`\n  ENS Contracts (Sepolia):`);
   console.log(`  ├─ Registry:        ${ENS_CONTRACTS.registry}`);
   console.log(`  ├─ Public Resolver: ${ENS_CONTRACTS.publicResolver}`);
   console.log(`  ├─ NameWrapper:     ${ENS_CONTRACTS.nameWrapper}`);
   console.log(`  └─ Universal:       ${ENS_CONTRACTS.universalResolver}`);
 
-  console.log('\n  AgentEscrow Contracts (Base Sepolia):');
+  console.log('\n  Escroue Contracts (Base Sepolia):');
   console.log('  ├─ ServiceBoard:      0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2');
   console.log('  ├─ EscrowVault:       0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579');
   console.log('  └─ ReputationRegistry: 0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df');
@@ -411,7 +411,7 @@ function demoSummary() {
 
 async function main() {
   console.log('╔══════════════════════════════════════════════════════════╗');
-  console.log('║         AgentEscrow × ENS Integration Demo              ║');
+  console.log('║         Escroue × ENS Integration Demo              ║');
   console.log('║         Targeting 3 ENS Prize Tracks ($1,500)           ║');
   console.log('╚══════════════════════════════════════════════════════════╝');
 

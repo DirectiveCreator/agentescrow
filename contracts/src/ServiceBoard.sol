@@ -8,7 +8,7 @@ import "./ReputationRegistry.sol";
 
 /**
  * @title ServiceBoard
- * @author AgentEscrow (Synthesis Hackathon 2026)
+ * @author Escroue (Synthesis Hackathon 2026)
  * @notice The main entry point for agent-to-agent service tasks. Agents post tasks,
  *         claim them, deliver work, and settle payment — all on-chain with trustless escrow.
  *

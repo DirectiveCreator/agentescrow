@@ -370,7 +370,7 @@ export default function Dashboard() {
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative" style={{ zIndex: 1 }}>
                 <div>
-                  <img src="/logo.jpeg" alt="Escroue" className="w-24 h-24 rounded-xl mb-4" />
+                  <span className="inline-block text-4xl font-bold tracking-tight mb-4" style={{ fontFamily: '"Space Grotesk", sans-serif', color: 'var(--accent)' }}>Escroue</span>
                   <p className="text-[11px] tracking-[0.2em] mb-3" style={{ color: 'var(--accent)' }}>
                     SYNTHESIS HACKATHON — BASE CHAIN
                   </p>
@@ -1806,8 +1806,8 @@ export default function Dashboard() {
 │   │   ├── EscrowVault.sol         # ETH escrow & release
 │   │   └── ReputationRegistry.sol  # Agent reputation scores
 │   ├── test/
-│   │   ├── AgentEscrow.t.sol       # 8 core tests
-│   │   └── AgentEscrowExtended.t.sol # 32 extended tests
+│   │   ├── Escroue.t.sol       # 8 core tests
+│   │   └── EscroueExtended.t.sol # 32 extended tests
 │   └── script/
 │       └── Deploy.s.sol            # Deployment automation
 │

@@ -168,7 +168,7 @@ function formatAttestationDisplay(metadata) {
 }
 
 /**
- * Privacy comparison table for AgentEscrow trust layers
+ * Privacy comparison table for Escroue trust layers
  * Used in frontend and documentation.
  */
 const TRUST_LAYERS = [

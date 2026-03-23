@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * AgentEscrow — Base Sepolia On-Chain Demo
+ * Escroue — Base Sepolia On-Chain Demo
  *
  * Runs 3 tasks through the full lifecycle on Base Sepolia:
  *   postTask → claimTask → deliverTask → confirmDelivery
@@ -66,7 +66,7 @@ const DEMO_TASKS = [
   },
   {
     taskType: 'code_review',
-    description: 'Review the AgentEscrow ServiceBoard contract for gas optimization',
+    description: 'Review the Escroue ServiceBoard contract for gas optimization',
     reward: '0.0005',
   },
   {
@@ -78,7 +78,7 @@ const DEMO_TASKS = [
 
 async function main() {
   console.log('═══════════════════════════════════════════════════════');
-  console.log('  🏗️  AgentEscrow — Base Sepolia On-Chain Demo');
+  console.log('  🏗️  Escroue — Base Sepolia On-Chain Demo');
   console.log('═══════════════════════════════════════════════════════\n');
 
   // Setup buyer (deployer) wallet

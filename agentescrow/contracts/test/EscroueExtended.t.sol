@@ -10,7 +10,7 @@ import "../src/ServiceBoard.sol";
 /// @title Extended test suite for Escroue contracts
 /// @notice Covers edge cases, access control, reputation scoring, volume tracking,
 ///         state transition guards, ownership transfer, delivered-timeout, and reentrancy.
-contract AgentEscrowExtendedTest is Test {
+contract EscroueExtendedTest is Test {
     EscrowVault public vault;
     ReputationRegistry public reputation;
     ServiceBoard public board;

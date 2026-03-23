@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Register AgentEscrow agents on Celo ERC-8004 IdentityRegistry
+ * Register Escroue agents on Celo ERC-8004 IdentityRegistry
  *
  * Registers Buyer and Seller agents with Celo-specific metadata:
  * - IPFS avatars (same as Base)
@@ -66,16 +66,16 @@ const CELO_CONTRACTS = {
 // ─── Agent Metadata ─────────────────────────────────────────────────────────
 
 const BUYER_METADATA = {
-  name: 'AgentEscrow Buyer (Celo)',
+  name: 'Escroue Buyer (Celo)',
   description: 'Autonomous buyer agent — posts tasks with native CELO escrow, verifies deliveries, manages reputation. Deployed on Celo Sepolia for fast, low-cost agent commerce.',
   avatar: 'ipfs://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna',
   capabilities: ['task_posting', 'delivery_verification', 'escrow_management', 'multi_chain', 'celo_native'],
   chain: 'celo-sepolia',
   chainId: 11142220,
-  protocol: 'agentescrow',
+  protocol: 'escroue',
   contracts: CELO_CONTRACTS,
   repository: 'https://github.com/DirectiveCreator/agentescrow',
-  frontend: 'https://agentescrow.onrender.com/celo',
+  frontend: 'https://escroue.com/celo',
   multiChain: {
     baseSepolia: { agentId: 2194, chainId: 84532 },
     celoSepolia: { chainId: 11142220 },
@@ -83,16 +83,16 @@ const BUYER_METADATA = {
 };
 
 const SELLER_METADATA = {
-  name: 'AgentEscrow Seller (Celo)',
+  name: 'Escroue Seller (Celo)',
   description: 'Autonomous seller agent — discovers tasks, executes work, delivers results, earns CELO. Optimized for Celo\'s fast finality and low-cost transactions.',
   avatar: 'ipfs://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy',
   capabilities: ['task_discovery', 'task_execution', 'delivery', 'multi_chain', 'celo_native'],
   chain: 'celo-sepolia',
   chainId: 11142220,
-  protocol: 'agentescrow',
+  protocol: 'escroue',
   contracts: CELO_CONTRACTS,
   repository: 'https://github.com/DirectiveCreator/agentescrow',
-  frontend: 'https://agentescrow.onrender.com/celo',
+  frontend: 'https://escroue.com/celo',
   multiChain: {
     baseSepolia: { agentId: 2195, chainId: 84532 },
     celoSepolia: { chainId: 11142220 },

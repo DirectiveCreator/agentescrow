@@ -1,5 +1,5 @@
 /**
- * MetaMask Delegation Framework — AgentEscrow Integration
+ * MetaMask Delegation Framework — Escroue Integration
  *
  * Provides delegated agent autonomy:
  *   - Smart account creation for humans and AI agents
@@ -17,7 +17,7 @@ export {
   publicClient,
   getBundlerClient,
   getEnvironment,
-  AGENTESCROW_CONTRACTS,
+  ESCROUE_CONTRACTS,
 } from './setup.js';
 
 export {

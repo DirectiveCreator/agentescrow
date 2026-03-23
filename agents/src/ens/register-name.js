@@ -12,7 +12,7 @@
  *
  * Usage:
  *   node agents/src/ens/register-name.js <name>
- *   node agents/src/ens/register-name.js agentescrow
+ *   node agents/src/ens/register-name.js escroue
  *
  * Environment:
  *   DEPLOYER_PRIVATE_KEY - Wallet private key with Sepolia ETH
@@ -146,10 +146,10 @@ function formatETH(wei) {
 // ─── Main Registration Flow ──────────────────────────────────────────────
 
 async function main() {
-  const label = process.argv[2]; // e.g. "agentescrow" (without .eth)
+  const label = process.argv[2]; // e.g. "escroue" (without .eth)
   if (!label) {
     console.error('Usage: node register-name.js <name>');
-    console.error('Example: node register-name.js agentescrow');
+    console.error('Example: node register-name.js escroue');
     process.exit(1);
   }
 

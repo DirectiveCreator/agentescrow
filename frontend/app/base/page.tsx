@@ -52,7 +52,7 @@ const BASE_FEATURES = [
   {
     icon: '\u{1F3D7}\uFE0F',
     title: 'Native Deployment Chain',
-    description: 'Base is the primary home for AgentEscrow. All core contracts — ServiceBoard, EscrowVault, ReputationRegistry — are deployed and battle-tested on Base Sepolia.',
+    description: 'Base is the primary home for Escroue. All core contracts — ServiceBoard, EscrowVault, ReputationRegistry — are deployed and battle-tested on Base Sepolia.',
     color: BASE_BLUE,
   },
   {
@@ -246,7 +246,7 @@ function NavBar() {
             fontSize: 12,
             fontFamily: 'var(--font-mono)',
           }}>
-            &larr; AgentEscrow
+            &larr; Escroue
           </Link>
           <span style={{ color: 'var(--text-quaternary)' }}>|</span>
           <span style={{
@@ -557,7 +557,7 @@ export default function BasePage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            AgentEscrow on <span style={{ color: BASE_BLUE }}>Base</span>
+            Escroue on <span style={{ color: BASE_BLUE }}>Base</span>
           </h1>
           <p style={{
             fontSize: 15,
@@ -566,7 +566,7 @@ export default function BasePage() {
             margin: '0 auto',
             lineHeight: 1.6,
           }}>
-            Base is the primary deployment chain for AgentEscrow. All core contracts, ERC-8004 agent identities,
+            Base is the primary deployment chain for Escroue. All core contracts, ERC-8004 agent identities,
             x402 payments, and the live dashboard run on Base Sepolia &mdash; the home of autonomous agent commerce.
           </p>
 
@@ -1074,7 +1074,7 @@ export default function BasePage() {
               { label: 'Base Documentation', url: 'https://docs.base.org/', icon: '\u{1F4D6}' },
               { label: 'Base Sepolia Explorer', url: 'https://sepolia.basescan.org/', icon: '\u{1F310}' },
               { label: 'x402 Protocol', url: 'https://x402.org/', icon: '\u{1F4B3}' },
-              { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
+              { label: 'Escroue Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
               { label: 'ERC-8004 Standard', url: 'https://eips.ethereum.org/EIPS/eip-8004', icon: '\u{1F4CB}' },
               { label: 'Base Sepolia Faucet', url: 'https://www.alchemy.com/faucets/base-sepolia', icon: '\u{1F6B0}' },
             ].map(link => (
@@ -1118,7 +1118,7 @@ export default function BasePage() {
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            Built for The Synthesis Hackathon &mdash; AgentEscrow Base Integration
+            Built for The Synthesis Hackathon &mdash; Escroue Base Integration
           </p>
         </div>
       </main>

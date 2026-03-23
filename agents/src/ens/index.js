@@ -1,8 +1,8 @@
 /**
- * ENS Integration Module for AgentEscrow
+ * ENS Integration Module for Escroue
  *
  * Provides ENS identity, resolution, communication, and discovery
- * for AI agents in the AgentEscrow marketplace.
+ * for AI agents in the Escroue marketplace.
  *
  * Targets 3 ENS hackathon prize tracks ($1,500 total):
  * - ENS Identity ($600): Agent subdomains + text records + ENSIP-25

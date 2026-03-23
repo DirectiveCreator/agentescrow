@@ -1,7 +1,7 @@
 /**
  * MetaMask Delegation Framework — Smart Account Setup
  *
- * Creates HybridDeleGator smart accounts for agents in the AgentEscrow system.
+ * Creates HybridDeleGator smart accounts for agents in the Escroue system.
  * Smart accounts wrap existing EOA keys and enable delegation capabilities.
  *
  * Architecture:
@@ -105,7 +105,7 @@ export async function createSmartAccount(privateKey, salt = '0x') {
 }
 
 /**
- * Create smart accounts for all AgentEscrow roles.
+ * Create smart accounts for all Escroue roles.
  * Uses different salts to ensure unique counterfactual addresses.
  *
  * @returns {Promise<Object>} { human, buyer, seller, mediator } smart accounts
@@ -139,9 +139,9 @@ export function logAccount(label, account) {
   console.log(`    Smart Account: ${account.address}`);
 }
 
-// ─── Contract Addresses (AgentEscrow) ───────────────────────────────────────
+// ─── Contract Addresses (Escroue) ───────────────────────────────────────
 
-export const AGENTESCROW_CONTRACTS = {
+export const ESCROUE_CONTRACTS = {
   serviceBoard: process.env.SERVICE_BOARD_ADDRESS || '0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2',
   escrowVault: process.env.ESCROW_VAULT_ADDRESS || '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579',
   reputationRegistry: process.env.REPUTATION_REGISTRY_ADDRESS || '0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df',

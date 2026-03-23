@@ -1,14 +1,14 @@
-# AgentEscrow on Celo — Agent Infrastructure for the Real World
+# Escroue on Celo — Agent Infrastructure for the Real World
 
 **Open-source agent infrastructure stack deployed on Celo** — providing the foundational primitives (escrow, reputation, identity, discovery) that enable any autonomous agent to participate in Celo's stablecoin economy.
 
 > Built for the [Build Agents for the Real World — Celo Hackathon V2](https://www.karmahq.xyz/community/celo?programId=1059) (March 2-22, 2026)
 >
-> **Primary track: Best Agent Infra on Celo** — AgentEscrow is infrastructure, not a single agent. It's the layer that lets agents coordinate, transact, and build trust on-chain.
+> **Primary track: Best Agent Infra on Celo** — Escroue is infrastructure, not a single agent. It's the layer that lets agents coordinate, transact, and build trust on-chain.
 
 ## Why Celo for Agent Infrastructure?
 
-AgentEscrow is an **infrastructure layer** — it provides the on-chain primitives that any agent builder can use. Celo is the ideal foundation:
+Escroue is an **infrastructure layer** — it provides the on-chain primitives that any agent builder can use. Celo is the ideal foundation:
 - **Sub-cent transactions** — infrastructure must be cheap enough for high-frequency agent operations
 - **Stablecoin-native** — agents transact in cUSD/USDC, not volatile tokens. Celo is the home of stablecoins.
 - **CIP-64 fee abstraction** — agents pay gas in stablecoins, removing the need to acquire native tokens
@@ -16,7 +16,7 @@ AgentEscrow is an **infrastructure layer** — it provides the on-chain primitiv
 - **EVM-compatible** — our contracts deploy with zero modifications across chains
 - **Fast finality** (~5s blocks) — agents don't wait around
 
-### What AgentEscrow Provides (Infrastructure Primitives)
+### What Escroue Provides (Infrastructure Primitives)
 | Layer | Primitive | What It Does |
 |-------|-----------|--------------|
 | **Coordination** | ServiceBoard | Task lifecycle (post → claim → deliver → confirm) |
@@ -73,7 +73,7 @@ These agents also have identities on Base Sepolia (Buyer #2194, Seller #2195) �
 
 ```
 ┌───────────────────────────────────────────────────────────────┐
-│                    AgentEscrow on Celo                         │
+│                    Escroue on Celo                         │
 ├───────────────────────────────────────────────────────────────┤
 │                                                               │
 │  ┌──────────────┐         ┌──────────────┐                   │
@@ -191,11 +191,11 @@ Same addresses on both chains (deterministic deployment with same nonce).
 
 | Track | Prize | Fit |
 |-------|-------|-----|
-| **Best Agent Infra on Celo** | $2,000 | **PRIMARY** — AgentEscrow IS infrastructure: escrow, reputation, identity, and discovery primitives deployed on Celo for any agent to use |
+| **Best Agent Infra on Celo** | $2,000 | **PRIMARY** — Escroue IS infrastructure: escrow, reputation, identity, and discovery primitives deployed on Celo for any agent to use |
 
 ### Why This Is Infrastructure, Not Just An Agent
 
-AgentEscrow doesn't solve one task — it provides the **foundational layer** that makes agent-to-agent commerce possible on Celo:
+Escroue doesn't solve one task — it provides the **foundational layer** that makes agent-to-agent commerce possible on Celo:
 
 1. **Any agent can plug in** — post tasks, claim work, earn reputation. Not locked to our demo agents.
 2. **Chain-agnostic contracts** — identical deployment on Celo and Base, proving true portability.
@@ -206,10 +206,10 @@ This is the missing middleware between "I have an AI agent" and "my agent can tr
 
 ## Links
 
-- **Live Frontend**: [agentescrow.directivecreator.com](https://agentescrow.directivecreator.com)
-- **Celo Page**: [agentescrow.directivecreator.com/celo](https://agentescrow.directivecreator.com/celo)
+- **Live Frontend**: [escroue.com](https://escroue.com)
+- **Celo Page**: [escroue.com/celo](https://escroue.com/celo)
 - **GitHub**: [DirectiveCreator/agentescrow](https://github.com/DirectiveCreator/agentescrow)
-- **Karma Project**: [karmahq.xyz/project/agentescrow](https://www.karmahq.xyz/project/agentescrow)
+- **Karma Project**: [karmahq.xyz/project/escroue](https://www.karmahq.xyz/project/escroue)
 - **Celo Docs**: [docs.celo.org](https://docs.celo.org/build-on-celo/build-with-ai/overview)
 
 ## License

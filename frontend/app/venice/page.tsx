@@ -107,7 +107,7 @@ const PRIVACY_TIERS = [
     description: 'Intel TDX / NVIDIA H100 enclaves via Phala/NEAR. Hardware-level isolation with remote attestation — not even Venice operators can see the data inside the enclave.',
     icon: '\u{1F6E1}\uFE0F',
     color: VENICE_PURPLE,
-    usedFor: 'Task evaluation, work execution, delivery verification — all privacy-critical steps in AgentEscrow.',
+    usedFor: 'Task evaluation, work execution, delivery verification — all privacy-critical steps in Escroue.',
   },
   {
     name: 'E2EE (End-to-End Encrypted)',
@@ -213,7 +213,7 @@ VENICE_API_KEY=your_key node agents/src/venice/demo.js
 ];
 
 const DEMO_OUTPUT = `\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557
-\u2551   Venice x AgentEscrow: Private Cognition Demo        \u2551
+\u2551   Venice x Escroue: Private Cognition Demo        \u2551
 \u2551   Real TEE attestation from Intel TDX via Phala       \u2551
 \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D
 
@@ -303,7 +303,7 @@ function NavBar() {
             fontSize: 12,
             fontFamily: 'var(--font-mono)',
           }}>
-            &larr; AgentEscrow
+            &larr; Escroue
           </Link>
           <span style={{ color: 'var(--text-quaternary)' }}>|</span>
           <span style={{
@@ -614,7 +614,7 @@ export default function VenicePage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            AgentEscrow + <span style={{ color: VENICE_PURPLE }}>Venice</span>
+            Escroue + <span style={{ color: VENICE_PURPLE }}>Venice</span>
           </h1>
           <p style={{
             fontSize: 15,
@@ -624,7 +624,7 @@ export default function VenicePage() {
             lineHeight: 1.6,
           }}>
             Privacy-preserving cognition for autonomous agents. Venice provides TEE and E2EE inference
-            so AgentEscrow agents can think privately, act verifiably, and prove honest computation on-chain.
+            so Escroue agents can think privately, act verifiably, and prove honest computation on-chain.
           </p>
 
           {/* Real Attestation Verified Badge */}
@@ -696,7 +696,7 @@ export default function VenicePage() {
             color: 'var(--text-secondary)',
           }}>
             <p style={{ margin: '0 0 12px' }}>
-              In AgentEscrow, agents compete for tasks and earn ETH rewards. Without privacy, a seller&apos;s
+              In Escroue, agents compete for tasks and earn ETH rewards. Without privacy, a seller&apos;s
               <span style={{ color: 'var(--text-primary)' }}> evaluation strategy</span> would be visible on-chain &mdash;
               competitors could see which tasks an agent finds profitable, what capabilities it has, and how it
               makes decisions. <span style={{ color: VENICE_PURPLE }}>Venice TEE</span> solves this by running all
@@ -709,7 +709,7 @@ export default function VenicePage() {
             </p>
             <p style={{ margin: 0 }}>
               Every TEE inference returns a <span style={{ color: VENICE_PURPLE }}>cryptographic attestation</span> &mdash;
-              hardware-signed proof that the computation happened inside a genuine enclave. AgentEscrow embeds these
+              hardware-signed proof that the computation happened inside a genuine enclave. Escroue embeds these
               attestation hashes into on-chain deliveries, creating a <span style={{ color: 'var(--text-primary)' }}>verifiable proof chain</span> from
               private reasoning to public delivery.
             </p>
@@ -720,7 +720,7 @@ export default function VenicePage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Integration Features"
-            subtitle="Six ways Venice private inference enhances AgentEscrow agents."
+            subtitle="Six ways Venice private inference enhances Escroue agents."
           />
           <div style={{
             display: 'grid',
@@ -737,7 +737,7 @@ export default function VenicePage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Integration Flow"
-            subtitle="How Venice TEE inference integrates with the AgentEscrow task lifecycle."
+            subtitle="How Venice TEE inference integrates with the Escroue task lifecycle."
           />
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
             {WORKFLOW_STEPS.map(step => (
@@ -749,7 +749,7 @@ export default function VenicePage() {
         {/* Trust Stack */}
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
-            title="AgentEscrow Trust Stack"
+            title="Escroue Trust Stack"
             subtitle="Venice adds the privacy and integrity layers to our multi-layered trust architecture."
           />
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 0, position: 'relative' as const }}>
@@ -822,7 +822,7 @@ export default function VenicePage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Venice Privacy Tiers"
-            subtitle="Three levels of privacy available to AgentEscrow agents."
+            subtitle="Three levels of privacy available to Escroue agents."
           />
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 12 }}>
             {PRIVACY_TIERS.map(tier => (
@@ -1121,10 +1121,10 @@ export default function VenicePage() {
             {[
               { label: 'Venice Documentation', url: 'https://docs.venice.ai', icon: '\u{1F4D6}' },
               { label: 'Venice API', url: 'https://api.venice.ai', icon: '\u{1F50C}' },
-              { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
+              { label: 'Escroue Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
               { label: 'Base Sepolia Explorer', url: 'https://sepolia.basescan.org/', icon: '\u{1F310}' },
               { label: 'Venice TEE Models', url: 'https://docs.venice.ai/api-reference/list-models', icon: '\u{1F6E1}\uFE0F' },
-              { label: 'Live Dashboard', url: 'https://agentescrow.directivecreator.com', icon: '\u{1F4CA}' },
+              { label: 'Live Dashboard', url: 'https://escroue.com', icon: '\u{1F4CA}' },
             ].map(link => (
               <a
                 key={link.label}
@@ -1166,7 +1166,7 @@ export default function VenicePage() {
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            Built for The Synthesis Hackathon &mdash; AgentEscrow x Venice
+            Built for The Synthesis Hackathon &mdash; Escroue x Venice
           </p>
         </div>
       </main>

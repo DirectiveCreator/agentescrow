@@ -33,7 +33,7 @@ async function deployContract(name, bytecodeFile, constructorArgs = []) {
 }
 
 async function main() {
-  console.log('🚀 Deploying AgentEscrow contracts to local Anvil...\n');
+  console.log('🚀 Deploying Escroue contracts to local Anvil...\n');
 
   // Deploy contracts
   const vaultAddr = await deployContract('EscrowVault');
@@ -65,7 +65,7 @@ async function main() {
   console.log('  ✅ Permissions set!\n');
 
   // Write .env file
-  const envContent = `# AgentEscrow Local Config
+  const envContent = `# Escroue Local Config
 CHAIN=local
 BASE_SEPOLIA_RPC=http://127.0.0.1:8545
 

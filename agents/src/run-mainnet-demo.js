@@ -55,7 +55,7 @@ const ReputationRegistryABI = rrArtifact.abi;
 
 // 3 demo tasks
 const TASKS = [
-  { type: 'text_summary', desc: 'Summarize how AI agents use on-chain escrow for trustless transactions', hash: 'QmMainnet_AgentEscrow_trustless_agent_marketplace_on_Base' },
+  { type: 'text_summary', desc: 'Summarize how AI agents use on-chain escrow for trustless transactions', hash: 'QmMainnet_Escroue_trustless_agent_marketplace_on_Base' },
   { type: 'code_review', desc: 'Review EscrowVault.sol for reentrancy and access control', hash: 'QmMainnet_EscrowVault_security_review_no_critical_findings' },
   { type: 'name_generation', desc: 'Generate creative names for an AI agent services marketplace', hash: 'QmMainnet_Names_AgentForge_TrustMesh_EscrowNet_ChainAgents' },
 ];
@@ -117,7 +117,7 @@ async function runTask(taskDef, index) {
 async function main() {
   console.log('');
   console.log('🟢 ═══════════════════════════════════════════');
-  console.log('   AgentEscrow — Base Mainnet Demo (3 Tasks)');
+  console.log('   Escroue — Base Mainnet Demo (3 Tasks)');
   console.log('🟢 ═══════════════════════════════════════════');
   console.log('');
   console.log(`   ServiceBoard: ${SERVICE_BOARD}`);

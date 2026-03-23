@@ -20,7 +20,7 @@ const TASK_TEMPLATES = [
   },
   {
     taskType: 'translation',
-    description: 'Translate the AgentEscrow whitepaper executive summary from English to Spanish',
+    description: 'Translate the Escroue whitepaper executive summary from English to Spanish',
     reward: '0.0015',
   },
   {

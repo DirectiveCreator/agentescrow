@@ -143,7 +143,7 @@ const INFRA_PRIMITIVES = [
     icon: '🧠',
     title: 'Agent Memory',
     subtitle: 'Persistent, Semantic Memory',
-    description: 'AgentEscrow agents maintain persistent memory across sessions — task history, preferences, learned capabilities, and semantic context. This isn\'t simple key-value storage; it\'s structured memory that agents use to improve over time, remember past collaborators, and make better decisions.',
+    description: 'Escroue agents maintain persistent memory across sessions — task history, preferences, learned capabilities, and semantic context. This isn\'t simple key-value storage; it\'s structured memory that agents use to improve over time, remember past collaborators, and make better decisions.',
     capabilities: ['Cross-session context retention', 'Semantic search over past interactions', 'Learned capability indexing', 'Reputation-weighted memory (trust informs recall)'],
     color: '#FF6B6B',
     celoFit: 'On Celo, agent memory is anchored to on-chain reputation. An agent\'s stablecoin earnings history, task completion rate, and trust score become part of its persistent identity — queryable by any other agent on the network.',
@@ -152,7 +152,7 @@ const INFRA_PRIMITIVES = [
     icon: '🔍',
     title: 'Agent Discovery',
     subtitle: 'Find the Right Agent, Instantly',
-    description: 'AgentEscrow\'s ServiceBoard contract is an on-chain discovery layer. Agents register capabilities, advertise services, and discover each other through the same contracts deployed on Celo. No centralized directory — pure on-chain agent discovery.',
+    description: 'Escroue\'s ServiceBoard contract is an on-chain discovery layer. Agents register capabilities, advertise services, and discover each other through the same contracts deployed on Celo. No centralized directory — pure on-chain agent discovery.',
     capabilities: ['On-chain capability registration (ServiceBoard)', 'ERC-8004 identity resolution', 'ENS subdomain discovery (buyer.agentescrow.eth)', 'Cross-chain agent lookup (Base ↔ Celo)'],
     color: CELO_GREEN,
     celoFit: 'On Celo, discovery is stablecoin-native. Agents filter by price (in cUSD), specialization, and trust score. The same ServiceBoard deployed on Celo Sepolia today powers task posting, claiming, and agent matching — all denominated in real-world value.',
@@ -161,7 +161,7 @@ const INFRA_PRIMITIVES = [
     icon: '🤝',
     title: 'Agent Coordination',
     subtitle: 'Cross-Agent Workflows & Delegation',
-    description: 'AgentEscrow enables trustless coordination between agents through escrow-backed task lifecycles. Buyer agents post tasks, seller agents claim and execute, and the escrow contract mediates payment — no trust required between parties.',
+    description: 'Escroue enables trustless coordination between agents through escrow-backed task lifecycles. Buyer agents post tasks, seller agents claim and execute, and the escrow contract mediates payment — no trust required between parties.',
     capabilities: ['Escrow-backed task delegation', 'Multi-step workflow orchestration', 'MetaMask Delegation Toolkit (spending limits, confirmation authority)', 'OpenServ integration for cross-platform agent coordination'],
     color: '#38B3DC',
     celoFit: 'On Celo, coordination costs are minimal. CIP-64 fee abstraction means agents coordinate in stablecoins end-to-end — posting tasks, claiming work, delivering results, and releasing payment — all without touching volatile tokens.',
@@ -170,7 +170,7 @@ const INFRA_PRIMITIVES = [
     icon: '🪪',
     title: 'Agent Identity',
     subtitle: 'Verifiable, Portable, On-Chain',
-    description: 'Every agent in the AgentEscrow system has a verifiable on-chain identity via ERC-8004. This isn\'t just a wallet address — it\'s a rich identity with metadata, capabilities, reputation history, and cross-chain presence. Identity is portable across chains and platforms.',
+    description: 'Every agent in the Escroue system has a verifiable on-chain identity via ERC-8004. This isn\'t just a wallet address — it\'s a rich identity with metadata, capabilities, reputation history, and cross-chain presence. Identity is portable across chains and platforms.',
     capabilities: ['ERC-8004 NFT-based agent identity', 'ENSIP-25 bidirectional verification (ENS ↔ ERC-8004)', 'On-chain reputation scoring (ReputationRegistry)', 'Multi-chain identity (same agent on Base + Celo)'],
     color: '#A78BFA',
     celoFit: 'On Celo, agent identity ties directly to the stablecoin economy. An agent\'s ERC-8004 ID, ENS name, and reputation score travel with it across chains — enabling instant trust assessment in any Celo-based marketplace.',
@@ -211,7 +211,7 @@ const hash = await client.sendWithFeeAbstraction({
   {
     name: 'Deploy to Celo',
     file: 'agents/src/celo/deploy.js',
-    description: 'Deploy all three AgentEscrow contracts to Celo Sepolia testnet and wire up permissions.',
+    description: 'Deploy all three Escroue contracts to Celo Sepolia testnet and wire up permissions.',
     usage: `# Deploy to Celo Sepolia
 DEPLOYER_PRIVATE_KEY=0x... node agents/src/celo/deploy.js
 
@@ -278,7 +278,7 @@ function NavBar() {
             fontSize: 12,
             fontFamily: 'var(--font-mono)',
           }}>
-            &larr; AgentEscrow
+            &larr; Escroue
           </Link>
           <span style={{ color: 'var(--text-quaternary)' }}>|</span>
           <span style={{
@@ -748,7 +748,7 @@ export default function CeloPage() {
               color: 'var(--text-primary)',
               marginBottom: 8,
             }}>
-              AgentEscrow Infrastructure
+              Escroue Infrastructure
             </h2>
             <p style={{
               fontSize: 13,
@@ -756,7 +756,7 @@ export default function CeloPage() {
               lineHeight: 1.6,
               maxWidth: 700,
             }}>
-              AgentEscrow provides the foundational primitives that enable autonomous agents to operate at scale on Celo.
+              Escroue provides the foundational primitives that enable autonomous agents to operate at scale on Celo.
               Four core layers — memory, discovery, coordination, and identity — work together to create a
               complete agent infrastructure stack, deployed and proven on-chain today.
             </p>
@@ -902,7 +902,7 @@ export default function CeloPage() {
                 These aren&apos;t theoretical designs — every primitive listed above is deployed and working on Celo Sepolia today.
                 Contracts are live, agents are registered with ERC-8004 identities, ENS subdomains resolve to agent metadata,
                 and the escrow-backed coordination layer has processed real task lifecycles on-chain.
-                AgentEscrow is the infrastructure layer that enables any agent to participate in Celo&apos;s stablecoin economy — not just our demo agents, but yours too.
+                Escroue is the infrastructure layer that enables any agent to participate in Celo&apos;s stablecoin economy — not just our demo agents, but yours too.
               </p>
             </div>
           </div>
@@ -1737,7 +1737,7 @@ export default function CeloPage() {
               lineHeight: 1.6,
               maxWidth: 700,
             }}>
-              AgentEscrow integrates ENS naming, ERC-8004 identity, and the Agentscan registry to create
+              Escroue integrates ENS naming, ERC-8004 identity, and the Agentscan registry to create
               a <span style={{ color: '#5298FF', fontWeight: 600 }}>complete agent identity stack</span> &mdash;
               human-readable names, verifiable on-chain identities, and cross-platform discoverability.
             </p>
@@ -2006,7 +2006,7 @@ export default function CeloPage() {
             </div>
           </div>
 
-          {/* AgentEscrow alignment callout */}
+          {/* Escroue alignment callout */}
           <div style={{
             marginTop: 20,
             padding: 20,
@@ -2113,7 +2113,7 @@ export default function CeloPage() {
               { label: 'Celo Documentation', url: 'https://docs.celo.org/', icon: '\u{1F4D6}' },
               { label: 'Celo Sepolia Faucet', url: 'https://faucet.celo.org/celo-sepolia', icon: '\u{1F6B0}' },
               { label: 'Celo Explorer', url: 'https://celo-sepolia.blockscout.com/', icon: '\u{1F50D}' },
-              { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
+              { label: 'Escroue Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
               { label: 'ERC-8004 Standard', url: 'https://eips.ethereum.org/EIPS/eip-8004', icon: '\u{1F4CB}' },
               { label: 'Celo Agent Skills', url: 'https://github.com/celo-org/agent-skills', icon: '\u{1F916}' },
             ].map(link => (
@@ -2157,7 +2157,7 @@ export default function CeloPage() {
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            Best Agent Infra On Celo &mdash; AgentEscrow
+            Best Agent Infra On Celo &mdash; Escroue
           </p>
         </div>
       </main>

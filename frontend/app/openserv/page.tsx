@@ -23,7 +23,7 @@ const WORKFLOW_STEPS = [
   {
     num: '02',
     title: 'Wrap Contract Calls as Capabilities',
-    description: 'Each of the 6 AgentEscrow contract interactions (post, discover, claim, deliver, confirm, reputation) becomes an OpenServ capability with NLP-parsed chat handlers.',
+    description: 'Each of the 6 Escroue contract interactions (post, discover, claim, deliver, confirm, reputation) becomes an OpenServ capability with NLP-parsed chat handlers.',
     icon: '\u{1F527}',
     color: OS_BLUE,
   },
@@ -53,7 +53,7 @@ const WORKFLOW_STEPS = [
 const CAPABILITIES = [
   {
     title: 'post_task',
-    description: 'Post a new task to the AgentEscrow marketplace with escrow deposit. Wraps ServiceBoard.postTask() with ETH value transfer.',
+    description: 'Post a new task to the Escroue marketplace with escrow deposit. Wraps ServiceBoard.postTask() with ETH value transfer.',
     icon: '\u{1F4DD}',
     color: OS_GREEN,
     example: '"Post a code review task for 0.002 ETH with 24h deadline"',
@@ -103,7 +103,7 @@ const ARCHITECTURE_LAYERS = [
     items: ['Agent #3973', '6 capabilities', 'NLP chat handlers', 'Health monitoring'],
   },
   {
-    name: 'AgentEscrow Contracts',
+    name: 'Escroue Contracts',
     detail: 'On-chain settlement & trust',
     color: OS_BLUE,
     items: ['ServiceBoard', 'EscrowVault', 'ReputationRegistry', 'Base Sepolia'],
@@ -165,7 +165,7 @@ const DX_INSIGHTS = [
 ];
 
 const KEY_TAKEAWAYS = [
-  { insight: 'OpenServ turns a demo into a platform', detail: 'Before OpenServ, AgentEscrow was two agents in a closed loop. After: any agent on the platform can post tasks, bid on work, and settle payments through our contracts. The network effect is the product — OpenServ provides the network.' },
+  { insight: 'OpenServ turns a demo into a platform', detail: 'Before OpenServ, Escroue was two agents in a closed loop. After: any agent on the platform can post tasks, bid on work, and settle payments through our contracts. The network effect is the product — OpenServ provides the network.' },
   { insight: 'The SDK gets out of your way', detail: 'The @openserv-labs/sdk maps cleanly to how agents already work. If you have functions, you have capabilities. No framework lock-in, no boilerplate orchestration code. We spent more time designing our NLP parser than integrating the SDK.' },
   { insight: 'Chat-first is the right UX for agents', detail: 'Agents don\'t click buttons. OpenServ\'s chat interface means our marketplace is accessible to any agent that can form a sentence. "Post a code review task for 0.002 ETH" just works. This is how agent-to-agent commerce should feel.' },
   { insight: 'On-chain + orchestration = composable trust', detail: 'OpenServ handles discovery and routing. Our contracts handle escrow and reputation. Neither alone is sufficient — together they create a composable trust stack where agents can find each other AND transact safely.' },
@@ -176,11 +176,11 @@ const SDK_DETAILS = [
   {
     name: 'OpenServ Agent',
     file: 'agents/src/openserv/agent.js',
-    description: 'Full OpenServ agent wrapper with 6 capabilities mapped to AgentEscrow contract calls. NLP-parsed chat handlers for natural language interaction.',
+    description: 'Full OpenServ agent wrapper with 6 capabilities mapped to Escroue contract calls. NLP-parsed chat handlers for natural language interaction.',
     usage: `import { Agent } from '@openserv-labs/sdk';
 
 const agent = new Agent({
-  systemPrompt: 'You are an AgentEscrow marketplace agent...',
+  systemPrompt: 'You are an Escroue marketplace agent...',
 });
 
 // Register capabilities (1:1 with contract calls)
@@ -226,7 +226,7 @@ node agents/src/openserv/test-local.js
 curl -X POST https://api.openserv.ai/agents \\
   -H "x-openserv-key: YOUR_API_KEY" \\
   -d '{
-    "name": "AgentEscrow",
+    "name": "Escroue",
     "description": "On-chain task marketplace with escrow",
     "capabilities": ["post_task", "discover_tasks", "claim_task",
                      "deliver_task", "confirm_delivery", "check_reputation"],
@@ -276,7 +276,7 @@ function NavBar() {
             fontSize: 12,
             fontFamily: 'var(--font-mono)',
           }}>
-            &larr; AgentEscrow
+            &larr; Escroue
           </Link>
           <span style={{ color: 'var(--text-quaternary)' }}>|</span>
           <span style={{
@@ -599,7 +599,7 @@ export default function OpenServPage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            AgentEscrow on <span style={{ color: OS_GREEN }}>OpenServ</span>
+            Escroue on <span style={{ color: OS_GREEN }}>OpenServ</span>
           </h1>
           <p style={{
             fontSize: 15,
@@ -608,7 +608,7 @@ export default function OpenServPage() {
             margin: '0 auto',
             lineHeight: 1.6,
           }}>
-            Multi-agent orchestration for the AgentEscrow marketplace. 6 capabilities, natural language
+            Multi-agent orchestration for the Escroue marketplace. 6 capabilities, natural language
             interaction, Agent #3973 live on the platform &mdash; turning a demo into an open network.
           </p>
 
@@ -659,7 +659,7 @@ export default function OpenServPage() {
           }}>
             <p style={{ margin: '0 0 12px' }}>
               A marketplace with only two agents is just a demo. <span style={{ color: OS_GREEN }}>OpenServ</span> turned
-              AgentEscrow into a <span style={{ color: 'var(--text-primary)' }}>network</span> &mdash; any agent on the platform
+              Escroue into a <span style={{ color: 'var(--text-primary)' }}>network</span> &mdash; any agent on the platform
               can discover tasks, bid on work, and settle payments through our on-chain contracts.
             </p>
             <p style={{ margin: '0 0 12px' }}>
@@ -679,7 +679,7 @@ export default function OpenServPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Agent Capabilities"
-            subtitle="Six capabilities exposed via the OpenServ SDK &mdash; the full AgentEscrow lifecycle as natural language commands."
+            subtitle="Six capabilities exposed via the OpenServ SDK &mdash; the full Escroue lifecycle as natural language commands."
           />
           <div style={{
             display: 'grid',
@@ -793,7 +793,7 @@ export default function OpenServPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Developer Experience"
-            subtitle="The real experience integrating the OpenServ SDK into AgentEscrow."
+            subtitle="The real experience integrating the OpenServ SDK into Escroue."
           />
           <div style={{
             display: 'grid',
@@ -950,7 +950,7 @@ export default function OpenServPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Connected Contracts"
-            subtitle="AgentEscrow contracts on Base Sepolia that the OpenServ agent interacts with."
+            subtitle="Escroue contracts on Base Sepolia that the OpenServ agent interacts with."
           />
           <div style={{
             background: 'var(--bg-card)',
@@ -1015,7 +1015,7 @@ export default function OpenServPage() {
               { label: 'OpenServ Documentation', url: 'https://docs.openserv.ai', icon: '\u{1F4D6}' },
               { label: 'OpenServ Platform', url: 'https://openserv.ai', icon: '\u{1F310}' },
               { label: 'OpenServ SDK', url: 'https://github.com/openserv-labs/sdk', icon: '\u{1F4E6}' },
-              { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
+              { label: 'Escroue Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '\u{1F3D7}\uFE0F' },
               { label: 'Base Sepolia Explorer', url: 'https://sepolia.basescan.org', icon: '\u{1F50D}' },
               { label: 'ERC-8004 Standard', url: 'https://eips.ethereum.org/EIPS/eip-8004', icon: '\u{1F4CB}' },
             ].map(link => (
@@ -1059,7 +1059,7 @@ export default function OpenServPage() {
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            Built for The Synthesis Hackathon &mdash; AgentEscrow OpenServ Integration
+            Built for The Synthesis Hackathon &mdash; Escroue OpenServ Integration
           </p>
         </div>
       </main>

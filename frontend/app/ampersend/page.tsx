@@ -170,7 +170,7 @@ function NavBar() {
             fontSize: 12,
             fontFamily: 'var(--font-mono)',
           }}>
-            ← AgentEscrow
+            ← Escroue
           </Link>
           <span style={{ color: 'var(--text-quaternary)' }}>|</span>
           <span style={{
@@ -524,7 +524,7 @@ export default function AmpersendPage() {
             marginBottom: 12,
             lineHeight: 1.2,
           }}>
-            Ampersend + AgentEscrow
+            Ampersend + Escroue
           </h1>
           <p style={{
             fontSize: 15,
@@ -596,7 +596,7 @@ export default function AmpersendPage() {
               and a <span style={{ color: '#34D399' }}>human operator dashboard</span> for monitoring and control.
             </p>
             <p style={{ margin: 0 }}>
-              Under the hood, it uses the <span style={{ color: 'var(--accent)' }}>x402 protocol</span> (HTTP 402 payments) — the same protocol already integrated into AgentEscrow.
+              Under the hood, it uses the <span style={{ color: 'var(--accent)' }}>x402 protocol</span> (HTTP 402 payments) — the same protocol already integrated into Escroue.
               Ampersend wraps x402 with managed wallets and treasury controls, making it production-ready for agent commerce.
             </p>
           </div>
@@ -615,10 +615,10 @@ export default function AmpersendPage() {
           </div>
         </section>
 
-        {/* Integration with AgentEscrow */}
+        {/* Integration with Escroue */}
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
-            title="Integration with AgentEscrow"
+            title="Integration with Escroue"
             subtitle="How Ampersend enhances our existing payment infrastructure."
           />
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: 12 }}>
@@ -645,7 +645,7 @@ export default function AmpersendPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Quick Start"
-            subtitle="Get up and running with Ampersend in AgentEscrow."
+            subtitle="Get up and running with Ampersend in Escroue."
           />
           <div style={{
             background: 'var(--bg-card)',
@@ -886,7 +886,7 @@ const response = await payFetch('https://seller-agent.example.com/api/task');`,
               { label: 'Staging Dashboard', url: 'https://app.staging.ampersend.ai', icon: '🖥️' },
               { label: 'USDC Faucet', url: 'https://faucet.circle.com', icon: '💰' },
               { label: 'x402 Protocol', url: 'https://x402.org', icon: '🔗' },
-              { label: 'AgentEscrow Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '🏗️' },
+              { label: 'Escroue Repo', url: 'https://github.com/DirectiveCreator/agentescrow', icon: '🏗️' },
             ].map(link => (
               <a
                 key={link.label}
@@ -928,7 +928,7 @@ const response = await payFetch('https://seller-agent.example.com/api/task');`,
             color: 'var(--text-tertiary)',
             fontFamily: 'var(--font-mono)',
           }}>
-            Built for The Synthesis Hackathon — AgentEscrow x Ampersend
+            Built for The Synthesis Hackathon — Escroue x Ampersend
           </p>
         </div>
       </main>

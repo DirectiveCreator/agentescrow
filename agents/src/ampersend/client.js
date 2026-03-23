@@ -1,5 +1,5 @@
 /**
- * Ampersend Client — Managed wallet + x402 payment layer for AgentEscrow
+ * Ampersend Client — Managed wallet + x402 payment layer for Escroue
  *
  * Wraps the @ampersend_ai/ampersend-sdk to provide:
  * - Smart account wallets with spend limits (Treasurer)
@@ -141,7 +141,7 @@ export function buildPaymentRequirements(options = {}) {
   const {
     payTo,
     amount = '1000', // $0.001 USDC in atomic units (6 decimals)
-    description = 'AgentEscrow task payment',
+    description = 'Escroue task payment',
     resource = 'http://localhost:4020/api/task',
     network = 'base-sepolia',
     maxTimeoutSeconds = 300,
@@ -173,7 +173,7 @@ export function buildPaymentRequirements(options = {}) {
  */
 export async function createPaidMcpServer(config = {}) {
   const {
-    name = 'agentescrow-seller',
+    name = 'escroue-seller',
     version = '1.0.0',
     port = 8080,
     payTo,
@@ -226,7 +226,7 @@ export async function createPayingMcpClient(config = {}) {
   const {
     privateKey,
     serverUrl,
-    clientName = 'agentescrow-buyer',
+    clientName = 'escroue-buyer',
     clientVersion = '1.0.0',
   } = config;
 

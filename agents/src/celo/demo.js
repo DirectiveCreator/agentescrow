@@ -89,7 +89,7 @@ const DEMO_TASKS = [
   },
   {
     taskType: 'code_review',
-    description: 'Review AgentEscrow contracts for Celo compatibility',
+    description: 'Review Escroue contracts for Celo compatibility',
     reward: '0.005',
     deliveryHash: 'QmCeloCodeReview_SolidityAudit_GasOptimized_CIP64Ready_NoIssues',
   },
@@ -100,7 +100,7 @@ const DEMO_TASKS = [
 async function main() {
   console.log('');
   console.log('\u{1F7E2} \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550');
-  console.log('   AgentEscrow on Celo Sepolia \u2014 LIVE Demo');
+  console.log('   Escroue on Celo Sepolia \u2014 LIVE Demo');
   console.log('\u{1F7E2} \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550');
   console.log(`   Chain:    Celo Sepolia (11142220)`);
   console.log(`   Buyer:    ${buyerAccount.address}`);

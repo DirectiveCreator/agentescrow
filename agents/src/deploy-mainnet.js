@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Deploy AgentEscrow to Base or Celo mainnet via viem.
+ * Deploy Escroue to Base or Celo mainnet via viem.
  *
  * Usage:
  *   PRIVATE_KEY=0x... CHAIN=base node agents/src/deploy-mainnet.js
@@ -111,7 +111,7 @@ import { encodeFunctionData } from 'viem';
 async function main() {
   console.log('');
   console.log('🔴 ═══════════════════════════════════════════');
-  console.log(`   AgentEscrow → ${CHAIN_NAME.toUpperCase()} MAINNET Deployment`);
+  console.log(`   Escroue → ${CHAIN_NAME.toUpperCase()} MAINNET Deployment`);
   console.log('🔴 ═══════════════════════════════════════════');
   console.log('');
   console.log(`   Deployer: ${account.address}`);

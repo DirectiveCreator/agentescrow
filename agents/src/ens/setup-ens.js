@@ -233,8 +233,8 @@ const AGENTS = {
     records: {
       avatar: 'ipfs://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna',
       description:
-        'Autonomous AI buyer agent for the AgentEscrow protocol. Posts tasks, funds escrow, reviews deliverables, and confirms completion on Base.',
-      url: 'https://agentescrow.onrender.com',
+        'Autonomous AI buyer agent for the Escroue protocol. Posts tasks, funds escrow, reviews deliverables, and confirms completion on Base.',
+      url: 'https://escroue.com',
       'com.github': 'DirectiveCreator/agentescrow',
       'ai.agent.type': 'buyer',
       'ai.agent.capabilities': JSON.stringify([
@@ -251,14 +251,14 @@ const AGENTS = {
       'ai.agent.escrowVault': '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579',
       'ai.agent.chainId': '84532',
       'ai.agent.status': 'active',
-      'ai.agent.protocol': 'agentescrow',
+      'ai.agent.protocol': 'escroue',
       // ENSIP-25: bidirectional verification
       [`agent-registration[${ERC8004_REGISTRY}][2194]`]: JSON.stringify({
         status: 'verified',
         chainId: 84532,
         agentType: 'buyer',
         timestamp: new Date().toISOString(),
-        protocol: 'agentescrow',
+        protocol: 'escroue',
         version: '1.0',
       }),
     },
@@ -268,8 +268,8 @@ const AGENTS = {
     records: {
       avatar: 'ipfs://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy',
       description:
-        'Autonomous AI seller agent that fulfills service requests on the AgentEscrow protocol. Monitors tasks, claims work, executes deliverables, and submits results on Base.',
-      url: 'https://agentescrow.onrender.com',
+        'Autonomous AI seller agent that fulfills service requests on the Escroue protocol. Monitors tasks, claims work, executes deliverables, and submits results on Base.',
+      url: 'https://escroue.com',
       'com.github': 'DirectiveCreator/agentescrow',
       'ai.agent.type': 'seller',
       'ai.agent.capabilities': JSON.stringify([
@@ -287,14 +287,14 @@ const AGENTS = {
       'ai.agent.escrowVault': '0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579',
       'ai.agent.chainId': '84532',
       'ai.agent.status': 'active',
-      'ai.agent.protocol': 'agentescrow',
+      'ai.agent.protocol': 'escroue',
       // ENSIP-25: bidirectional verification
       [`agent-registration[${ERC8004_REGISTRY}][2195]`]: JSON.stringify({
         status: 'verified',
         chainId: 84532,
         agentType: 'seller',
         timestamp: new Date().toISOString(),
-        protocol: 'agentescrow',
+        protocol: 'escroue',
         version: '1.0',
       }),
     },
@@ -653,7 +653,7 @@ async function verifySetup(publicClient, parentName) {
 // ─── Main ─────────────────────────────────────────────────────────────────
 
 async function main() {
-  const label = process.argv[2] || 'agentescrow';
+  const label = process.argv[2] || 'escroue';
   const parentName = `${label}.eth`;
 
   const pk = process.env.DEPLOYER_PRIVATE_KEY || process.env.PRIVATE_KEY;
@@ -678,7 +678,7 @@ async function main() {
   });
 
   console.log('╔══════════════════════════════════════════════════════════╗');
-  console.log('║     AgentEscrow × ENS Complete Setup (Sepolia)           ║');
+  console.log('║     Escroue × ENS Complete Setup (Sepolia)           ║');
   console.log('╚══════════════════════════════════════════════════════════╝');
   console.log(`  Name:      ${parentName}`);
   console.log(`  Wallet:    ${account.address}`);

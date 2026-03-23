@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * MetaMask Delegation Framework × AgentEscrow — Full Demo
+ * MetaMask Delegation Framework × Escroue — Full Demo
  *
  * Demonstrates the complete delegation lifecycle:
  *
@@ -17,7 +17,7 @@
  * Run: node agents/src/delegation/demo.js
  */
 
-import { createSmartAccount, createAllAccounts, logAccount, publicClient, getEnvironment, AGENTESCROW_CONTRACTS } from './setup.js';
+import { createSmartAccount, createAllAccounts, logAccount, publicClient, getEnvironment, ESCROUE_CONTRACTS } from './setup.js';
 import {
   createSpendingDelegation,
   createConfirmationDelegation,
@@ -57,13 +57,13 @@ function step(num, text) {
 // ─── Main Demo ──────────────────────────────────────────────────────────────
 
 async function runDemo() {
-  banner('🔐 MetaMask Delegation Framework × AgentEscrow Demo');
+  banner('🔐 MetaMask Delegation Framework × Escroue Demo');
   console.log('  Building delegated agent autonomy with enforced guardrails\n');
 
   const isLive = !!process.env.PIMLICO_API_KEY;
   console.log(`  Mode: ${isLive ? '🟢 LIVE (sending real transactions)' : '🟡 SIMULATION (off-chain only)'}`);
   console.log(`  Chain: Base Sepolia (84532)`);
-  console.log(`  ServiceBoard: ${AGENTESCROW_CONTRACTS.serviceBoard}`);
+  console.log(`  ServiceBoard: ${ESCROUE_CONTRACTS.serviceBoard}`);
 
   // ── Phase 1: Smart Account Setup ──────────────────────────────────────
 
@@ -265,7 +265,7 @@ async function runDemo() {
 
   On-chain artifacts:
     - DelegationManager: ${env.DelegationManager}
-    - ServiceBoard:      ${AGENTESCROW_CONTRACTS.serviceBoard}
+    - ServiceBoard:      ${ESCROUE_CONTRACTS.serviceBoard}
     - Chain:             Base Sepolia (84532)
 `);
 }

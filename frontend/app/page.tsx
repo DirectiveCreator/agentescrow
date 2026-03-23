@@ -388,21 +388,19 @@ export default function Dashboard() {
                   style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
               MULTI-CHAIN
             </span>
-            {isDemo && (
-              <span className="text-[11px] px-2 py-1 rounded tracking-wide"
-                    style={{ background: 'var(--warning-20)', border: '1px solid #FF880040', color: 'var(--warning)' }}>
-                DEMO MODE
+            <span className="text-[11px] px-2 py-1 rounded tracking-wide"
+                    style={{ background: '#34D39920', border: '1px solid #34D39940', color: '#34D399' }}>
+                MAINNET
               </span>
-            )}
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px]"
                  style={{
-                   background: isConnected ? '#34D39910' : 'var(--accent-10)',
-                   border: `1px solid ${isConnected ? '#34D39940' : 'var(--accent-40)'}`,
-                   color: isConnected ? '#34D399' : 'var(--accent)',
+                   background: '#34D39910',
+                   border: '1px solid #34D39940',
+                   color: '#34D399',
                  }}>
               <div className="w-1.5 h-1.5 rounded-full pulse-accent"
-                   style={{ background: isConnected ? '#34D399' : 'var(--accent)' }} />
-              {isConnected ? 'LIVE' : 'PREVIEW'}
+                   style={{ background: '#34D399' }} />
+              LIVE
             </div>
           </div>
         </div>
@@ -1538,21 +1536,7 @@ export default function Dashboard() {
                   {ch.name}
                 </button>
               ))}
-              {isDemo && (
-                <span style={{
-                  padding: '3px 8px',
-                  borderRadius: 4,
-                  background: '#F59E0B20',
-                  color: '#F59E0B',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 11,
-                  fontWeight: 600,
-                }}>
-                  DEMO MODE
-                </span>
-              )}
-              {!isDemo && (
-                <span style={{
+              <span style={{
                   padding: '3px 8px',
                   borderRadius: 4,
                   background: '#34D39920',
@@ -1561,9 +1545,8 @@ export default function Dashboard() {
                   fontSize: 11,
                   fontWeight: 600,
                 }}>
-                  ● LIVE
+                  ● MAINNET LIVE
                 </span>
-              )}
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
               <MetricCard label="TOTAL TASKS" value={displayTasks.length.toString()} accent />

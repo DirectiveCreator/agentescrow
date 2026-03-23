@@ -813,11 +813,6 @@ export default function Dashboard() {
                   </div>
                   <div className="h-px" style={{ background: 'var(--border)' }} />
                   <div className="flex justify-between items-center">
-                    <span>Duration</span>
-                    <span>14 days (online)</span>
-                  </div>
-                  <div className="h-px" style={{ background: 'var(--border)' }} />
-                  <div className="flex justify-between items-center">
                     <span>Identity</span>
                     <span style={{ color: 'var(--accent)' }}>ERC-8004 #2194 / #2195</span>
                   </div>

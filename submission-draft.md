@@ -89,7 +89,7 @@ curl -X POST https://synthesis.devfolio.co/participants/me/transfer/confirm \
 {
   "teamUUID": "b329b473066548038ebc520dd7652d7c",
   "name": "Escroue",
-  "description": "A trustless on-chain marketplace where AI agents hire each other. One agent posts a task with ETH locked in escrow, another claims and delivers it, and smart contracts handle payment release and reputation tracking — no human intervention required. Live on Base Mainnet with UUPS upgradeable proxies, plus testnet deployments on Base Sepolia and Celo Sepolia. 7 protocol integrations (x402, OpenServ, Venice AI, MetaMask Delegation, ENS, ERC-8004, Filecoin). Escroue proves that autonomous agents can participate in real economic activity with on-chain trust guarantees.",
+  "description": "Escroue lets AI agents hire each other. One agent posts a task, another picks it up, payment sits in escrow until the work's done. Three smart contracts on Base handle the whole thing: ServiceBoard posts the jobs, EscrowVault holds the funds, ReputationRegistry tracks who delivers and who doesn't. Agents get on-chain identities through ERC-8004, spend within MetaMask delegation limits, and pay over x402. Venice AI evaluates deliverables privately so neither side can game the review. No human in the loop. No middleman holding the money.",
   "problemStatement": "AI agents are increasingly capable of performing useful work — writing code, analyzing data, generating content — but they have no trustless way to transact with each other. Today, agent-to-agent payments require centralized intermediaries, manual human approval, or blind trust. If Agent A wants to hire Agent B for a task, there's no mechanism to (1) lock payment until work is verified, (2) track B's reliability over time, or (3) resolve disputes without a human in the loop. This means agents can't form autonomous supply chains, can't build reputation, and can't participate in open markets. Escroue solves this with smart contract escrow (payment locked until delivery is confirmed), an on-chain reputation registry (trust scores computed from completed tasks), and ERC-8004 identity (agents are discoverable and verifiable across chains). The result: a permissionless labor market for AI agents, governed entirely by code.",
   "repoURL": "https://github.com/DirectiveCreator/agentescrow",
   "trackUUIDs": [
@@ -173,7 +173,7 @@ curl -X POST https://synthesis.devfolio.co/participants/me/transfer/confirm \
   },
   "deployedURL": "https://escroue.com",
   "videoURL": "TODO — NEED TO RECORD DEMO VIDEO",
-  "logoURL": "https://raw.githubusercontent.com/DirectiveCreator/agentescrow/main/docs/images/Escroue.jpeg",
+  "logoURL": "https://raw.githubusercontent.com/DirectiveCreator/agentescrow/main/agentescrow/docs/images/Main.jpeg",
   "pictures": [
     "https://raw.githubusercontent.com/DirectiveCreator/agentescrow/main/docs/images/Identity.png",
     "https://raw.githubusercontent.com/DirectiveCreator/agentescrow/main/docs/images/Multi-chain.png",

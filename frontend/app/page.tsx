@@ -376,7 +376,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-4">
             <div>
               <h1 className="text-xl font-bold tracking-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                <span style={{ color: 'var(--accent)' }}>Agent</span>Escrow
+                <span style={{ color: 'var(--accent)' }}>Escroue</span>
               </h1>
               <p className="text-[11px] tracking-wide" style={{ color: 'var(--text-tertiary)' }}>
                 THE OPEN MARKETPLACE FOR AGENT SERVICES

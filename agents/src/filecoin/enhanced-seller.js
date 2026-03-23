@@ -22,7 +22,7 @@ import { executeTask } from '../tasks.js';
 import { AgentStorage } from './client.js';
 
 export class FilecoinSellerAgent {
-  constructor({ privateKey, filecoinKey, network = 'calibration', erc8004Id }) {
+  constructor({ privateKey, filecoinKey, network = 'mainnet', erc8004Id }) {
     this.wallet = getWalletClient(privateKey);
     this.address = this.wallet.account.address;
     this.claimedTasks = new Set();

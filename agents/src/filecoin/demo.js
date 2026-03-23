@@ -11,7 +11,7 @@
  * 6. Escrow released, reputation updated
  *
  * Runs in simulation mode without FILECOIN_PRIVATE_KEY.
- * Set FILECOIN_PRIVATE_KEY for real FOC storage on calibration testnet.
+ * Set FILECOIN_PRIVATE_KEY for real FOC storage on Filecoin mainnet.
  *
  * Usage:
  *   node agents/src/filecoin/demo.js              # simulation mode
@@ -36,7 +36,7 @@ async function runStandaloneDemo() {
   console.log();
 
   const filecoinKey = process.env.FILECOIN_PRIVATE_KEY;
-  const network = process.env.FILECOIN_NETWORK || 'calibration';
+  const network = process.env.FILECOIN_NETWORK || 'mainnet';
 
   const storage = new AgentStorage({ privateKey: filecoinKey, network });
 

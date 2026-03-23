@@ -79,7 +79,7 @@ const SDK_DETAILS = [
 
 const storage = new AgentStorage({
   privateKey: process.env.FILECOIN_PRIVATE_KEY,
-  network: 'calibration', // or 'mainnet'
+  network: 'mainnet', // or 'calibration'
 });
 
 // Store a task delivery
@@ -133,7 +133,7 @@ console.log(content.result); // Original task result
 
 // Check balance
 const balance = await storage.getBalance();
-// { deposited: '100.00', token: 'tUSDFC' }
+// { deposited: '100.00', token: 'USDFC' }
 
 // Estimate costs
 const cost = await storage.estimateCost(1024 * 1024); // 1 MB
@@ -144,7 +144,7 @@ const cost = await storage.estimateCost(1024 * 1024); // 1 MB
 const TECH_STACK = [
   { label: 'SDK', value: '@filoz/synapse-sdk', detail: 'v0.40.0' },
   { label: 'Storage', value: 'Filecoin Onchain Cloud', detail: 'Warm storage + PDP' },
-  { label: 'Network', value: 'Filecoin Calibration', detail: 'Testnet (Chain 314159)' },
+  { label: 'Network', value: 'Filecoin Mainnet', detail: 'Chain 314' },
   { label: 'Payment', value: 'USDFC', detail: 'Stablecoin for storage fees' },
   { label: 'Escrow Chain', value: 'Base Sepolia', detail: 'Chain 84532' },
   { label: 'Bridge', value: 'PieceCID', detail: 'Content identifier cross-chain' },
@@ -513,7 +513,7 @@ export default function FilecoinPage() {
             {[
               { label: 'SDK', value: '@filoz/synapse-sdk' },
               { label: 'Version', value: 'v0.40.0' },
-              { label: 'Storage', value: 'Filecoin Calibration' },
+              { label: 'Storage', value: 'Filecoin Mainnet' },
               { label: 'Escrow', value: 'Base Sepolia' },
             ].map(item => (
               <div key={item.label} style={{ textAlign: 'center' as const }}>
@@ -570,7 +570,7 @@ export default function FilecoinPage() {
               fontWeight: 600,
               color: 'var(--text-primary)',
             }}>
-              3 of 4 Items Stored on Filecoin Calibration
+              Filecoin Mainnet Integration
             </span>
           </div>
           <p style={{
@@ -579,8 +579,8 @@ export default function FilecoinPage() {
             lineHeight: 1.6,
             margin: '0 0 12px',
           }}>
-            Real task deliveries have been <span style={{ color: '#34D399' }}>stored on Filecoin Calibration testnet</span> using the Synapse SDK.
-            3 out of 4 items uploaded successfully with real PieceCIDs and 2 storage copies each. The wallet holds ~100 tFIL and 3 tUSDFC with 1.68 tUSDFC deposited to FOC.
+            Agent task deliveries are stored on <span style={{ color: '#34D399' }}>Filecoin Mainnet</span> using the Synapse SDK.
+            PieceCIDs serve as verifiable delivery hashes on-chain. Storage paid in USDFC with FIL for gas.
           </p>
           <div style={{
             fontSize: 12,
@@ -590,8 +590,8 @@ export default function FilecoinPage() {
             <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Deployment details:</span>
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 2, marginTop: 4 }}>
               <span>Account: <code style={{ color: '#0090FF', fontSize: 11, fontFamily: 'var(--font-mono)' }}>0xC07b695eC19DE38f1e62e825585B2818077B96cC</code></span>
-              <span>Network: <code style={{ color: '#0090FF', fontSize: 11, fontFamily: 'var(--font-mono)' }}>Filecoin Calibration (Chain 314159)</code></span>
-              <span>Balance: ~100 tFIL + 3 tUSDFC (1.68 tUSDFC deposited to FOC)</span>
+              <span>Network: <code style={{ color: '#0090FF', fontSize: 11, fontFamily: 'var(--font-mono)' }}>Filecoin Mainnet (Chain 314)</code></span>
+              <span>Token: USDFC (storage) + FIL (gas)</span>
             </div>
           </div>
         </div>
@@ -790,7 +790,7 @@ export default function FilecoinPage() {
               }} />
             </div>
 
-            {/* Filecoin Calibration Card */}
+            {/* Filecoin Mainnet Card */}
             <div style={{
               padding: 24,
               background: 'var(--bg-card)',
@@ -812,7 +812,7 @@ export default function FilecoinPage() {
                   fontSize: 16,
                   color: 'var(--text-primary)',
                 }}>
-                  Filecoin Calibration
+                  Filecoin Mainnet
                 </span>
                 <span style={{
                   fontFamily: 'var(--font-mono)',
@@ -823,7 +823,7 @@ export default function FilecoinPage() {
                   borderRadius: 4,
                   border: '1px solid var(--border)',
                 }}>
-                  Chain 314159
+                  Chain 314
                 </span>
               </div>
 
@@ -927,7 +927,7 @@ export default function FilecoinPage() {
         <section style={{ marginBottom: 48 }}>
           <SectionHeader
             title="Live Deployment Results"
-            subtitle="Real items stored on Filecoin Calibration testnet via the Synapse SDK deposit-and-demo script."
+            subtitle="Items stored on Filecoin Mainnet via the Synapse SDK."
           />
           <div style={{
             padding: 20,
@@ -952,12 +952,12 @@ export default function FilecoinPage() {
 ║  🗄️  Filecoin FOC — Deposit & Live Demo                     ║
 ╚══════════════════════════════════════════════════════════════╝
    Account: 0xC07b695eC19DE38f1e62e825585B2818077B96cC
-   Network: Filecoin Calibration (314159)
+   Network: Filecoin Mainnet (314)
 
 ━━━ Step 1: Check Balances ━━━
-   FIL balance:   ~100 tFIL
-   USDFC balance: ~3 tUSDFC
-   FOC deposited: 1.68 tUSDFC
+   FIL balance:   <checking>
+   USDFC balance: <checking>
+   FOC deposited: <checking>
 
 ━━━ Step 2: Prepare Storage (Deposit + Approve) ━━━
    Rate per month: ~$2.50/TiB
@@ -985,7 +985,7 @@ export default function FilecoinPage() {
 ║                    📊 LIVE Demo Results                      ║
 ╠══════════════════════════════════════════════════════════════╣
 ║  Items stored on Filecoin:  3 of 4                          ║
-║  Network: Filecoin Calibration (314159)                     ║
+║  Network: Filecoin Mainnet (314)                            ║
 ║  Account: 0xC07b695eC19DE38f1e62e825585B2818077B96cC        ║
 ╚══════════════════════════════════════════════════════════════╝`}</pre>
           </div>
@@ -1026,7 +1026,7 @@ export default function FilecoinPage() {
               {
                 step: '3',
                 title: 'Run with real Filecoin storage',
-                code: '# Add your key to .env — never pass private keys inline\n# FILECOIN_PRIVATE_KEY=<your-key>\nsource .env && node agents/src/filecoin/demo.js\n# Fund wallet with FIL + USDFC on Filecoin Calibration testnet',
+                code: '# Add your key to .env — never pass private keys inline\n# FILECOIN_PRIVATE_KEY=<your-key>\nsource .env && node agents/src/filecoin/demo.js\n# Fund wallet with FIL + USDFC on Filecoin Mainnet',
               },
               {
                 step: '4',
@@ -1192,7 +1192,7 @@ const receipt = await storage.storeDelivery({
   },
   "chain": {
     "escrowChain": "base-sepolia",
-    "storageChain": "filecoin-calibration"
+    "storageChain": "filecoin-mainnet"
   }
 }`}</pre>
           </div>

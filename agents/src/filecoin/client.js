@@ -22,10 +22,10 @@ export const NETWORKS = {
  *
  * @param {Object} options
  * @param {string} options.privateKey - Hex private key (with or without 0x prefix)
- * @param {'mainnet'|'calibration'} [options.network='calibration'] - Network to use
+ * @param {'mainnet'|'calibration'} [options.network='mainnet'] - Network to use
  * @returns {Synapse} Configured Synapse instance
  */
-export function createFOCClient({ privateKey, network = 'calibration' }) {
+export function createFOCClient({ privateKey, network = 'mainnet' }) {
   const net = NETWORKS[network];
   if (!net) throw new Error(`Unknown network: ${network}. Use 'mainnet' or 'calibration'.`);
 
@@ -53,7 +53,7 @@ export function createFOCClient({ privateKey, network = 'calibration' }) {
  * - Simulation mode when no FOC credentials available
  */
 export class AgentStorage {
-  constructor({ privateKey, network = 'calibration' } = {}) {
+  constructor({ privateKey, network = 'mainnet' } = {}) {
     this.network = network;
     this.simulation = !privateKey;
 

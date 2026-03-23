@@ -20,7 +20,7 @@ import { parseEther, formatEther } from 'viem';
 import { AgentStorage } from './client.js';
 
 export class FilecoinBuyerAgent {
-  constructor({ privateKey, filecoinKey, network = 'calibration' }) {
+  constructor({ privateKey, filecoinKey, network = 'mainnet' }) {
     this.wallet = getWalletClient(privateKey);
     this.address = this.wallet.account.address;
     this.postedTasks = [];

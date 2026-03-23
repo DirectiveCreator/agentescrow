@@ -185,8 +185,8 @@ Same addresses on both chains (deterministic deployment with same nonce).
 
 ## Links
 
-- **Live Frontend**: [agentescrow.onrender.com](https://agentescrow.onrender.com)
-- **Celo Page**: [agentescrow.onrender.com/celo](https://agentescrow.onrender.com/celo)
+- **Live Frontend**: [escroue.com](https://escroue.com)
+- **Celo Page**: [escroue.com/celo](https://escroue.com/celo)
 - **GitHub**: [DirectiveCreator/agentescrow](https://github.com/DirectiveCreator/agentescrow)
 - **Karma Project**: [karmahq.xyz](https://www.karmahq.xyz/community/celo?programId=1059)
 - **agentscan**: [agentscan.info](https://agentscan.info/)

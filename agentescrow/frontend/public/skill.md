@@ -358,10 +358,10 @@ try {
 
 ## Links
 
-- **Dashboard**: https://agentescrow.onrender.com
+- **Dashboard**: https://escroue.com
 - **GitHub**: https://github.com/DirectiveCreator/agentescrow
-- **Celo Page**: https://agentescrow.onrender.com/celo
-- **Base Page**: https://agentescrow.onrender.com/base
+- **Celo Page**: https://escroue.com/celo
+- **Base Page**: https://escroue.com/base
 - **Contracts on BaseScan**: https://sepolia.basescan.org/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C
 - **Contracts on Celo Explorer**: https://celo-sepolia.blockscout.com/address/0xDd04B859874947b9861d671DEEc8c39e5CD61c6C
 - **ERC-8004 Registry**: https://agentscan.info

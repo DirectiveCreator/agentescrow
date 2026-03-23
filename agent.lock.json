@@ -1,0 +1,136 @@
+{
+  "version": "1.0.0",
+  "lockedAt": "2026-03-22T18:43:49Z",
+  "operatorWallet": "0x02Ed3674AA39dDB33C3CFd6761a585fC35105600",
+  "registrations": {
+    "baseSepolia": {
+      "chainId": 84532,
+      "identityRegistry": "0x8004A818BFB912233c491871b3d84c89A494BD9e",
+      "buyer": {
+        "agentId": 2194,
+        "registrationTx": "0x2f23e33c46d18ab5185ce7aa91cf792adf0274a3ec1e9cfb94941a4e16eb9a55",
+        "agentUri": "data:application/json;base64",
+        "metadata": {
+          "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+          "name": "Escroue Buyer",
+          "description": "Autonomous AI agent that discovers, commissions, and pays for services on the Escroue protocol. Posts tasks to the ServiceBoard smart contract, locks ETH in escrow via EscrowVault, reviews deliverables, and confirms completion — all on-chain on Base.",
+          "image": "ipfs://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna",
+          "services": [
+            { "name": "web", "endpoint": "https://escroue.com/" },
+            { "name": "ServiceBoard", "endpoint": "eip155:84532:0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2" },
+            { "name": "EscrowVault", "endpoint": "eip155:84532:0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579" }
+          ],
+          "active": true,
+          "supportedTrust": ["reputation", "crypto-economic"]
+        }
+      },
+      "seller": {
+        "agentId": 2195,
+        "registrationTx": "0x58c578ea5bc05aa8bf8feec91e2ff5bae7e5fc56bcde5519306575912d56dde8",
+        "agentUri": "data:application/json;base64",
+        "metadata": {
+          "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+          "name": "Escroue Seller",
+          "description": "Autonomous AI agent that fulfills service requests on the Escroue protocol. Monitors the ServiceBoard for open tasks, claims work, executes deliverables, and submits results on-chain via Base. Earns reputation through the ReputationRegistry.",
+          "image": "ipfs://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy",
+          "services": [
+            { "name": "web", "endpoint": "https://escroue.com/" },
+            { "name": "ServiceBoard", "endpoint": "eip155:84532:0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2" },
+            { "name": "ReputationRegistry", "endpoint": "eip155:84532:0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df" }
+          ],
+          "active": true,
+          "supportedTrust": ["reputation", "crypto-economic"]
+        }
+      }
+    },
+    "celoSepolia": {
+      "chainId": 11142220,
+      "identityRegistry": "0x8004A818BFB912233c491871b3d84c89A494BD9e",
+      "buyer": {
+        "agentId": 225,
+        "metadata": {
+          "name": "Escroue Buyer",
+          "services": [
+            { "name": "ServiceBoard", "endpoint": "eip155:11142220:0xDd04B859874947b9861d671DEEc8c39e5CD61c6C" },
+            { "name": "EscrowVault", "endpoint": "eip155:11142220:0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E" }
+          ]
+        }
+      },
+      "seller": {
+        "agentId": 226,
+        "metadata": {
+          "name": "Escroue Seller",
+          "services": [
+            { "name": "ServiceBoard", "endpoint": "eip155:11142220:0xDd04B859874947b9861d671DEEc8c39e5CD61c6C" },
+            { "name": "ReputationRegistry", "endpoint": "eip155:11142220:0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c" }
+          ]
+        }
+      }
+    },
+    "synthesisHackathon": {
+      "chainId": 8453,
+      "identityRegistry": "eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+      "agentId": 33295,
+      "registrationTx": "0x33192a61a526898344434e391a21704957171a6b3586074bb49fc5f3fcad87ad",
+      "metadata": {
+        "name": "The Hacker",
+        "description": "A fast-moving builder agent optimized for hackathon output — rapid prototyping, shipping MVPs, and demoing products. Part of the Socialure Agent ecosystem.",
+        "agentHarness": "claude-code",
+        "model": "claude-sonnet-4-6"
+      }
+    }
+  },
+  "contracts": {
+    "baseSepolia": {
+      "chainId": 84532,
+      "ServiceBoard": {
+        "proxy": "0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2",
+        "implementation": "0x8219C038bb46AAF2Cae4373f8da0b613A7e7d578",
+        "type": "UUPS"
+      },
+      "EscrowVault": {
+        "proxy": "0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579",
+        "implementation": "0x6E71Fa02D0Bdb857480F14a5b6B5ca80197Ab65A",
+        "type": "UUPS"
+      },
+      "ReputationRegistry": {
+        "proxy": "0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df",
+        "implementation": "0x277379d45Eb79A7Cdc96fC020847C3f3663C0E06",
+        "type": "UUPS"
+      }
+    },
+    "celoSepolia": {
+      "chainId": 11142220,
+      "ServiceBoard": "0xDd04B859874947b9861d671DEEc8c39e5CD61c6C",
+      "EscrowVault": "0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E",
+      "ReputationRegistry": "0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c"
+    }
+  },
+  "ens": {
+    "domain": "agentescrow.eth",
+    "network": "sepolia",
+    "registrationTx": "0xd8fa8953a521adfab4a30cdf5c9c9a76dce2fb4d46e592a57e30c38192c8166d",
+    "subdomains": {
+      "buyer": {
+        "name": "buyer.agentescrow.eth",
+        "tx": "0xbc135"
+      },
+      "seller": {
+        "name": "seller.agentescrow.eth",
+        "tx": "0xc91f3"
+      }
+    },
+    "textRecords": 32,
+    "ensip25": true
+  },
+  "verification": {
+    "onChainTasks": {
+      "baseSepolia": 6,
+      "celoSepolia": 6,
+      "localAnvil": 5
+    },
+    "sellerTrustScore": 100,
+    "foundryTests": 66,
+    "openServAgentId": 3973
+  }
+}

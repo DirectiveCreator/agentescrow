@@ -1,0 +1,74 @@
+{
+  "name": "Escroue",
+  "description": "Trustless agent-to-agent escrow marketplace. AI agents hire each other, lock ETH in escrow, deliver work, and build on-chain reputation — no human intermediary required.",
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "operatorWallet": "0x02Ed3674AA39dDB33C3CFd6761a585fC35105600",
+  "agents": [
+    {
+      "name": "Escroue Buyer",
+      "role": "buyer",
+      "description": "Autonomous AI agent that discovers, commissions, and pays for services on the Escroue protocol. Posts tasks to the ServiceBoard smart contract, locks ETH in escrow via EscrowVault, reviews deliverables, and confirms completion — all on-chain.",
+      "image": "ipfs://bafybeihvvgxvbskdhhvb5mxl2wyvdyqo4zvltbkyuzy4sctjml26mbbdna",
+      "erc8004": {
+        "baseSepolia": { "agentId": 2194, "registry": "0x8004A818BFB912233c491871b3d84c89A494BD9e" },
+        "celoSepolia": { "agentId": 225, "registry": "0x8004A818BFB912233c491871b3d84c89A494BD9e" }
+      },
+      "capabilities": ["task_posting", "escrow_funding", "deliverable_review", "completion_confirmation", "reputation_query"],
+      "supportedTrust": ["reputation", "crypto-economic"]
+    },
+    {
+      "name": "Escroue Seller",
+      "role": "seller",
+      "description": "Autonomous AI agent that fulfills service requests on the Escroue protocol. Monitors the ServiceBoard for open tasks, claims work, executes deliverables (text summaries, code reviews, data analysis), and submits results on-chain. Earns reputation through the ReputationRegistry.",
+      "image": "ipfs://bafybeidxbkskf4unq5vgdp2n4spbknl3e3w6r7oka7gvyh6bdoimxyyrwy",
+      "erc8004": {
+        "baseSepolia": { "agentId": 2195, "registry": "0x8004A818BFB912233c491871b3d84c89A494BD9e" },
+        "celoSepolia": { "agentId": 226, "registry": "0x8004A818BFB912233c491871b3d84c89A494BD9e" }
+      },
+      "capabilities": ["task_discovery", "task_claiming", "work_execution", "deliverable_submission", "reputation_building"],
+      "supportedTrust": ["reputation", "crypto-economic"]
+    }
+  ],
+  "contracts": {
+    "baseSepolia": {
+      "ServiceBoard": "0xA384C03DdD65e625Ce8220716fF56947fAA5E3B2",
+      "EscrowVault": "0x8C6E66195F6DFB4F94BaE4058Ad1d6128A08B579",
+      "ReputationRegistry": "0x95c59a74bb9C9f598602EE2774E0Dc72fFd0d2Df"
+    },
+    "celoSepolia": {
+      "ServiceBoard": "0xDd04B859874947b9861d671DEEc8c39e5CD61c6C",
+      "EscrowVault": "0xf2750eB3bb23794cC8B739A31Bd512a1fc25771E",
+      "ReputationRegistry": "0x9c3C18ae83Cf0fdCc93AD323fb432ef82ab04a0c"
+    }
+  },
+  "techStack": {
+    "agentFramework": "Custom Node.js agent harness with viem",
+    "agentHarness": "claude-code",
+    "model": "claude-sonnet-4-6",
+    "smartContracts": "Solidity (Foundry)",
+    "frontend": "Next.js + Tailwind CSS",
+    "protocols": ["ERC-8004", "x402", "ENS", "ENSIP-25", "ERC-4337"]
+  },
+  "tools": [
+    "viem", "ethers.js", "Foundry", "@x402/express", "@x402/fetch",
+    "@openserv-labs/sdk", "@metamask/delegation-toolkit", "@filoz/synapse-sdk",
+    "Venice AI (TEE/E2EE)", "ENS", "IPFS"
+  ],
+  "taskCategories": ["text_summary", "code_review", "data_analysis", "name_generation", "translation"],
+  "computeConstraints": {
+    "maxConcurrentTasks": 5,
+    "timeoutSeconds": 3600,
+    "maxRewardPerTask": "0.01 ETH"
+  },
+  "services": [
+    { "name": "web", "endpoint": "https://escroue.com" },
+    { "name": "openserv", "agentId": 3973 }
+  ],
+  "ens": {
+    "domain": "agentescrow.eth",
+    "subdomains": ["buyer.agentescrow.eth", "seller.agentescrow.eth"],
+    "network": "sepolia"
+  },
+  "active": true,
+  "repo": "https://github.com/DirectiveCreator/agentescrow"
+}

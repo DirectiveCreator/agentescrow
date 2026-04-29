@@ -39,11 +39,11 @@ All contracts compiled and 79/79 tests passing. ABIs regenerated with V2 functio
 ## Deployment Command
 
 ```bash
-cd /Users/agents/Desktop/Agents/the-hacker/agentescrow/contracts
+cd agentescrow/contracts
 
 # Deploy V2 UUPS proxy contracts to Base Mainnet
 PRIVATE_KEY=<DEPLOYER_PRIVATE_KEY> \
-/Users/agents/.foundry/bin/forge script script/DeployMainnet.s.sol:DeployMainnet \
+forge script script/DeployMainnet.s.sol:DeployMainnet \
   --rpc-url https://mainnet.base.org \
   --broadcast \
   --verify \
@@ -53,7 +53,7 @@ PRIVATE_KEY=<DEPLOYER_PRIVATE_KEY> \
 ### Without verification (faster):
 ```bash
 PRIVATE_KEY=<DEPLOYER_PRIVATE_KEY> \
-/Users/agents/.foundry/bin/forge script script/DeployMainnet.s.sol:DeployMainnet \
+forge script script/DeployMainnet.s.sol:DeployMainnet \
   --rpc-url https://mainnet.base.org \
   --broadcast
 ```
@@ -61,7 +61,7 @@ PRIVATE_KEY=<DEPLOYER_PRIVATE_KEY> \
 ## Post-Deploy: Demo Task
 
 ```bash
-cd /Users/agents/Desktop/Agents/the-hacker/agentescrow
+cd agentescrow
 
 BUYER_KEY=REDACTED_BUYER_KEY \
 SELLER_KEY=REDACTED_SELLER_KEY \
